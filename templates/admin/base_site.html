@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+{% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'menu' %}"><img src='/static/img/logo_defensoria_2.png'
+                                                   alt="{{ site_header|default:_('Django administration') }}"
+                                                   style="max-width: 100%; max-height: 100%;" ></a>
+</h1>
+
+{% endblock %}
+
+
+{% if has_permission %}
+<div id="user-tools">
+    {% block welcome-msg %}
+        {% trans 'Welcome,' %}
+        <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+    {% endblock %}
+    {% block userlinks %}
+        {% if user.is_active and user.is_staff %}
+            {% url 'django-admindocs-docroot' as docsroot %}
+            {% if docsroot %}
+                <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> |
+            {% endif %}
+        {% endif %}
+        {% if user.has_usable_password %}
+        <a href="{% url 'cambiar_clave' %}">{% trans 'Change password' %}</a> |
+        {% endif %}
+        <a href="{% url 'salir' %}">{% trans 'Log out' %}</a>
+    {% endblock %}
+</div>
+{% endif %}
+
+{% block nav-global %}
+<a id="id_ayuda"
+   style="padding-left: 20px;padding-top:12px;padding-bottom:10px;background: url(/static/img/icon-help-20.svg) 0 1px no-repeat;"
+   href="{{ request.path|link_de_ayuda }}"
+   title="Ayuda"
+   target="_blank"></a>
+{% endblock %}

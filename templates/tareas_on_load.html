@@ -1,0 +1,14 @@
+<script>
+    function tareas_on_load() {
+        {% if mensaje %}
+            alert('{{ mensaje }}');
+        {% endif %}
+        {% if foco %}
+            colocar_foco("{{foco}}");
+        {% else %}
+            colocar_foco();
+        {% endif %}
+        contar_mensajes_pendientes('{{ user.id }}', '{% url 'contar_mensajes_pendientes' %}');
+        var mp = setInterval(ejecutar_contar_mensajes_pendientes, 10000);
+    }
+</script>

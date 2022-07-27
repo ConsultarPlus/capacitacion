@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			@page {
+				margin: 1cm;
+				{% if hoja == '' or hoja == 'A4' %}
+					size: A4 {{ orientacion }};
+					/*width: 21cm;
+			  		height: 29.7cm;*/
+				{% else %}{% if hoja == 'A5' %}
+					size: A5 {{ orientacion }};
+					/*width: 21cm;
+			  		height: 14.8cm;*/
+				{% else %}{% if hoja == 'CARTA' %}
+					size: letter {{ orientacion }};
+					/*width: 21.6cm;
+			  		height: 27.9cm;*/
+				{% else %}{% if hoja == '1/2 CARTA' %}
+					size: letter {{ orientacion }};
+					width: 21.6cm;
+			  		height: 14cm;
+				{% else %}{% if hoja == 'OFICIO' %}
+					size: legal {{ orientacion }};
+					width: 21.6cm;
+			  		height: 33cm;
+				{% else %}{% if hoja == 'LEGAL' %}
+					size: legal {{ orientacion }};
+					/*width: 21.6cm;
+			  		height: 35.6cm;*/
+				{% endif %}
+				{% endif %}
+				{% endif %}
+				{% endif %}
+				{% endif %}
+				{% endif %}
+			}
+		</style>
+		<script type="text/javascript">
+			//$(document).ready(function(){
+				//window.print();
+			//})
+			//window.onafterprint = function() {
+				//history.go(-1);
+			//};
+		</script>
+	</head>
+	<body>
+		<page size="{% if hoja == '' %}A4{% else %}{{ hoja }}{% endif %}">
+			<div class="contenedor">
+				{{ html }}
+			</div>
+		</page>
+	</body>
+	{% if autoprint %}
+	<script>
+		window.addEventListener('load', function(event) {
+			autoprint();
+		});
+		function autoprint() {
+			window.print();
+		}
+		window.onafterprint = function() {
+			window.history.back();
+		};
+	</script>
+	{% endif %}
+</html>
