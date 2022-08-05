@@ -276,3 +276,129 @@ class FiltroTablas(forms.Form):
             ),
             'modo',
         )
+
+class FiltroSimpleMasActivos(forms.Form):
+    buscar = forms.CharField(max_length=60, required=False)
+    activos = forms.CharField(max_length=1, required=False)
+    modo = forms.CharField(max_length=2, required=False)
+    items = forms.IntegerField(max_value=30,
+                               min_value=5,
+                               required=False,
+                               label='ítems x pág.')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'GET'
+        self.helper.disable_csrf = True
+        self.fields['items'].widget = SelectLiveSearchInput(choices=ITEMS_X_PAG)
+        self.fields['modo'].widget.attrs['hidden'] = True
+        self.fields['modo'].label = ""
+        self.fields['activos'].widget = forms.Select(choices=SINO)
+        self.fields['activos'].label = 'Solo Activos'
+
+        try:
+            activos = kwargs['initial']['activos']
+            self.fields['activos'].initial = activos
+        except Exception as e:
+            self.fields['activos'].initial = 'S'
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control-sm'
+
+        self.helper.layout = Layout(
+            Row(
+                Column('buscar', css_class='form-group col-md-3 mb-0 '),
+                Column('activos', css_class='form-group col-md-1 mb-0 '),
+                FieldWithButtons('items', boton_buscar(), css_class='form-group col-md-2 mb-0'),
+            ),
+            'modo',
+        )
+
+
+class FiltroSimpleMasFechas(forms.Form):
+    buscar = forms.CharField(max_length=60, required=False)
+    desde = forms.DateField(input_formats=['%d/%m/%y'], widget=DatePickerInput(), required=False,
+                            initial=datetime.date.today().strftime('%d/%m/%y'))
+    hasta = forms.DateField(input_formats=['%d/%m/%y'], widget=DatePickerInput(), required=False,
+                            initial=datetime.date.today().strftime('%d/%m/%y'))
+    modo = forms.CharField(max_length=2, required=False)
+    items = forms.IntegerField(max_value=30,
+                               min_value=5,
+                               required=False,
+                               label='ítems x pág.')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'GET'
+        self.helper.disable_csrf = True
+        self.fields['items'].widget = SelectLiveSearchInput(choices=ITEMS_X_PAG)
+        self.fields['modo'].widget.attrs['hidden'] = True
+        self.fields['modo'].label = ""
+
+        try:
+            desde = kwargs['initial']['desde']
+            self.fields['desde'].initial = desde
+        except Exception as e:
+            pass
+
+        try:
+            hasta = kwargs['initial']['hasta']
+            self.fields['hasta'].initial = hasta
+        except Exception as e:
+            pass
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control-sm'
+
+        self.helper.layout = Layout(
+            Row(
+                Column('buscar', css_class='form-group col-md-3 mb-0 '),
+            ),
+            Row(
+                Column('desde', css_class='form-group col-md-1 mb-0 '),
+                Column('hasta', css_class='form-group col-md-1 mb-0 '),
+                FieldWithButtons('items', boton_buscar(), css_class='form-group col-md-1 mb-0'),
+            ),
+            'modo',
+        )
+
+
+class FiltroFechasDH(forms.Form):
+    desde = forms.DateField(input_formats=['%d/%m/%y'], widget=DatePickerInput(), required=False,
+                            initial=datetime.date.today().strftime('%d/%m/%y'))
+    hasta = forms.DateField(input_formats=['%d/%m/%y'], widget=DatePickerInput(), required=False,
+                            initial=datetime.date.today().strftime('%d/%m/%y'))
+    modo = forms.CharField(max_length=2, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'GET'
+        self.helper.disable_csrf = True
+        self.fields['modo'].widget.attrs['hidden'] = True
+        self.fields['modo'].label = " "
+
+        try:
+            desde = kwargs['initial']['desde']
+            self.fields['desde'].initial = desde
+        except Exception as e:
+            pass
+
+        try:
+            hasta = kwargs['initial']['hasta']
+            self.fields['hasta'].initial = hasta
+        except Exception as e:
+            pass
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control-sm'
+
+        self.helper.layout = Layout(
+            Row(
+                Column('desde', css_class='form-group col-md-1 mb-0 '),
+                Column('hasta', css_class='form-group col-md-1 mb-0 '),
+                ButtonHolder('modo', boton_buscar()),
+            ),
+        )
