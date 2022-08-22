@@ -61,7 +61,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'grupo')
 
     def resetear_clave_y_enviar_mail(self, request, usuarios):
-        # template = Template('aviso_de_reseteo.html')
+        # templates = Template('aviso_de_reseteo.html')
         template = 'aviso_de_reseteo.html'
         ano = datetime.datetime.today().year
         password = 'Defen_' + str(ano)

@@ -1,6 +1,8 @@
 
 ENTIDADES = (
     ('ESTADO', 'Estado de la clase'),
+    ('ZONA', 'Zona'),
+
 )
 
 ACTIVO = (
