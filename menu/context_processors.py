@@ -13,6 +13,8 @@ def menu_processor(request):
 
         # ADMINISTRACIÓN
         viajante_puede_listar = request.user.has_perm('administracion.viajante_puede_listar')
+        transporte_puede_listar = request.user.has_perm('administracion.transporte_puede_listar')
+        condiciondepago_puede_listar = request.user.has_perm('administracion.condiciondepago_puede_listar')
 
         # CONFIGURACIÓN
         mostrar_admin = False
@@ -43,6 +45,10 @@ def menu_processor(request):
         menues = [
                   {'id_grupo': 'ADM', 'url': reverse('viajante_listar'), 'titulo': 'Viajante', 'modelo': 'VIAJANTE',
                    'visible': viajante_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('transporte_listar'), 'titulo': 'Transporte',
+                   'modelo': 'TRANSPORTE', 'visible': transporte_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('condiciondepago_listar'), 'titulo': 'CondicionDePago',
+                   'modelo': 'CONDICIONDEPAGO', 'visible': condiciondepago_puede_listar},
                   {'id_grupo': 'CFN', 'url': '/admin/', 'titulo': 'Admin', 'modelo': 'GENERAL',
                    'visible': mostrar_admin},
                   {'id_grupo': 'CFN', 'url': reverse('documentos_listar'), 'titulo': 'Documentos',

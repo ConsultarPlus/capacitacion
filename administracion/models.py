@@ -27,7 +27,7 @@ PERIODO = (
 
 class CondicionDePago(models.Model):
     descripcion = models.CharField(max_length=60, null=False, blank=False)
-    dia_vencimiento = models.CharField(max_length=1, null=False, blank=False)
+    dia_vencimiento = models.CharField(max_length=10, null=False, blank=False)
     porcentaje = models.FloatField(null=False, blank=False)
     activo = models.CharField(max_length=1, choices=SINO, null=True, blank=True)
     cuotas = models.IntegerField(null=False, blank=False)
@@ -39,7 +39,7 @@ class Transporte(models.Model):
     nombre = models.CharField(max_length=60, null=False, blank=False)
     direccion = models.CharField(max_length=60, null=False, blank=False)
     cuit = models.CharField(max_length=13, null=False, blank=False)
-    telefeno = models.CharField(max_length=60, null=False, blank=False)
+    telefono = models.CharField(max_length=60, null=False, blank=False)
     email = models.CharField(max_length=80, null=False, blank=False)
     web = models.CharField(max_length=60, null=False, blank=False)
     localidad = models.ForeignKey(Tabla, on_delete=models.DO_NOTHING, related_name='LOCALIDAD', null=True, blank=True)
