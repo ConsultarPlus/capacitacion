@@ -1,0 +1,85 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+{% if request.GET.modo == 's' or request.GET.modo == 'm' %}
+    {% include "cabeza.html" %}
+    <div id="content" class="{% block coltype %}colM{% endblock %}">
+{% endif %}
+
+
+{% if filtros_form %}
+    <h1>Departamentos</h1>
+    {% crispy filtros_form %}
+{% endif %}
+
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'departamento_agregar'%}?modo={{ request.GET.modo }}" class="addlink">
+                    {% traducir 'Departamento' 'DEPARTAMENTO' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'Codigo' 'DEPARTAMENTO' %}</th>
+                    <th>{% traducir 'Descripcion' 'DEPARTAMENTO' %}</th>
+                    <th>{% traducir 'Listas precios' 'DEPARTAMENTO' %}</th>
+                    <th>{% traducir 'Utilidad por defecto' 'DEPARTAMENTO' %}</th>
+                    <th>{% traducir 'Rubro' 'DEPARTAMENTO' %}</th>
+                    <th>{% traducir 'Actualiza costos' 'DEPARTAMENTO' %}</th>
+                    <th>{% traducir 'Imagen' 'DEPARTAMENTO' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for departamento in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ departamento.codigo }}</td>
+                        <td> {{ departamento.descripcion }}</td>
+                        <td> {{ departamento.listas_precios }}</td>
+                        <td> {{ departamento.utilidad_x_defecto }}</td>
+                        <td> {{ departamento.rubro }}</td>
+                        <td> {{ departamento.actualiza_costos }}</td>
+                        <td>
+                            {% if departamento.imagen %}
+                            <img src="{{ departamento.imagen.url }}" width="196" height="128"/>
+                            {% endif %}
+                        </td>
+                        <td></td>
+                        <td><a href="{% url 'departamento_editar' departamento.id %}"
+                               title="{% traducir 'Editar' 'DEPARTAMENTO' %}"
+                               class="changelink"></a></td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' '% DEPARTAMENTO %' %}"
+                               onclick="return confirmarAccion('{% url 'departamento_eliminar' departamento.id %}',
+                               '¿Eliminar departamento?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+{% if request.GET.modo == 's' or request.GET.modo == 'm' %}
+    {% if request.GET.modo == 'm' %}
+        <script src= " {% static "js/marcar_todo.js" %}" ></script>
+    {% endif %}
+    <script src= " {% static "js/armar_seleccionados.js" %} " ></script>
+</div>
+{% endif %}
