@@ -2,15 +2,17 @@ from crispy_forms.bootstrap import FieldWithButtons
 from tabla.funcs import boton_buscar
 from tabla.listas import ITEMS_X_PAG
 from tabla.widgets import SelectLiveSearchInput
+from tabla.gets import get_choices_mas_vacio
 from .models import Departamento
 from django import forms
+from tabla.models import Tabla
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Button, ButtonHolder
 
 
 class FiltroDepartamentos(forms.Form):
     buscar = forms.CharField(max_length=60, required=False)
-    # rubro = forms.CharField(max_length=60, required=False)
+    seleccionar_rubro = forms.IntegerField(required=False)
     items = forms.IntegerField(max_value=30,
                                min_value=5,
                                required=False,
@@ -22,7 +24,15 @@ class FiltroDepartamentos(forms.Form):
         self.helper = FormHelper()
         self.helper.form_method = 'GET'
         self.helper.disable_csrf = True
+        self.fields['seleccionar_rubro'].widget = SelectLiveSearchInput(choices=get_choices_mas_vacio('RUBRO'))
         self.fields['items'].widget = SelectLiveSearchInput(choices=ITEMS_X_PAG)
+
+        try:
+            seleccionar_rubro = kwargs['initial']['seleccionar_rubro']
+            if seleccionar_rubro is not None and seleccionar_rubro != '':
+                self.fields['seleccionar_rubro'].initial = seleccionar_rubro
+        except (ValueError, TypeError):
+            pass
 
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control-sm'
@@ -30,9 +40,10 @@ class FiltroDepartamentos(forms.Form):
         self.helper.layout = Layout(
             Row(
                 Column('buscar', css_class='form-group col-md-2 mb-0 '),
+                Column('seleccionar_rubro', css_class='form-group col-md-2 mb-0 '),
                 FieldWithButtons('items', boton_buscar(), css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
-                ))
+            ))
 
 
 class DepartamentoForm(forms.ModelForm):

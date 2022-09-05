@@ -14,6 +14,7 @@ def tabla_filtrar(query_dict):
     superior_entidad = query_dict.GET.get('superior_entidad')
     items = get_opcion_paginado(query_dict)
     modo = query_dict.GET.get('modo')
+
     filtrado = Tabla.objects.all()
 
     if entidad != '' and entidad is not None:

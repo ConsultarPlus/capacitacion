@@ -150,6 +150,7 @@ def tablas_listar(request):
     contexto['modo'] = modo
     contexto['entidad'] = entidad
     contexto['url_filtros'] = request.GET.urlencode()
+
     if modo == 'm' or modo == 's':
         template_name = 'tabla/tablas_list_block.html'
     else:
@@ -227,7 +228,6 @@ def tabla_agregar(request, entidad=None):
                 if len(tablas_list) > 0:
                     mensaje = 'Ya existe un registro con el mismo código para la entidad {} '.format(entidad)
                     messages.add_message(request, messages.WARNING, mensaje)
-
             tabla = form.save()
             valor_preferencial = data['valor_preferencial']
             url = request.GET.get("next")

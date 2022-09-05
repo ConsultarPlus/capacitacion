@@ -8,8 +8,8 @@ import unidecode
 
 class Tabla(models.Model):
     entidad = models.CharField(max_length=20, choices=sorted(ENTIDADES))
-    codigo = models.CharField(max_length=10)
-    descripcion = models.CharField(max_length=100, verbose_name='Descripción',)
+    codigo = models.CharField(max_length=10, unique=True)
+    descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     superior_id = models.IntegerField(null=True, blank=True)
     superior_entidad = models.CharField(max_length=20, blank=True, choices=sorted(ENTIDADES))
     superior_codigo = models.CharField(max_length=10, blank=True)

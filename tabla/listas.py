@@ -1,6 +1,7 @@
 
 ENTIDADES = (
-    ('ESTADO', 'Estado de la clase'),
+    ('ESTADO_CIVIL', 'Estados civiles'),
+    ('RUBRO', 'Rubro'),
 )
 
 ACTIVO = (
@@ -82,4 +83,5 @@ MODELOS = (
            ('COMPROBANTES', 'Comprobantes'),
            ('NUMERADORES', 'Numeradores'),
            ('GENERAL', 'General'),
+           ('DEPARTAMENTO', 'Departamento')
            )

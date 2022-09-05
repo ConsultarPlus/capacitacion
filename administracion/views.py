@@ -7,27 +7,9 @@ from administracion.models import Departamento
 from .filters import administracion_filtrar
 
 
-"""@login_required(login_url='ingresar')
-@permission_required("administracion.administracion_puede_listar", None, raise_exception=True)
-def administracion_listar(request):
-    contexto = administracion_filtrar(request)
-    codigo = request.GET.get('codigo')
-    contexto['codigo'] = codigo
-    contexto['url_filtros'] = request.GET.urlencode()
-    return render(request, 'departamento_listar.html', contexto)"""
-
-
 @login_required(login_url='ingresar')
 def departamento_listar(request):
     contexto = administracion_filtrar(request)
-    # print(MEDIA_ROOT)
-    # print(contexto['filter'].first().imagen)
-    # modo = request.GET.get('modo')
-    # contexto['modo'] = modo
-    # if modo == 'm' or modo == 's':
-    #    at template_name = 'departamento_list_block.html'
-    # else:
-    #     template_name = 'departamento_listar.html'
     template_name = 'departamento_listar.html'
     return render(request, template_name, contexto)
 
@@ -38,9 +20,7 @@ def departamento_agregar(request):
     if request.POST:
         form = DepartamentoForm(request.POST, request.FILES)
         if form.is_valid():
-            print("se guardó")
-            print(form)
-            print(form.save())
+            form.save()
             return redirect('departamento_listar')
     else:
         form = DepartamentoForm()
