@@ -1,15 +1,14 @@
-from django.core.checks import messages
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
-from capacitacion.settings import MEDIA_ROOT
-from administracion.forms import DepartamentoForm
-from administracion.models import Departamento
-from .filters import administracion_filtrar
+from administracion.forms import DepartamentoForm, DepositoForm
+from administracion.models import Departamento, Deposito
+from .filters import departamento_filtrar, deposito_filtrar
 
 
 @login_required(login_url='ingresar')
 def departamento_listar(request):
-    contexto = administracion_filtrar(request)
+    contexto = departamento_filtrar(request)
     template_name = 'departamento_listar.html'
     return render(request, template_name, contexto)
 
@@ -60,6 +59,66 @@ def departamento_eliminar(request, id):
     try:
         departamento = Departamento.objects.get(id=id)
         departamento.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo.'
+        messages.add_message(request, messages.ERROR, mensaje)
+    return redirect(url)
+
+
+@login_required(login_url='ingresar')
+def deposito_listar(request):
+    contexto = deposito_filtrar(request)
+    template_name = "deposito_listar.html"
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.deposito_agregar", None, raise_exception=True)
+def deposito_agregar(request):
+    if request.POST:
+        form = DepositoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('deposito_listar')
+    else:
+        form = DepositoForm()
+
+    template_name = 'DepositoForm.html'
+    contexto = {'form': form}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.deposito_editar", None, raise_exception=True)
+def deposito_editar(request, id):
+    try:
+        deposito = Deposito.objects.get(id=id)
+    except Exception as mensaje:
+        messages.add_message(request, messages.ERROR, mensaje)
+        return redirect('deposito_listar')
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = DepositoForm(post, instance=deposito)
+        if form.is_valid():
+            form.save()
+            return redirect('deposito_listar')
+    else:
+        form = DepositoForm(instance=deposito)
+
+    template_name = 'DepositoForm.html'
+    contexto = {'form': form, 'Deposito': Deposito}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.deposito_eliminar", None, raise_exception=True)
+def deposito_eliminar(request, id):
+    url = 'deposito_listar'
+    try:
+        deposito = Deposito.objects.get(id=id)
+        deposito.delete()
     except Exception as e:
         mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
                   'otros registros. Otra opción es desactivarlo'

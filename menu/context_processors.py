@@ -22,6 +22,8 @@ def menu_processor(request):
         numerador_puede_listar = request.user.has_perm('numeradores.numerador_puede_listar')
         tabla_puede_listar = request.user.has_perm('tablas.tabla_puede_listar')
         variable_puede_listar = request.user.has_perm('tablas.variable_puede_listar')
+        departamento_puede_listar = request.user.has_perm('administracion.administracion_puede_listar')
+        deposito_puede_listar = request.user.has_perm('administracion.administracion_puede_listar')
 
         grupo_soporte_mostrar = False
         grupo_config_mostrar = False
@@ -33,8 +35,8 @@ def menu_processor(request):
             grupo_config_mostrar = True
 
         grupos = [
-                  {'id': 'ESC', 'descripcion': 'Escuela',
-                   'mostrar': get_preferencia(usuario, 'menu', 'SOP', 'L', False), 'visible': grupo_soporte_mostrar},
+                  {'id': 'ADM', 'descripcion': 'Administración',
+                   'mostrar': get_preferencia(usuario, 'menu', 'ADM', 'L', False), 'visible': True},
                   {'id': 'CFN', 'descripcion': 'Configuración',
                    'mostrar': get_preferencia(usuario, 'menu', 'CFN', 'L', False), 'visible': grupo_config_mostrar},
                   ]
@@ -53,6 +55,10 @@ def menu_processor(request):
                    'visible': tabla_puede_listar},
                   {'id_grupo': 'CFN', 'url': reverse('variables_listar'), 'titulo': 'Variables', 'modelo': 'VARIABLE',
                    'visible': variable_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('departamento_listar'), 'titulo': 'Departamentos',
+                   'modelo': 'TABLA', 'visible': departamento_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('deposito_listar'), 'titulo': 'Depósitos',
+                   'modelo': 'TABLA', 'visible': deposito_puede_listar},
                   ]
 
         for menu in menues:
