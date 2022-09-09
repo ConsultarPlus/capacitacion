@@ -3,8 +3,8 @@
 {% block content %}
 {% load static %}
 
-    {% if administracion %}
-        <h2>{{ administracion.descripcion }}</h2>
+    {% if localidades %}
+        <h2>{{ localidades.descripcion }}</h2>
     {% else %}
         <h2>Agregar</h2>
     {% endif %}
@@ -13,5 +13,6 @@
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="{% static " js/registros_de_entidad.js" %} " ></script>
 
 {% endblock %}

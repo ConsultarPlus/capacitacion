@@ -6,6 +6,7 @@ from .views import menu, pagina_anterior
 urlpatterns = [
     path('', menu, name='menu'),
     path('administracion/', include('administracion.urls')),
+    path('localidades/', include('localidades.urls')),
     path('numeradores/', include('numeradores.urls')),
     path('tabla/', include('tabla.urls')),
     path('mensajes/', include('mensajes.urls')),

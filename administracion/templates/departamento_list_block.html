@@ -1,11 +1,6 @@
 {% load crispy_forms_tags %}
 {% load custom_tags %}
 {% load static %}
-{% if request.GET.modo == 's' or request.GET.modo == 'm' %}
-    {% include "cabeza.html" %}
-    <div id="content" class="{% block coltype %}colM{% endblock %}">
-{% endif %}
-
 
 {% if filtros_form %}
     <h1>Departamentos</h1>
@@ -60,12 +55,15 @@
                             {% endif %}
                         </td>
                         <td></td>
-                        <td><a href="{% url 'departamento_editar' departamento.id %}"
+                        <td>
+                            <a href="{% url 'departamento_editar' departamento.id %}"
                                title="{% traducir 'Editar' 'DEPARTAMENTO' %}"
-                               class="changelink"></a></td>
+                               class="changelink">
+                            </a>
+                        </td>
                         <td><a href="#"
                                class="deletelink"
-                               title="{% traducir 'Eliminar' '% DEPARTAMENTO %' %}"
+                               title="{% traducir 'Eliminar' 'DEPARTAMENTO' %}"
                                onclick="return confirmarAccion('{% url 'departamento_eliminar' departamento.id %}',
                                '¿Eliminar departamento?')"></a>
                         </td>
@@ -78,10 +76,3 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{% if request.GET.modo == 's' or request.GET.modo == 'm' %}
-    {% if request.GET.modo == 'm' %}
-        <script src= " {% static "js/marcar_todo.js" %}" ></script>
-    {% endif %}
-    <script src= " {% static "js/armar_seleccionados.js" %} " ></script>
-</div>
-{% endif %}

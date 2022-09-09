@@ -65,6 +65,8 @@ PROJECT_APPS = [
     'numeradores',
     'perfiles',
     'mensajes',
+    'administracion',
+    'localidades'
 ]
 
 INSTALLED_APPS = [

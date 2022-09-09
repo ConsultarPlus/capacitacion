@@ -1,0 +1,61 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+{% if filtros_form %}
+    <h1>Países</h1>
+    {% crispy filtros_form %}
+{% endif %}
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'pais_agregar' %}" class="addlink">
+                    {% traducir 'Pais' 'PAIS' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'Código' 'PAIS' %}</th>
+                    <th>{% traducir 'Descripcion' 'PAIS' %}</th>
+                    <th>{% traducir 'SIAP' 'PAIS' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pais in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ pais.codigo }}</td>
+                        <td> {{ pais.descripcion }}</td>
+                        <td> {{ pais.siap | limpiar_none }}</td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'pais_editar' pais.id %}"
+                               title="{% traducir 'Editar' 'PAIS' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'PAIS' %}"
+                               onclick="return confirmarAccion('{% url 'pais_eliminar' pais.id %}',
+                               '¿Eliminar pais?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>

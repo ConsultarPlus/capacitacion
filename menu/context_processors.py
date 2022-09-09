@@ -24,6 +24,9 @@ def menu_processor(request):
         variable_puede_listar = request.user.has_perm('tablas.variable_puede_listar')
         departamento_puede_listar = request.user.has_perm('administracion.administracion_puede_listar')
         deposito_puede_listar = request.user.has_perm('administracion.administracion_puede_listar')
+        pais_puede_listar = request.user.has_perm('localidades.pais_puede_listar')
+        provincia_puede_listar = request.user.has_perm('localidades.provincia_puede_listar')
+        localidad_puede_listar = request.user.has_perm('localidades.localidad_puede_listar')
 
         grupo_soporte_mostrar = False
         grupo_config_mostrar = False
@@ -35,8 +38,10 @@ def menu_processor(request):
             grupo_config_mostrar = True
 
         grupos = [
+                  {'id': 'LOC', 'descripcion': 'Localidades',
+                   'mostrar': get_preferencia(usuario, 'menu', 'LOC', 'L', False), 'visible': grupo_config_mostrar},
                   {'id': 'ADM', 'descripcion': 'Administración',
-                   'mostrar': get_preferencia(usuario, 'menu', 'ADM', 'L', False), 'visible': True},
+                   'mostrar': get_preferencia(usuario, 'menu', 'ADM', 'L', False), 'visible': grupo_config_mostrar},
                   {'id': 'CFN', 'descripcion': 'Configuración',
                    'mostrar': get_preferencia(usuario, 'menu', 'CFN', 'L', False), 'visible': grupo_config_mostrar},
                   ]
@@ -56,9 +61,15 @@ def menu_processor(request):
                   {'id_grupo': 'CFN', 'url': reverse('variables_listar'), 'titulo': 'Variables', 'modelo': 'VARIABLE',
                    'visible': variable_puede_listar},
                   {'id_grupo': 'ADM', 'url': reverse('departamento_listar'), 'titulo': 'Departamentos',
-                   'modelo': 'TABLA', 'visible': departamento_puede_listar},
+                   'modelo': 'DEPARTAMENTO', 'visible': departamento_puede_listar},
                   {'id_grupo': 'ADM', 'url': reverse('deposito_listar'), 'titulo': 'Depósitos',
-                   'modelo': 'TABLA', 'visible': deposito_puede_listar},
+                   'modelo': 'DEPOSITO', 'visible': deposito_puede_listar},
+                  {'id_grupo': 'LOC', 'url': reverse('pais_listar'), 'titulo': 'Países',
+                   'modelo': 'PAIS', 'visible': pais_puede_listar},
+                  {'id_grupo': 'LOC', 'url': reverse('provincia_listar'), 'titulo': 'Provincias',
+                   'modelo': 'PROVINCIAS', 'visible': provincia_puede_listar},
+                  {'id_grupo': 'LOC', 'url': reverse('localidad_listar'), 'titulo': 'Localidades',
+                   'modelo': 'LOCALIDAD', 'visible': localidad_puede_listar},
                   ]
 
         for menu in menues:

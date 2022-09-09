@@ -1,5 +1,4 @@
 from administracion.forms import FiltroDepartamentos, FiltroDepositos
-from tabla.forms import FiltroSimple
 from .models import Departamento, Deposito
 from tabla.filters import paginador
 from django.db.models import Q

@@ -1,0 +1,69 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+{% if filtros_form %}
+    <h1>Provincias</h1>
+    {% crispy filtros_form %}
+{% endif %}
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'provincia_agregar' %}" class="addlink">
+                    {% traducir 'Provincia' 'PROVINCIA' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'Codigo' 'PROVINCIA' %}</th>
+                    <th>{% traducir 'Descripcion' 'PROVINCIA' %}</th>
+                    <th>{% traducir 'Pais' 'PROVINCIA' %}</th>
+                    <th>{% traducir 'Cuenta contable' 'PROVINCIA' %}</th>
+                    <th>{% traducir 'Inscripto ib' 'PROVINCIA' %}</th>
+                    <th>{% traducir 'Vencimiento inscripcion' 'PROVINCIA' %}</th>
+                    <th>{% traducir 'Alicuota' 'PROVINCIA' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for provincia in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ provincia.codigo }}</td>
+                        <td> {{ provincia.descripcion }}</td>
+                        <td> {{ provincia.pais | limpiar_none }}</td>
+                        <td> {{ provincia.cuenta_contable | limpiar_none }}</td>
+                        <td> {{ provincia.inscripto_ib }}</td>
+                        <td> {{ provincia.vencimiento_inscripcion | limpiar_none }}</td>
+                        <td> {{ provincia.alicuota | limpiar_none }}</td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'provincia_editar' provincia.id %}"
+                               title="{% traducir 'Editar' 'PROVINCIA' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'PROVINCIA' %}"
+                               onclick="return confirmarAccion('{% url 'provincia_eliminar' provincia.id %}',
+                               '¿Eliminar provincia?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>

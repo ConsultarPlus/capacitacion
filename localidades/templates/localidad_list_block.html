@@ -1,0 +1,63 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+{% if filtros_form %}
+    <h1>Localidades</h1>
+    {% crispy filtros_form %}
+{% endif %}
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'localidad_agregar' %}" class="addlink">
+                    {% traducir 'Localidad' 'LOCALIDAD' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'Codigo Postal' 'LOCALIDAD' %}</th>
+                    <th>{% traducir 'Descripcion' 'LOCALIDAD' %}</th>
+                    <th>{% traducir 'Caracteristica Telefónica' 'LOCALIDAD' %}</th>
+                    <th>{% traducir 'Provincia' 'LOCALIDAD' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for localidad in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ localidad.codigo_postal }}</td>
+                        <td> {{ localidad.descripcion }}</td>
+                        <td> {{ localidad.caracteristica_telefonica | limpiar_none }}</td>
+                        <td> {{ localidad.provincia | limpiar_none }}</td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'localidad_editar' localidad.id %}"
+                               title="{% traducir 'Editar' 'LOCALIDAD' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'LOCALIDAD' %}"
+                               onclick="return confirmarAccion('{% url 'localidad_eliminar' localidad.id %}',
+                               '¿Eliminar localidad?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>
