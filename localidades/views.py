@@ -1,6 +1,10 @@
+from crispy_forms.utils import render_crispy_form
 from django.contrib import messages
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
+from django.template.context_processors import csrf
+
 from localidades.filters import pais_filtrar, provincia_filtrar, localidad_filtrar
 from localidades.forms import PaisForm, ProvinciaForm, LocalidadForm
 from localidades.models import Pais, Provincia, Localidad
@@ -184,3 +188,15 @@ def localidad_eliminar(request, id):
                   'otros registros. Otra opción es desactivarlo.'
         messages.add_message(request, messages.ERROR, mensaje)
     return redirect(url)
+
+
+# funcion auxiliar para filtrar las provincias que se muestran en el filtro de busqueda según el país
+def cargar_provincias(request):
+    pais_id = request.GET.get('pais')
+
+    if pais_id != '' and pais_id is not None:
+        provincia = Provincia.objects.filter(pais=pais_id).order_by('descripcion')
+    else:
+        provincia = Provincia.objects.none()
+
+    return render(request, 'provincias_dropdown.html', {'provincia': provincia})

@@ -60,4 +60,9 @@
         </table>
     <br>
     {% include "paginador.html" %}
+    <form hidden id="urlsForm"
+    cargar_provincias-url="{% url 'ajax_cargar_provincias' %}"
+    novalidate>
+    </form>
+    <script src='{% static "js/provincias_ajax.js" %}'></script>
 </div>

@@ -2,7 +2,7 @@ from django.urls import path
 
 from localidades.views import pais_listar, pais_agregar, pais_editar, pais_eliminar, provincia_eliminar, \
     provincia_editar, provincia_agregar, provincia_listar, localidad_eliminar, localidad_editar, localidad_agregar, \
-    localidad_listar
+    localidad_listar, cargar_provincias
 
 urlpatterns = [
     path('pais_listar/', pais_listar, name='pais_listar'),
@@ -16,5 +16,6 @@ urlpatterns = [
     path('localidad_listar/', localidad_listar, name='localidad_listar'),
     path('localidad_agregar/', localidad_agregar, name='localidad_agregar'),
     path('localidad_editar/<int:id>/', localidad_editar, name='localidad_editar'),
-    path('localidad_eliminar/<int:id>/', localidad_eliminar, name='localidad_eliminar')
+    path('localidad_eliminar/<int:id>/', localidad_eliminar, name='localidad_eliminar'),
+    path('cargar_provincias/', cargar_provincias, name='ajax_cargar_provincias')
     ]

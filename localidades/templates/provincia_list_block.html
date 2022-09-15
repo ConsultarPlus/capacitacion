@@ -44,7 +44,9 @@
                         <td> {{ provincia.descripcion }}</td>
                         <td> {{ provincia.pais | limpiar_none }}</td>
                         <td> {{ provincia.cuenta_contable | limpiar_none }}</td>
-                        <td> {{ provincia.inscripto_ib }}</td>
+                        {% autoescape off %}
+                            <td> {{ provincia.inscripto_ib | imagen_si_no }}</td>
+                        {% endautoescape %}
                         <td> {{ provincia.vencimiento_inscripcion | limpiar_none }}</td>
                         <td> {{ provincia.alicuota | limpiar_none }}</td>
                         <td></td>

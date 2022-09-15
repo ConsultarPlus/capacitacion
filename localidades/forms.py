@@ -126,11 +126,12 @@ class ProvinciaForm(forms.ModelForm):
         
 class FiltroLocalidad(forms.Form):
     buscar = forms.CharField(max_length=60, required=False)
+    pais = forms.ModelChoiceField(queryset=Pais.objects.all(), required=False)
     provincia = forms.ModelChoiceField(queryset=Provincia.objects.all(), required=False)
     items = forms.IntegerField(max_value=30,
                                min_value=5,
                                required=False,
-                               label='ítems x pág.')
+                               label='Ítems x pág.')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -138,12 +139,21 @@ class FiltroLocalidad(forms.Form):
         self.helper = FormHelper()
         self.helper.form_method = 'GET'
         self.helper.disable_csrf = True
+        self.helper.form_id = 'id_filtro_localidad'
         self.fields['items'].widget = SelectLiveSearchInput(choices=ITEMS_X_PAG)
 
         try:
             seleccionar_provincia = kwargs['initial']['provincia']
+            print('seleccionar_provincia', seleccionar_provincia)
             if seleccionar_provincia is not None and seleccionar_provincia != '':
                 self.fields['provincia'].initial = seleccionar_provincia
+        except (ValueError, TypeError):
+            pass
+
+        try:
+            seleccionar_pais = kwargs['initial']['pais']
+            if seleccionar_pais is not None and seleccionar_pais != '':
+                self.fields['pais'].initial = seleccionar_pais
         except (ValueError, TypeError):
             pass
 
@@ -153,6 +163,7 @@ class FiltroLocalidad(forms.Form):
         self.helper.layout = Layout(
             Row(
                 Column('buscar', css_class='form-group col-md-2 mb-0 '),
+                Column('pais', css_class='form-group col-md-2 mb-0 '),
                 Column('provincia', css_class='form-group col-md-2 mb-0 '),
                 FieldWithButtons('items', boton_buscar(), css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'

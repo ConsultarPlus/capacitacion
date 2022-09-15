@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from localidades.forms import FiltroPais, FiltroProvincia, FiltroLocalidad
 from localidades.models import Pais, Provincia, Localidad
 from tabla.filters import paginador
@@ -55,7 +57,9 @@ def provincia_filtrar(query_dict):
 
 def localidad_filtrar(query_dict):
     buscar = query_dict.GET.get('buscar')
+    pais = query_dict.GET.get('pais')
     provincia = query_dict.GET.get('provincia')
+    print('provincia', provincia)
     items = query_dict.GET.get('items')
 
     filtrado = Localidad.objects.all()
@@ -72,6 +76,7 @@ def localidad_filtrar(query_dict):
     paginado = paginador(query_dict, filtrado)
 
     form = FiltroLocalidad(initial={'provincia': provincia,
+                                    'pais': pais,
                                     'buscar': buscar,
                                     'items': items})
     return {'filter': filtrado,
