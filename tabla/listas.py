@@ -1,6 +1,16 @@
+PERIODO = (
+    ('D', 'Dias'),
+    ('S', 'Semanas'),
+    ('M', 'Meses'),
+    ('A', 'Años'),
+
+)
+
 
 ENTIDADES = (
-    ('ESTADO_CIVIL', 'Estados civiles'),
+    ('ESTADO', 'Estado de la clase'),
+    ('ZONA', 'Zona'),
+    ('LOCALIDAD', 'Localidad'),
     ('RUBRO', 'Rubro'),
 )
 

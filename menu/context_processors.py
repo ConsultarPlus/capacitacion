@@ -11,9 +11,10 @@ def menu_processor(request):
         fijar_menu = get_preferencia(usuario, 'menu', 'fijar', 'L', False)
         modo_obscuro = get_preferencia(usuario, 'menu', 'modo_obscuro', 'L', False)
 
-        # SOPORTE
-        documento_puede_listar = request.user.has_perm('documentos.puede_listar')
-        plantilla_puede_listar = request.user.has_perm('tabla.plantilla_puede_listar')
+        # ADMINISTRACIÓN
+        viajante_puede_listar = request.user.has_perm('administracion.viajante_puede_listar')
+        transporte_puede_listar = request.user.has_perm('administracion.transporte_puede_listar')
+        condiciondepago_puede_listar = request.user.has_perm('administracion.condiciondepago_puede_listar')
 
         # CONFIGURACIÓN
         mostrar_admin = False
@@ -27,17 +28,21 @@ def menu_processor(request):
         pais_puede_listar = request.user.has_perm('localidades.pais_puede_listar')
         provincia_puede_listar = request.user.has_perm('localidades.provincia_puede_listar')
         localidad_puede_listar = request.user.has_perm('localidades.localidad_puede_listar')
+        documento_puede_listar = request.user.has_perm('documentos.puede_listar')
+        plantilla_puede_listar = request.user.has_perm('tabla.plantilla_puede_listar')
 
-        grupo_soporte_mostrar = False
+        grupo_administracion_mostrar = False
         grupo_config_mostrar = False
 
-        if documento_puede_listar or plantilla_puede_listar:
-            grupo_soporte_mostrar = True
+        if viajante_puede_listar:
+            grupo_administracion_mostrar = True
 
-        if numerador_puede_listar or tabla_puede_listar or variable_puede_listar or mostrar_admin:
+        if numerador_puede_listar or tabla_puede_listar or variable_puede_listar or mostrar_admin or documento_puede_listar or plantilla_puede_listar:
             grupo_config_mostrar = True
 
         grupos = [
+                  {'id': 'ADM', 'descripcion': 'Administración',
+                   'mostrar': get_preferencia(usuario, 'menu', 'ADM', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'LOC', 'descripcion': 'Localidades',
                    'mostrar': get_preferencia(usuario, 'menu', 'LOC', 'L', False), 'visible': grupo_config_mostrar},
                   {'id': 'ADM', 'descripcion': 'Administración',
@@ -47,6 +52,12 @@ def menu_processor(request):
                   ]
 
         menues = [
+                  {'id_grupo': 'ADM', 'url': reverse('viajante_listar'), 'titulo': 'Viajante', 'modelo': 'VIAJANTE',
+                   'visible': viajante_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('transporte_listar'), 'titulo': 'Transporte',
+                   'modelo': 'TRANSPORTE', 'visible': transporte_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('condiciondepago_listar'), 'titulo': 'CondicionDePago',
+                   'modelo': 'CONDICIONDEPAGO', 'visible': condiciondepago_puede_listar},
                   {'id_grupo': 'CFN', 'url': '/admin/', 'titulo': 'Admin', 'modelo': 'GENERAL',
                    'visible': mostrar_admin},
                   {'id_grupo': 'CFN', 'url': reverse('documentos_listar'), 'titulo': 'Documentos',
