@@ -1,8 +1,11 @@
 from django.db import models
+
+from localidades.models import Localidad
 from tabla.listas import SINO
 from tabla.models import Tabla
 from capacitacion.settings import MEDIA_ROOT
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth.models import User
 
 
 class Departamento(models.Model):
@@ -11,7 +14,7 @@ class Departamento(models.Model):
     listas_precios = models.CharField(max_length=1, default="N", choices=SINO)
     utilidad_x_defecto = models.FloatField(null=True, blank=True, validators=[MaxValueValidator(100.0), MinValueValidator(0.0)], default=0.0)
     rubro = models.ForeignKey(Tabla, null=True, on_delete=models.DO_NOTHING, blank=True, related_name='RUBRO', limit_choices_to={'entidad': 'RUBRO'})
-    actualiza_costos = models.CharField(max_length=2, blank=True)
+    actualiza_costos = models.CharField(max_length=2, blank=True, null=True)
     imagen = models.ImageField(upload_to=MEDIA_ROOT, blank=True)
 
 
@@ -23,10 +26,7 @@ class Deposito(models.Model):
     domicilio = models.CharField(max_length=40, blank=True, null=True)
     telefono = models.CharField(max_length=40, verbose_name='Teléfono', blank=True, null=True)
     externo = models.CharField(max_length=1, default="N", choices=SINO)
-    # TODO localidad =  models.ForeignKey(Localidad) (aun no existe localidad)
-from tabla.models import Tabla
-from tabla.listas import SINO
-from django.contrib.auth.models import User
+    localidad = models.ForeignKey(Localidad, null=True, on_delete=models.DO_NOTHING, blank=True)
 
 
 class Viajante(models.Model):

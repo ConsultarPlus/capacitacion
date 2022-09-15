@@ -27,11 +27,12 @@
                 <tr>
                     <th>{% traducir 'codigo' 'DEPOSITO' %}</th>
                     <th>{% traducir 'descripcion' 'DEPOSITO' %}</th>
-                    <th>{% traducir 'afecta_stock' 'DEPOSITO' %}</th>
+                    <th>{% traducir 'afecta stock' 'DEPOSITO' %}</th>
                     <th>{% traducir 'activo' 'DEPOSITO' %}</th>
                     <th>{% traducir 'domicilio' 'DEPOSITO' %}</th>
                     <th>{% traducir 'telefono' 'DEPOSITO' %}</th>
                     <th>{% traducir 'externo' 'DEPOSITO' %}</th>
+                    <th>{% traducir 'localidad' 'DEPOSITO' %}</th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -53,6 +54,7 @@
                         {% autoescape off %}
                             <td> {{ deposito.externo | imagen_si_no }}</td>
                         {% endautoescape %}
+                        <td> {{ deposito.localidad }}</td>
                         <td></td>
                         <td>
                             <a href="{% url 'deposito_editar' deposito.id %}"

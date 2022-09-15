@@ -8,5 +8,5 @@ class DepartamentoAdmin(SimpleHistoryAdmin):
 
 
 class DepositoAdmin(SimpleHistoryAdmin):
-    list_display = ('id', 'codigo', 'descripcion', 'afecta_stock', 'activo', 'domicilio', 'telefono')
+    list_display = ('id', 'codigo', 'descripcion', 'afecta_stock', 'activo', 'domicilio', 'telefono', 'localidad')
     search_fields = list_display

@@ -6,18 +6,6 @@
     {% crispy filtros_form %}
 {% endif %}
 
-{% if expediente %}
-    {% if editable %}
-        <a href="{% url 'expediente_documento_agregar' expediente.id %}"
-           title="{% traducir 'Agregar' 'DOCUMENTO' %}"
-           class="addlink">{% traducir 'Documentos' 'DOCUMENTO' %}</a>
-    {% endif %}
-{% else %}
-<!--    <a href="{% url 'documento_agregar' %}"-->
-<!--       title="{% traducir 'Agregar' 'DOCUMENTO' %}"-->
-<!--       class="addlink">{% traducir 'Documentos' 'DOCUMENTO' %}</a>-->
-{% endif %}
-
 <div align="right">
     {% if seleccionar == 'True' %}
         <a href="#" class="btn btn-default" onclick="armar_seleccionados('{{ multiple }}')">{% traducir 'Seleccionar' 'DOCUMENTO' %}</a>

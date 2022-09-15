@@ -1,10 +1,6 @@
-from crispy_forms.utils import render_crispy_form
 from django.contrib import messages
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, permission_required
-from django.template.context_processors import csrf
-
 from localidades.filters import pais_filtrar, provincia_filtrar, localidad_filtrar
 from localidades.forms import PaisForm, ProvinciaForm, LocalidadForm
 from localidades.models import Pais, Provincia, Localidad

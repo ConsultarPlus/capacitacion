@@ -45,8 +45,6 @@ def menu_processor(request):
                    'mostrar': get_preferencia(usuario, 'menu', 'ADM', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'LOC', 'descripcion': 'Localidades',
                    'mostrar': get_preferencia(usuario, 'menu', 'LOC', 'L', False), 'visible': grupo_config_mostrar},
-                  {'id': 'ADM', 'descripcion': 'Administración',
-                   'mostrar': get_preferencia(usuario, 'menu', 'ADM', 'L', False), 'visible': grupo_config_mostrar},
                   {'id': 'CFN', 'descripcion': 'Configuración',
                    'mostrar': get_preferencia(usuario, 'menu', 'CFN', 'L', False), 'visible': grupo_config_mostrar},
                   ]

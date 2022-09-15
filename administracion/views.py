@@ -1,19 +1,14 @@
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
-from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required, permission_required
-from urllib.parse import urlencode
 from administracion.forms import DepartamentoForm, DepositoForm
 from administracion.models import Departamento, Deposito
 from .filters import departamento_filtrar, deposito_filtrar
-from tabla.funcs import custom_redirect
 from administracion.models import Viajante, Transporte, CondicionDePago
 from administracion.forms import ViajanteForm, TransporteForm, CondicionDePagoForm
-from administracion.filters import viajante_filtrar, transporte_filtrar, condiciondepago_filtrar
+from administracion.filters import viajante_filtrar, transporte_filtrar
+
 
 @login_required(login_url='ingresar')
 def departamento_listar(request):
@@ -35,6 +30,7 @@ def departamento_agregar(request):
 
     template_name = 'DepartamentoForm.html'
     contexto = {'form': form}
+    return render(request, template_name, contexto)
 
 
 @login_required(login_url='ingresar')
@@ -72,6 +68,7 @@ def departamento_editar(request, id):
 
     template_name = 'DepartamentoForm.html'
     contexto = {'form': form, 'Departamento': Departamento}
+    return render(request, template_name, contexto)
 
 
 @permission_required("administracion.viajante_editar", None, raise_exception=True)
@@ -107,6 +104,7 @@ def departamento_eliminar(request, id):
         mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
                   'otros registros. Otra opción es desactivarlo.'
         messages.add_message(request, messages.ERROR, mensaje)
+    return redirect(url)
 
 
 @permission_required("administracion.viajante_agregar", None, raise_exception=True)
@@ -137,7 +135,6 @@ def viajante_eliminar(request, id):
         mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
                   'otros registros. Otra opción es desactivarlo'
         messages.add_message(request, messages.ERROR, mensaje)
-
     return redirect(url)
 
 
@@ -145,6 +142,9 @@ def viajante_eliminar(request, id):
 def deposito_listar(request):
     contexto = deposito_filtrar(request)
     template_name = "deposito_listar.html"
+    return render(request, template_name, contexto)
+
+
 @permission_required("administracion.transporte_puede_listar", None, raise_exception=True)
 def transporte_listar(request):
     contexto = transporte_filtrar(request)
@@ -172,6 +172,8 @@ def deposito_agregar(request):
 
     template_name = 'DepositoForm.html'
     contexto = {'form': form}
+
+    return render(request, template_name, contexto)
 
 
 @permission_required("administracion.transporte_editar", None, raise_exception=True)
@@ -263,6 +265,7 @@ def deposito_editar(request, id):
 
     template_name = 'DepositoForm.html'
     contexto = {'form': form, 'Deposito': Deposito}
+    return render(request, template_name, contexto)
 
 
 @permission_required("administracion.condiciondepago_editar", None, raise_exception=True)
@@ -294,7 +297,11 @@ def deposito_eliminar(request, id):
     try:
         deposito = Deposito.objects.get(id=id)
         deposito.delete()
-
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo.'
+        messages.add_message(request, messages.ERROR, mensaje)
+    return redirect(url)
 
 @permission_required("administracion.condiciondepago_agregar", None, raise_exception=True)
 def condiciondepago_agregar(request):

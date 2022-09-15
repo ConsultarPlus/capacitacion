@@ -82,6 +82,7 @@
                 <td> {{ tabla.activo|imagen_si_no }} </td>
                 {% endautoescape %}
                 <td></td>
+                <td></td>
                 <td><a href="{% url 'tabla_editar' tabla.id %}?next={{ request.path }}?{{ url_filtros }} "
                        title="{% traducir 'Editar' 'TABLA' %}"
                        class="changelink" ></a></td>

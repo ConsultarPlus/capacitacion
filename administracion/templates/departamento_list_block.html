@@ -47,11 +47,13 @@
                             <td> {{ departamento.listas_precios | imagen_si_no }}</td>
                         {% endautoescape %}
                         <td> {{ departamento.utilidad_x_defecto }}%</td>
-                        <td> {{ departamento.rubro }}</td>
-                        <td> {{ departamento.actualiza_costos }}</td>
+                        <td> {{ departamento.rubro | limpiar_none }}</td>
+                        <td> {{ departamento.actualiza_costos | limpiar_none }}</td>
                         <td>
                             {% if departamento.imagen %}
                             <img src="{{ departamento.imagen.url }}" width="196" height="128"/>
+                            {% else %}
+                            --
                             {% endif %}
                         </td>
                         <td></td>

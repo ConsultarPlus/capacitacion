@@ -1,14 +1,12 @@
-from django.db.models import Q
-from django.db.models import Sum
 from administracion.models import Viajante, Transporte, CondicionDePago
-from tabla.filters import paginador
-from tabla.funcs import es_valido, normaliza_fechas
-from perfiles.funcs import get_opcion_paginado, get_preferencia
+from tabla.funcs import es_valido
+from perfiles.funcs import get_opcion_paginado
 from tabla.forms import FiltroSimple, FiltroSimpleMasActivos
 from administracion.forms import FiltroDepartamentos, FiltroDepositos
 from .models import Departamento, Deposito
 from tabla.filters import paginador
 from django.db.models import Q
+
 
 def viajante_filtrar(query_dict):
     buscar = query_dict.GET.get('buscar')
@@ -84,6 +82,10 @@ def deposito_filtrar(query_dict):
 
     form = FiltroDepositos(initial={'buscar': buscar,
                                     'items': items})
+    return {'filter': filtrado,
+            'paginado': paginado,
+            'registros': registros,
+            'filtros_form': form}
 
 
 def transporte_filtrar(query_dict):

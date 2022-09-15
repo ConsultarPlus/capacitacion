@@ -1,12 +1,13 @@
-from crispy_forms.bootstrap import FieldWithButtons
-from tabla.funcs import boton_buscar
-from tabla.listas import ITEMS_X_PAG
-from tabla.widgets import SelectLiveSearchInput
-from tabla.gets import get_choices_mas_vacio
 from .models import Departamento, Deposito
 from django import forms
+from administracion.models import Viajante, Transporte, CondicionDePago
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Button, ButtonHolder, HTML
+from crispy_forms.bootstrap import FieldWithButtons
+from tabla.widgets import SelectLiveSearchInput
+from tabla.funcs import boton_buscar
+from tabla.gets import get_choices_mas_vacio
+from tabla.listas import ITEMS_X_PAG, ACTIVO, PERIODO
 
 
 class FiltroDepartamentos(forms.Form):
@@ -49,22 +50,6 @@ class DepartamentoForm(forms.ModelForm):
 
     class Meta:
         model = Departamento
-from django import forms
-from administracion.models import Viajante, Transporte, CondicionDePago
-from django.urls import reverse
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column, Button, ButtonHolder, HTML
-from crispy_forms.bootstrap import FieldWithButtons
-from tabla.widgets import SelectLiveSearchInput
-from tabla.funcs import boton_buscar
-from tabla.gets import get_choices, get_choices_mas_vacio
-from tabla.listas import MODELOS, ITEMS_X_PAG, SINO, ACTIVO, PERIODO
-
-
-class ViajanteForm(forms.ModelForm):
-
-    class Meta:
-        model = Viajante
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -142,6 +127,7 @@ class DepositoForm(forms.ModelForm):
             Row(
                 Column('domicilio', css_class='form-group col-md-3 mb-0'),
                 Column('telefono', css_class='form-group col-md-6 mb-0'),
+                Column('localidad', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             ButtonHolder(
@@ -218,7 +204,8 @@ class TransporteForm(forms.ModelForm):
         self.fields['importe_minimo'].label = 'Importe Mínimo'
         self.fields['porcentaje_valor_carga'].label = 'Porcentaje de Valor de Carga'
         self.helper.form_id = 'id_form'
-        self.helper.layout = Layout(            Row(
+        self.helper.layout = Layout(
+            Row(
                 Column('nombre', css_class='form-group col-md-3 mb-0'),
                 Column('cuit', css_class='form-group col-md-2 mb-0'),
                 Column('localidad', css_class='form-group col-md-3 mb-0'),
