@@ -1,0 +1,79 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+{% if request.GET.modo == 's' or request.GET.modo == 'm' %}
+{% include "cabeza.html" %}
+<div id="content" class="{% block coltype %}colM{% endblock %}">
+    {% endif %}
+
+    <h1>Moneda</h1>
+    {% if filtros_form %}
+    {% crispy filtros_form %}
+    {% endif %}
+
+    <div class="form-row form-row">
+        <div class="col form-group">
+            <table>
+                <tr class="model-group">
+                    <th><a href="{% url 'moneda_agregar' %}?modo={{ request.GET.modo }}"
+                           class="addlink">{% traducir 'Agregar' 'moneda' %}</a>
+                    </th>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br>
+
+
+    <div align="right">
+        {% if request.GET.seleccionar == 'True' %}
+        <a href="#" class="btn btn-default" onclick="armar_seleccionados('{{ request.GET.multiple }}')">Seleccionar</a>
+        {% endif %}
+    </div>
+
+  <div style=" overflow-x:auto;">
+        <br>
+        <table id="tab">
+            <thead>
+            <tr>
+                {% if request.GET.seleccionar == 'True' %}
+                    {% if request.GET.multiple == 'True' %}
+                        <th><input type="checkbox" onchange="marcar_todo(this)" name="chk[]"/></th>
+                    {% else %}
+                        <th></th>
+                    {% endif %}
+                {% endif %}
+                <th>Descripción</th>
+                <th>Símbolo</th>
+                <th>Tipo</th>
+                <th>Siap</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in paginado %}
+              <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                <td>{{ item.descripcion }}</td>
+                <td>{{ item.simbolo }}</td>
+                <td>{{ item.tipo }}</td>
+                <td>{{ item.siap }}</td>
+                <td><a href="{% url 'moneda_editar' item.id %}" class="changelink">Editar</a></td>
+                <td><a href="{% url 'moneda_eliminar' item.id %}" class="deletelink">Eliminar</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        {% include "paginador.html" %}
+    </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    {% if request.GET.multiple == 'True' %}
+        <script src="{% static "js/marcar_todo.js" %} " ></script>
+    {% endif %}
+    {% if request.GET.seleccionar == 'True' %}
+        <script src="{% static " js/armar_seleccionados.js" %} " ></script>
+    {% endif %}
+</div>

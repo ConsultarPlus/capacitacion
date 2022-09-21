@@ -1,13 +1,13 @@
-from .models import Departamento, Deposito
 from django import forms
-from administracion.models import Viajante, Transporte, CondicionDePago
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Button, ButtonHolder, HTML
 from crispy_forms.bootstrap import FieldWithButtons
 from tabla.widgets import SelectLiveSearchInput
 from tabla.funcs import boton_buscar
+from tabla.listas import MODELOS, ITEMS_X_PAG, SINO, ACTIVO, PERIODO, CAJA, TIPO
 from tabla.gets import get_choices_mas_vacio
 from tabla.listas import ITEMS_X_PAG, ACTIVO, PERIODO
+from administracion.models import Viajante, Transporte, CondicionDePago, MedioDePago, Moneda,Departamento, Deposito
 
 
 class FiltroDepartamentos(forms.Form):
@@ -99,43 +99,6 @@ class FiltroDepositos(forms.Form):
                 FieldWithButtons('items', boton_buscar(), css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             ))
-
-
-class DepositoForm(forms.ModelForm):
-
-    class Meta:
-        model = Deposito
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.helper = FormHelper()
-        self.helper.form_id = 'id_form'
-        self.helper.layout = Layout(
-            Row(
-                Column('codigo', css_class='form-group col-md-3 mb-0'),
-                Column('descripcion', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('afecta_stock', css_class='form-group col-md-3 mb-0'),
-                Column('activo', css_class='form-group col-md-6 mb-0'),
-                Column('externo', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('domicilio', css_class='form-group col-md-3 mb-0'),
-                Column('telefono', css_class='form-group col-md-6 mb-0'),
-                Column('localidad', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
-            ),
-            ButtonHolder(
-                HTML("""<br>"""),
-                Submit('submit', 'Grabar'),
-                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
-            )
-        )
 
 
 class ViajanteForm(forms.ModelForm):
@@ -251,17 +214,172 @@ class CondicionDePagoForm(forms.ModelForm):
         self.helper.form_id = 'id_form'
         self.helper.layout = Layout(
             Row(
-                Column('descripcion', css_class='form-group col-md-8 mb-0'),
+                Column('descripcion', css_class='form-group col-md-5 mb-0'),
+                Column('activo', css_class='form-group col-md-2 mb-0'),
+
             ),
             Row(
-                Column('porcentaje', css_class='form-group col-md-2 mb-0'),
                 Column('cuotas', css_class='form-group col-md-2 mb-0'),
+            ),
+            Row(
                 Column('dia_vencimiento', css_class='form-group col-md-2 mb-0'),
             ),
             Row(
                 Column('periodo_cantidad', css_class='form-group col-md-3 mb-0'),
+            ),
+            Row(
                 Column('periodo', css_class='form-group col-md-3 mb-0'),
-                Column('activo', css_class='form-group col-md-1 mb-0'),
+
+            ),
+            Row(
+                Column('porcentaje', css_class='form-group col-md-2 mb-0'),
+            ),
+            ButtonHolder(
+                Submit('submit', 'Grabar'),
+                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
+            )
+        )
+
+
+class DepositoForm(forms.ModelForm):
+
+    class Meta:
+        model = Deposito
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.fields['codigo'].label = 'Código'
+        self.fields['descripcion'].label = 'Descripción'
+        self.fields['domicilio'].label = 'Domicilio'
+        self.fields['telefono'].label = 'Teléfono'
+        self.fields['activo'].widget = SelectLiveSearchInput(choices=ACTIVO)
+        self.fields['afecta_stock'].widget = SelectLiveSearchInput(choices=SINO)
+        self.fields['externo'].widget = SelectLiveSearchInput(choices=SINO)
+        self.helper.form_id = 'id_form'
+        self.helper.layout = Layout(Row(
+                Column('codigo', css_class='form-group col-md-3 mb-0'),
+                Column('activo', css_class='form-group col-md-2 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('descripcion', css_class='form-group col-md-5 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('domicilio', css_class='form-group col-md-3 mb-0'),
+                Column('afecta_stock', css_class='form-group col-md-2 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+            Column('telefono', css_class='form-group col-md-3 mb-0'),
+            Column('externo', css_class='form-group col-md-2 mb-0'),
+            css_class='form-row'
+            ),
+            Row(
+                Column('localidad', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Grabar'),
+                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
+            )
+        )
+
+
+def get_monedas():
+    monedas = Moneda.objects.all().values('id','simbolo')
+    choices = [(mon['id'], mon['simbolo']) for mon in monedas]
+    choices.insert(0, ('', '-----'))
+    return choices
+
+
+class MedioDePagoForm(forms.ModelForm):
+    class Meta:
+        model = MedioDePago
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.fields['codigo'].label = 'Código'
+        self.fields['descripcion'].label = 'Descripción'
+        self.fields['cuenta_contable'].label = 'Cuenta Contable'
+        self.fields['cobro'].widget = SelectLiveSearchInput(choices=SINO)
+        self.fields['pago'].widget = SelectLiveSearchInput(choices=SINO)
+        self.fields['deposito'].widget = SelectLiveSearchInput(choices=SINO)
+        self.fields['pide_moneda'].widget = SelectLiveSearchInput(choices=SINO)
+        self.fields['pide_cuenta_bancaria'].widget = SelectLiveSearchInput(choices=SINO)
+        self.fields['caja'].widget = SelectLiveSearchInput(choices=CAJA)
+        self.fields['observacion'].widget = SelectLiveSearchInput(choices=SINO)
+        self.fields['incluir_ff'].widget = SelectLiveSearchInput(choices=SINO)
+        self.fields['moneda'].widget = SelectLiveSearchInput(choices=get_monedas())
+        self.helper.form_id = 'id_form'
+        self.helper.layout = Layout(Row(
+                Column('codigo', css_class='form-group col-md-3 mb-0'),
+                Column('cobro', css_class='form-group col-md-2 mb-0'),
+                Column('pago', css_class='form-group col-md-2 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('descripcion', css_class='form-group col-md-5 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('cuenta_contable', css_class='form-group col-md-3 mb-0'),
+                Column('deposito', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('pide_moneda', css_class='form-group col-md-2 mb-0'),
+                Column('pide_cuenta_bancaria', css_class='form-group col-md-3 mb-0'),
+                Column('caja', css_class='form-group col-md-3 mb-0'),
+            ),
+            Row(
+                Column('observacion', css_class='form-group col-md-3 mb-0'),
+                Column('incluir_ff', css_class='form-group col-md-3 mb-0'),
+                Column('moneda', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Grabar'),
+                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
+            )
+        )
+
+
+class MonedaForm(forms.ModelForm):
+
+    class Meta:
+        model = Moneda
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.fields['descripcion'].label = 'Descripción'
+        self.fields['simbolo'].label = 'Símbolo'
+        self.fields['tipo'].widget = SelectLiveSearchInput(choices=TIPO)
+        self.fields['siap'].label = 'Siap'
+
+        self.helper.form_id = 'id_form'
+        self.helper.layout = Layout(Row(
+                Column('descripcion', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('simbolo', css_class='form-group col-md-3 mb-0'),
+
+            ),
+            Row(
+                Column('tipo', css_class='form-group col-md-3 mb-0'),
+
+            ),
+            Row(
+                Column('siap', css_class='form-group col-md-3 mb-0'),
+
+                css_class='form-row'
             ),
             ButtonHolder(
                 Submit('submit', 'Grabar'),

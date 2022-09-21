@@ -311,7 +311,7 @@ class FiltroSimpleMasActivos(forms.Form):
         self.helper.layout = Layout(
             Row(
                 Column('buscar', css_class='form-group col-md-3 mb-0 '),
-                Column('activos', css_class='form-group col-md-1 mb-0 '),
+                Column('activos', css_class='form-group col-md-2 mb-0 '),
                 FieldWithButtons('items', boton_buscar(), css_class='form-group col-md-2 mb-0'),
             ),
             'modo',
