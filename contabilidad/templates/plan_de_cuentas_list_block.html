@@ -1,0 +1,112 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+{% if filtros_form %}
+    <h1>Planes de Cuentas</h1>
+    {% crispy filtros_form %}
+{% endif %}
+<br>
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tc class="model-group">
+                <th>
+                    <a href="{% url 'plan_de_cuentas_agregar' %}" class="addlink">
+                    {% traducir 'Plan de cuentas' 'PLAN_DE_CUENTAS' %}
+                    </a>
+                </th>
+            </tc>
+        </table>
+        <table>
+            <tc class="model-group">
+                <th>
+                {% traducir 'Editar variables: ' 'PLAN_DE_CUENTAS' %}
+                </th>
+            </tc>
+            <tc class="model-group">
+                <th>
+                    <a href="{% url 'variable_editar' 'V_N1' %}" class="changelink">
+                    {% traducir 'V_N1' 'PLAN_DE_CUENTAS' %}
+                    </a>
+                </th>
+            </tc>
+            <tc class="model-group">
+                <th>
+                    <a href="{% url 'variable_editar' 'V_N2' %}" class="changelink">
+                    {% traducir 'V_N2' 'PLAN_DE_CUENTAS' %}
+                    </a>
+                </th>
+            </tc>
+            <tc class="model-group">
+                <th>
+                    <a href="{% url 'variable_editar' 'V_N3' %}" class="changelink">
+                    {% traducir 'V_N3' 'PLAN_DE_CUENTAS' %}
+                    </a>
+                </th>
+            </tc>
+            <tc class="model-group">
+                <th>
+                    <a href="{% url 'variable_editar' 'V_N4' %}" class="changelink">
+                    {% traducir 'V_N4' 'PLAN_DE_CUENTAS' %}
+                    </a>
+                </th>
+            </tc>
+            <tc class="model-group">
+                <th>
+                    <a href="{% url 'variable_editar' 'V_N5' %}" class="changelink">
+                    {% traducir 'V_N5' 'PLAN_DE_CUENTAS' %}
+                    </a>
+                </th>
+            </tc>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'Cuenta contable' 'PLAN_DE_CUENTAS' %}</th>
+                    <th>{% traducir 'Descripcion' 'PLAN_DE_CUENTAS' %}</th>
+                    <th>{% traducir 'Desglosable' 'PLAN_DE_CUENTAS' %}</th>
+                    <th>{% traducir 'Monetaria' 'PLAN_DE_CUENTAS' %}</th>
+                    <th>{% traducir 'Observacion' 'PLAN_DE_CUENTAS' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plan_de_cuentas in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ plan_de_cuentas.cuenta_contable }}</td>
+                        <td> {{ plan_de_cuentas.descripcion | limpiar_none }}</td>
+                        {% autoescape off %}
+                            <td> {{ plan_de_cuentas.desglosable | imagen_si_no }}</td>
+                        {% endautoescape %}
+                        {% autoescape off %}
+                            <td> {{ plan_de_cuentas.monetaria | imagen_si_no }}</td>
+                        {% endautoescape %}
+                        <td> {{ plan_de_cuentas.observacion | limpiar_none }}</td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'plan_de_cuentas_editar' plan_de_cuentas.id %}"
+                               title="{% traducir 'Editar' 'PLAN_DE_CUENTAS' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'PLAN_DE_CUENTAS' %}"
+                               onclick="return confirmarAccion('{% url 'plan_de_cuentas_eliminar' plan_de_cuentas.id %}',
+                               '¿Eliminar plan de cuentas?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>

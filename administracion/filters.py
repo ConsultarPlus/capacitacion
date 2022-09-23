@@ -8,36 +8,6 @@ from tabla.filters import paginador
 from django.db.models import Q
 
 
-def viajante_filtrar(query_dict):
-    buscar = query_dict.GET.get('buscar')
-    items = get_opcion_paginado(query_dict)
-    modo = query_dict.GET.get('modo')
-    filtrado = Viajante.objects.all()
-    activos = query_dict.GET.get('activos')
-
-    if buscar != '' and buscar is not None:
-        filtrado = filtrado.filter(Q(codigo__icontains=buscar) |
-                                   Q(nombre__icontains=buscar)
-                                   )
-    if activos is None:
-        activos = 'S'
-    if es_valido(activos):
-        if activos == 'S':
-            filtrado = filtrado.filter(activo='S')
-
-    registros = filtrado.count()
-    paginado = paginador(query_dict, filtrado)
-
-    form = FiltroSimpleMasActivos(initial={'buscar': buscar,
-                                           'activos': activos,
-                                           'items': items,
-                                           'modo': modo})
-    return {'filter': filtrado,
-            'viajante': paginado,
-            'registros': registros,
-            'filtros_form': form}
-
-
 def departamento_filtrar(query_dict):
     items = query_dict.GET.get('items')
     id_rubro = query_dict.GET.get('seleccionar_rubro')
@@ -84,6 +54,36 @@ def deposito_filtrar(query_dict):
                                     'items': items})
     return {'filter': filtrado,
             'paginado': paginado,
+            'registros': registros,
+            'filtros_form': form}
+
+
+def viajante_filtrar(query_dict):
+    buscar = query_dict.GET.get('buscar')
+    items = get_opcion_paginado(query_dict)
+    modo = query_dict.GET.get('modo')
+    filtrado = Viajante.objects.all()
+    activos = query_dict.GET.get('activos')
+
+    if buscar != '' and buscar is not None:
+        filtrado = filtrado.filter(Q(codigo__icontains=buscar) |
+                                   Q(nombre__icontains=buscar)
+                                   )
+    if activos is None:
+        activos = 'S'
+    if es_valido(activos):
+        if activos == 'S':
+            filtrado = filtrado.filter(activo='S')
+
+    registros = filtrado.count()
+    paginado = paginador(query_dict, filtrado)
+
+    form = FiltroSimpleMasActivos(initial={'buscar': buscar,
+                                           'activos': activos,
+                                           'items': items,
+                                           'modo': modo})
+    return {'filter': filtrado,
+            'viajante': paginado,
             'registros': registros,
             'filtros_form': form}
 

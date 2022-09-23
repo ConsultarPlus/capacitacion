@@ -60,6 +60,21 @@ function sortTable(nCol) {
                 }
             }
 
+            // orden personalizado para columna con header "cuenta contable"
+            var titulo = rows[0].getElementsByTagName("TH")[nCol]
+            if(titulo.innerText.toLocaleLowerCase() == "cuenta contable"){          // verifica el header
+                var x_val_split = String(x_val).split(".");      // parsea el valor x a una lista
+                x_val = 0;
+                for (let i = 0; i < x_val_split.length; i++) {      // loopea por todos los numeros de la lista
+                  x_val += (1/(10**i))*x_val_split[i];              // suma el numero dividido por 10^i
+                }
+                var y_val_split = String(y_val).split(".");      //repite para el valor y
+                y_val = 0;
+                for (let i = 0; i < y_val_split.length; i++) {
+                  y_val += (1/(10**i))*y_val_split[i];
+                }
+            }
+
             if (orden == "AZ"){
                 if (x_val > y_val) {
                     //if so, mark as a switch and break the loop:
@@ -68,9 +83,9 @@ function sortTable(nCol) {
                 }
             } else {
                 if (x_val < y_val) {
-                //if so, mark as a switch and break the loop:
-                shouldSwitch = true;
-                break;
+                    //if so, mark as a switch and break the loop:
+                    shouldSwitch = true;
+                    break;
                 }
             }
         }

@@ -34,21 +34,6 @@ def departamento_agregar(request):
 
 
 @login_required(login_url='ingresar')
-@permission_required("administracion.viajante_puede_listar", None, raise_exception=True)
-def viajante_listar(request):
-    contexto = viajante_filtrar(request)
-    modo = request.GET.get('modo')
-    contexto['modo'] = modo
-
-    if modo == 'm' or modo == 's':
-        template_name = 'viajante_list_block.html'
-    else:
-        template_name = 'viajante_listar.html'
-
-    return render(request, template_name, contexto)
-
-
-@login_required(login_url='ingresar')
 @permission_required("administracion.departamento_editar", None, raise_exception=True)
 def departamento_editar(request, id):
     try:
@@ -68,6 +53,35 @@ def departamento_editar(request, id):
 
     template_name = 'DepartamentoForm.html'
     contexto = {'form': form, 'Departamento': Departamento}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.departamento_eliminar", None, raise_exception=True)
+def departamento_eliminar(request, id):
+    url = 'departamento_listar'
+    try:
+        departamento = Departamento.objects.get(id=id)
+        departamento.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo.'
+        messages.add_message(request, messages.ERROR, mensaje)
+    return redirect(url)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.viajante_puede_listar", None, raise_exception=True)
+def viajante_listar(request):
+    contexto = viajante_filtrar(request)
+    modo = request.GET.get('modo')
+    contexto['modo'] = modo
+
+    if modo == 'm' or modo == 's':
+        template_name = 'viajante_list_block.html'
+    else:
+        template_name = 'viajante_listar.html'
+
     return render(request, template_name, contexto)
 
 
@@ -92,19 +106,6 @@ def viajante_editar(request, id):
     contexto = {'form': form, 'viajante': viajante}
     return render(request, template_name, contexto)
 
-
-@login_required(login_url='ingresar')
-@permission_required("administracion.departamento_eliminar", None, raise_exception=True)
-def departamento_eliminar(request, id):
-    url = 'departamento_listar'
-    try:
-        departamento = Departamento.objects.get(id=id)
-        departamento.delete()
-    except Exception as e:
-        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
-                  'otros registros. Otra opción es desactivarlo.'
-        messages.add_message(request, messages.ERROR, mensaje)
-    return redirect(url)
 
 
 @permission_required("administracion.viajante_agregar", None, raise_exception=True)

@@ -30,6 +30,7 @@ def menu_processor(request):
         localidad_puede_listar = request.user.has_perm('localidades.localidad_puede_listar')
         documento_puede_listar = request.user.has_perm('documentos.puede_listar')
         plantilla_puede_listar = request.user.has_perm('tabla.plantilla_puede_listar')
+        plan_de_cuentas_puede_listar = request.user.has_perm('contabilidad.plan_de_cuentas_puede_listar')
 
         grupo_administracion_mostrar = False
         grupo_config_mostrar = False
@@ -45,6 +46,8 @@ def menu_processor(request):
                    'mostrar': get_preferencia(usuario, 'menu', 'ADM', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'LOC', 'descripcion': 'Localidades',
                    'mostrar': get_preferencia(usuario, 'menu', 'LOC', 'L', False), 'visible': grupo_config_mostrar},
+                  {'id': 'CBL', 'descripcion': 'Contabilidad',
+                   'mostrar': get_preferencia(usuario, 'menu', 'CBL', 'L', False), 'visible': grupo_config_mostrar},
                   {'id': 'CFN', 'descripcion': 'Configuración',
                    'mostrar': get_preferencia(usuario, 'menu', 'CFN', 'L', False), 'visible': grupo_config_mostrar},
                   ]
@@ -79,6 +82,8 @@ def menu_processor(request):
                    'modelo': 'PROVINCIAS', 'visible': provincia_puede_listar},
                   {'id_grupo': 'LOC', 'url': reverse('localidad_listar'), 'titulo': 'Localidades',
                    'modelo': 'LOCALIDAD', 'visible': localidad_puede_listar},
+                  {'id_grupo': 'CBL', 'url': reverse('plan_de_cuentas_listar'), 'titulo': 'Planes de cuentas',
+                   'modelo': 'PLAN_DE_CUENTAS', 'visible': plan_de_cuentas_puede_listar},
                   ]
 
         for menu in menues:
