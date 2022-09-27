@@ -59,7 +59,6 @@ def localidad_filtrar(query_dict):
     buscar = query_dict.GET.get('buscar')
     pais = query_dict.GET.get('pais')
     provincia = query_dict.GET.get('provincia')
-    print('provincia', provincia)
     items = query_dict.GET.get('items')
 
     filtrado = Localidad.objects.all()

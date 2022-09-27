@@ -63,11 +63,11 @@ class PlanDeCuentasForm(forms.ModelForm):
             ),
             Row(
                 Column('desglosable', css_class='form-group col-md-3 mb-0'),
-                Column('monetaria', css_class='form-group col-md-6 mb-0'),
+                Column('monetaria', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('observacion', css_class='form-group col-md-3 mb-0'),
+                Column('observacion', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             ButtonHolder(

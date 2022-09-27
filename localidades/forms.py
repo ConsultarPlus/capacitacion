@@ -110,10 +110,16 @@ class ProvinciaForm(forms.ModelForm):
             Row(
                 Column('codigo', css_class='form-group col-md-3 mb-0'),
                 Column('descripcion', css_class='form-group col-md-6 mb-0'),
-                Column('pais', css_class='form-group col-md-6 mb-0'),
-                Column('cuenta_contable', css_class='form-group col-md-3 mb-0'),
-                Column('inscripto_ib', css_class='form-group col-md-6 mb-0'),
-                Column('vencimiento_inscripcion', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('pais', css_class='form-group col-md-3 mb-0'),
+                Column('cuenta_contable', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('inscripto_ib', css_class='form-group col-md-3 mb-0'),
+                Column('vencimiento_inscripcion', css_class='form-group col-md-3 mb-0'),
                 Column('alicuota', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
@@ -172,6 +178,8 @@ class FiltroLocalidad(forms.Form):
 
 class LocalidadForm(forms.ModelForm):
 
+    pais = forms.ModelChoiceField(queryset=Pais.objects.all(), required=False)
+
     class Meta:
         model = Localidad
         fields = '__all__'
@@ -184,10 +192,13 @@ class LocalidadForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column('codigo_postal', css_class='form-group col-md-3 mb-0'),
-                Column('descripcion', css_class='form-group col-md-6 mb-0'),
-                Column('caracteristica_telefonica', css_class='form-group col-md-6 mb-0'),
-                Column('provincia', css_class='form-group col-md-3 mb-0'),
+                Column('descripcion', css_class='form-group col-md-4 mb-0'),
+                Column('caracteristica_telefonica', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
+            ),
+            Row(
+                Column('pais', css_class='form-group col-md-3 mb-0'),
+                Column('provincia', css_class='form-group col-md-3 mb-0')
             ),
             ButtonHolder(
                 Submit('submit', 'Grabar'),

@@ -61,11 +61,17 @@ class DepartamentoForm(forms.ModelForm):
             Row(
                 Column('codigo', css_class='form-group col-md-3 mb-0'),
                 Column('descripcion', css_class='form-group col-md-6 mb-0'),
-                Column('listas_precios', css_class='form-group col-md-6 mb-0'),
-                Column('utilidad_x_defecto', css_class='form-group col-md-6 mb-0'),
-                Column('rubro', css_class='form-group col-md-6 mb-0'),
-                Column('actualiza_costos', css_class='form-group col-md-6 mb-0'),
-                Column('imagen', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('utilidad_x_defecto', css_class='form-group col-md-3 mb-0'),
+                Column('listas_precios', css_class='form-group col-md-3 mb-0'),
+                Column('rubro', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('actualiza_costos', css_class='form-group col-md-5 mb-0'),
+                Column('imagen', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             ButtonHolder(
@@ -99,6 +105,43 @@ class FiltroDepositos(forms.Form):
                 FieldWithButtons('items', boton_buscar(), css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             ))
+
+
+class DepositoForm(forms.ModelForm):
+
+    class Meta:
+        model = Deposito
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'id_form'
+        self.helper.layout = Layout(
+            Row(
+                Column('codigo', css_class='form-group col-md-3 mb-0'),
+                Column('descripcion', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('afecta_stock', css_class='form-group col-md-3 mb-0'),
+                Column('activo', css_class='form-group col-md-3 mb-0'),
+                Column('externo', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('domicilio', css_class='form-group col-md-3 mb-0'),
+                Column('telefono', css_class='form-group col-md-3 mb-0'),
+                Column('localidad', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            ButtonHolder(
+                HTML("""<br>"""),
+                Submit('submit', 'Grabar'),
+                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
+            )
+        )
 
 
 class ViajanteForm(forms.ModelForm):
