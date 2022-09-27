@@ -1,3 +1,16 @@
+TIPO = (
+    ('MB', 'Moneda Base'),
+    ('CO', 'Cotización'),
+)
+
+
+CAJA = (
+    ('N', 'No Mostrar'),
+    ('M', 'Mostrar'),
+    ('A', 'Mostrar Y Arquear'),
+)
+
+
 PERIODO = (
     ('D', 'Dias'),
     ('S', 'Semanas'),

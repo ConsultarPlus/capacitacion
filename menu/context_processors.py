@@ -15,6 +15,9 @@ def menu_processor(request):
         viajante_puede_listar = request.user.has_perm('administracion.viajante_puede_listar')
         transporte_puede_listar = request.user.has_perm('administracion.transporte_puede_listar')
         condiciondepago_puede_listar = request.user.has_perm('administracion.condiciondepago_puede_listar')
+        deposito_puede_listar = request.user.has_perm('administracion.deposito_puede_listar')
+        mediodepago_puede_listar = request.user.has_perm('administracion.mediodepago_puede_listar')
+        moneda_puede_listar = request.user.has_perm('administracion.moneda_puede_listar')
 
         # CONFIGURACIÓN
         mostrar_admin = False
@@ -53,12 +56,18 @@ def menu_processor(request):
                   ]
 
         menues = [
-                  {'id_grupo': 'ADM', 'url': reverse('viajante_listar'), 'titulo': 'Viajante', 'modelo': 'VIAJANTE',
+                  {'id_grupo': 'ADM', 'url': reverse('viajante_listar'), 'titulo': 'Viajantes', 'modelo': 'VIAJANTE',
                    'visible': viajante_puede_listar},
-                  {'id_grupo': 'ADM', 'url': reverse('transporte_listar'), 'titulo': 'Transporte',
+                  {'id_grupo': 'ADM', 'url': reverse('transporte_listar'), 'titulo': 'Transportes',
                    'modelo': 'TRANSPORTE', 'visible': transporte_puede_listar},
-                  {'id_grupo': 'ADM', 'url': reverse('condiciondepago_listar'), 'titulo': 'CondicionDePago',
+                  {'id_grupo': 'ADM', 'url': reverse('condiciondepago_listar'), 'titulo': 'Condiciónes De Pagos',
                    'modelo': 'CONDICIONDEPAGO', 'visible': condiciondepago_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('deposito_listar'), 'titulo': 'Depósitos',
+                   'modelo': 'DEPOSITO', 'visible': deposito_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('mediodepago_listar'), 'titulo': 'Medios De Pago',
+                   'modelo': 'MEDIODEPAGO', 'visible': mediodepago_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('moneda_listar'), 'titulo': 'Monedas',
+                   'modelo': 'MONEDA', 'visible': moneda_puede_listar},
                   {'id_grupo': 'CFN', 'url': '/admin/', 'titulo': 'Admin', 'modelo': 'GENERAL',
                    'visible': mostrar_admin},
                   {'id_grupo': 'CFN', 'url': reverse('documentos_listar'), 'titulo': 'Documentos',

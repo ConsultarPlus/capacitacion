@@ -2,12 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
-from administracion.forms import DepartamentoForm, DepositoForm
-from administracion.models import Departamento, Deposito
-from .filters import departamento_filtrar, deposito_filtrar
-from administracion.models import Viajante, Transporte, CondicionDePago
-from administracion.forms import ViajanteForm, TransporteForm, CondicionDePagoForm
-from administracion.filters import viajante_filtrar, transporte_filtrar
+from administracion.models import Viajante, Transporte, CondicionDePago, Deposito, MedioDePago, Moneda, Departamento
+from administracion.forms import ViajanteForm, TransporteForm, CondicionDePagoForm, DepartamentoForm, DepositoForm, MedioDePagoForm, MonedaForm
+from administracion.filters import viajante_filtrar, transporte_filtrar, condiciondepago_filtrar, deposito_filtrar, mediodepago_filtrar, moneda_filtrar, departamento_filtrar
 
 
 @login_required(login_url='ingresar')
@@ -136,16 +133,11 @@ def viajante_eliminar(request, id):
         mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
                   'otros registros. Otra opción es desactivarlo'
         messages.add_message(request, messages.ERROR, mensaje)
+
     return redirect(url)
 
 
 @login_required(login_url='ingresar')
-def deposito_listar(request):
-    contexto = deposito_filtrar(request)
-    template_name = "deposito_listar.html"
-    return render(request, template_name, contexto)
-
-
 @permission_required("administracion.transporte_puede_listar", None, raise_exception=True)
 def transporte_listar(request):
     contexto = transporte_filtrar(request)
@@ -156,23 +148,6 @@ def transporte_listar(request):
         template_name = 'transporte_list_block.html'
     else:
         template_name = 'transporte_listar.html'
-
-    return render(request, template_name, contexto)
-
-
-@login_required(login_url='ingresar')
-@permission_required("administracion.deposito_agregar", None, raise_exception=True)
-def deposito_agregar(request):
-    if request.POST:
-        form = DepositoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('deposito_listar')
-    else:
-        form = DepositoForm()
-
-    template_name = 'DepositoForm.html'
-    contexto = {'form': form}
 
     return render(request, template_name, contexto)
 
@@ -234,7 +209,7 @@ def transporte_eliminar(request, id):
 
 @permission_required("administracion.condiciondepago_puede_listar", None, raise_exception=True)
 def condiciondepago_listar(request):
-    contexto = transporte_filtrar(request)
+    contexto = condiciondepago_filtrar(request)
     modo = request.GET.get('modo')
     contexto['modo'] = modo
 
@@ -243,29 +218,6 @@ def condiciondepago_listar(request):
     else:
         template_name = 'condiciondepago_listar.html'
 
-    return render(request, template_name, contexto)
-
-
-@login_required(login_url='ingresar')
-@permission_required("administracion.deposito_editar", None, raise_exception=True)
-def deposito_editar(request, id):
-    try:
-        deposito = Deposito.objects.get(id=id)
-    except Exception as mensaje:
-        messages.add_message(request, messages.ERROR, mensaje)
-        return redirect('deposito_listar')
-
-    if request.method == 'POST':
-        post = request.POST.copy()
-        form = DepositoForm(post, instance=deposito)
-        if form.is_valid():
-            form.save()
-            return redirect('deposito_listar')
-    else:
-        form = DepositoForm(instance=deposito)
-
-    template_name = 'DepositoForm.html'
-    contexto = {'form': form, 'Deposito': Deposito}
     return render(request, template_name, contexto)
 
 
@@ -290,19 +242,6 @@ def condiciondepago_editar(request, id):
     contexto = {'form': form, 'condiciondepago': condiciondepago}
     return render(request, template_name, contexto)
 
-
-@login_required(login_url='ingresar')
-@permission_required("administracion.deposito_eliminar", None, raise_exception=True)
-def deposito_eliminar(request, id):
-    url = 'deposito_listar'
-    try:
-        deposito = Deposito.objects.get(id=id)
-        deposito.delete()
-    except Exception as e:
-        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
-                  'otros registros. Otra opción es desactivarlo.'
-        messages.add_message(request, messages.ERROR, mensaje)
-    return redirect(url)
 
 @permission_required("administracion.condiciondepago_agregar", None, raise_exception=True)
 def condiciondepago_agregar(request):
@@ -334,3 +273,216 @@ def condiciondepago_eliminar(request, id):
         messages.add_message(request, messages.ERROR, mensaje)
 
     return redirect(url)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.deposito_puede_listar", None, raise_exception=True)
+def deposito_listar(request):
+    contexto = deposito_filtrar(request)
+    modo = request.GET.get('modo')
+    contexto['modo'] = modo
+
+    if modo == 'm' or modo == 's':
+        template_name = 'deposito_list_block.html'
+    else:
+        template_name = 'deposito_listar.html'
+
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.deposito_editar", None, raise_exception=True)
+def deposito_editar(request, id):
+    try:
+        deposito = Deposito.objects.get(id=id)
+    except Exception as mensaje:
+        messages.add_message(request, messages.ERROR, mensaje)
+        return redirect('deposito_listar')
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = DepositoForm(post, instance=deposito)
+        if form.is_valid():
+            form.save()
+            return redirect('deposito_listar')
+    else:
+        form = DepositoForm(instance=deposito)
+
+    template_name = 'DepositoForm.html'
+    contexto = {'form': form, 'deposito': deposito}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.deposito_agregar", None, raise_exception=True)
+def deposito_agregar(request):
+    url = reverse('deposito_agregar')
+    if request.POST:
+        form = DepositoForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return redirect('deposito_listar')
+    else:
+        form = DepositoForm(initial={'activos': 'S'})
+
+    template_name = "DepositoForm.html"
+
+    return render(request, template_name, {'form': form})
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.deposito_eliminar", None, raise_exception=True)
+def deposito_eliminar(request, id):
+    url = 'deposito_listar'
+    try:
+        deposito = Deposito.objects.get(id=id)
+        deposito.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo'
+        messages.add_message(request, messages.ERROR, mensaje)
+
+    return redirect(url)@login_required(login_url='ingresar')
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.mediodepago_puede_listar", None, raise_exception=True)
+def mediodepago_listar(request):
+    contexto = mediodepago_filtrar(request)
+    modo = request.GET.get('modo')
+    contexto['modo'] = modo
+
+    if modo == 'm' or modo == 's':
+        template_name = 'mediodepago_list_block.html'
+    else:
+        template_name = 'mediodepago_listar.html'
+
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.mediodepago_editar", None, raise_exception=True)
+def mediodepago_editar(request, id):
+    try:
+        mediodepago = MedioDePago.objects.get(id=id)
+    except Exception as mensaje:
+        messages.add_message(request, messages.ERROR, mensaje)
+        return redirect('mediodepago_listar')
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = MedioDePagoForm(post, instance=mediodepago)
+        if form.is_valid():
+            form.save()
+            return redirect('mediodepago_listar')
+    else:
+        form = MedioDePagoForm(instance=mediodepago)
+
+    template_name = 'MedioDePagoForm.html'
+    contexto = {'form': form, 'mediodepago': mediodepago}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.mediodepago_agregar", None, raise_exception=True)
+def mediodepago_agregar(request):
+    url = reverse('mediodepago_agregar')
+    if request.POST:
+        form = MedioDePagoForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return redirect('mediodepago_listar')
+    else:
+        form = MedioDePagoForm(initial={})
+
+    template_name = "MedioDePagoForm.html"
+
+    return render(request, template_name, {'form': form, 'moneda': Moneda})
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.mediodepago_eliminar", None, raise_exception=True)
+def mediodepago_eliminar(request, id):
+    url = 'mediodepago_listar'
+    try:
+        mediodepago = MedioDePago.objects.get(id=id)
+        mediodepago.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo'
+        messages.add_message(request, messages.ERROR, mensaje)
+
+    return redirect(url)@login_required(login_url='ingresar')
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.moneda_puede_listar", None, raise_exception=True)
+def moneda_listar(request):
+    contexto = moneda_filtrar(request)
+    modo = request.GET.get('modo')
+    contexto['modo'] = modo
+
+    if modo == 'm' or modo == 's':
+        template_name = 'moneda_list_block.html'
+    else:
+        template_name = 'moneda_listar.html'
+
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.moneda_editar", None, raise_exception=True)
+def moneda_editar(request, id):
+    try:
+        moneda = Moneda.objects.get(id=id)
+    except Exception as mensaje:
+        messages.add_message(request, messages.ERROR, mensaje)
+        return redirect('moneda_listar')
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = MonedaForm(post, instance=moneda)
+        if form.is_valid():
+            form.save()
+            return redirect('moneda_listar')
+    else:
+        form = MonedaForm(instance=moneda)
+
+    template_name = 'MonedaForm.html'
+    contexto = {'form': form, 'moneda': moneda}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.moneda_agregar", None, raise_exception=True)
+def moneda_agregar(request):
+    url = reverse('moneda_agregar')
+    if request.POST:
+        form = MonedaForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return redirect('moneda_listar')
+    else:
+        form = MonedaForm(initial={'activos': 'S'})
+
+    template_name = "MonedaForm.html"
+
+    return render(request, template_name, {'form': form})
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.moneda_eliminar", None, raise_exception=True)
+def moneda_eliminar(request, id):
+    url = 'moneda_listar'
+    try:
+        moneda = Moneda.objects.get(id=id)
+        moneda.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo'
+        messages.add_message(request, messages.ERROR, mensaje)
+
+    return redirect(url)@login_required(login_url='ingresar')
