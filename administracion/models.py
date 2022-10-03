@@ -16,6 +16,9 @@ class Departamento(models.Model):
     actualiza_costos = models.CharField(max_length=2, blank=True, null=True)
     imagen = models.ImageField(upload_to=MEDIA_ROOT, blank=True)
 
+    def __str__(self):
+        return self.descripcion
+
 
 class Deposito(models.Model):
     codigo = models.CharField(max_length=5)
@@ -26,6 +29,9 @@ class Deposito(models.Model):
     telefono = models.CharField(max_length=40, verbose_name='Teléfono', blank=True, null=True)
     externo = models.CharField(max_length=1, default="N", choices=SINO)
     localidad = models.ForeignKey(Localidad, null=True, on_delete=models.DO_NOTHING, blank=True)
+
+    def __str__(self):
+        return self.descripcion
 
 
 class Viajante(models.Model):
@@ -39,6 +45,9 @@ class Viajante(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, default=User)
     zona = models.ForeignKey(Tabla, on_delete=models.DO_NOTHING, related_name='ZONA', null=True, blank=True)
     activo = models.CharField(max_length=1, choices=SINO, null=True, blank=True)
+
+    def __str__(self):
+        return self.nombre
 
 
 PERIODO = (
@@ -58,6 +67,9 @@ class CondicionDePago(models.Model):
     periodo = models.CharField(max_length=1, choices=PERIODO, null=False, blank=False)
     periodo_cantidad = models.IntegerField(null=False, blank=False)
 
+    def __str__(self):
+        return self.descripcion
+
 
 class Transporte(models.Model):
     nombre = models.CharField(max_length=60, null=False, blank=False)
@@ -70,12 +82,18 @@ class Transporte(models.Model):
     importe_minimo = models.FloatField(null=False, blank=False)
     porcentaje_valor_carga = models.FloatField(null=False, blank=False)
 
+    def __str__(self):
+        return self.nombre
+
 
 class Moneda(models.Model):
     descripcion = models.CharField(max_length=60, null=False, blank=False)
     simbolo = models.CharField(max_length=3, null=False, blank=False)
     tipo = models.CharField(max_length=2, choices=TIPO, null=False, blank=False)
     siap = models.CharField(max_length=3, null=True, blank=True)
+
+    def __str__(self):
+        return self.descripcion
 
 
 class MedioDePago(models.Model):
@@ -91,5 +109,8 @@ class MedioDePago(models.Model):
     observacion = models.CharField(max_length=1, choices=SINO, null=True, blank=True)
     incluir_ff = models.CharField(max_length=1, choices=SINO, null=True, blank=True,)
     moneda = models.ForeignKey(Moneda, on_delete=models.DO_NOTHING, related_name='MONEDA', null=True, blank=True)
+
+    def __str__(self):
+        return self.descripcion
 
 

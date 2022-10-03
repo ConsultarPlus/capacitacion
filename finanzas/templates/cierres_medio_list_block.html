@@ -1,0 +1,57 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+{% if filtros_form %}
+    <h1>Cierres medio</h1>
+    {% crispy filtros_form %}
+{% endif %}
+<br>
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tc class="model-group">
+                <th>
+                    <a href="{% url 'cierres_medio_agregar' %}" class="addlink">
+                    {% traducir 'Cierres Medio' 'CIERRES_MEDIO' %}
+                    </a>
+                </th>
+            </tc>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'medio de pago' 'CIERRES_MEDIO' %}</th>
+                    <th>{% traducir 'descripcion' 'CIERRES_MEDIO' %}</th>
+                    <th>{% traducir 'cuenta contable' 'CIERRES_MEDIO' %}</th>
+                    <th>{% traducir 'caja cierre' 'CIERRES_MEDIO' %}</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cierres_medio in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ cierres_medio.medio_de_pago | limpiar_none}}</td>
+                        <td> {{ cierres_medio.descripcion | limpiar_none }}</td>
+                        <td> {{ cierres_medio.cuenta_contable | limpiar_none  }}</td>
+                        <td> {{ cierres_medio.caja_cierre | limpiar_none  }}</td>
+                        <td></td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'CIERRES_MEDIO' %}"
+                               onclick="return confirmarAccion('{% url 'cierres_medio_eliminar' id=cierres_medio.pk %}',
+                               '¿Eliminar cierres medio?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>

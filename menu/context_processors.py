@@ -27,13 +27,15 @@ def menu_processor(request):
         tabla_puede_listar = request.user.has_perm('tablas.tabla_puede_listar')
         variable_puede_listar = request.user.has_perm('tablas.variable_puede_listar')
         departamento_puede_listar = request.user.has_perm('administracion.administracion_puede_listar')
-        deposito_puede_listar = request.user.has_perm('administracion.administracion_puede_listar')
         pais_puede_listar = request.user.has_perm('localidades.pais_puede_listar')
         provincia_puede_listar = request.user.has_perm('localidades.provincia_puede_listar')
         localidad_puede_listar = request.user.has_perm('localidades.localidad_puede_listar')
         documento_puede_listar = request.user.has_perm('documentos.puede_listar')
         plantilla_puede_listar = request.user.has_perm('tabla.plantilla_puede_listar')
         plan_de_cuentas_puede_listar = request.user.has_perm('contabilidad.plan_de_cuentas_puede_listar')
+        caja_puede_listar = request.user.has_perm('finanzas.caja_puede_listar')
+        caja_cierres_puede_listar = request.user.has_perm('finanzas.caja_cierres_puede_listar')
+        cierres_medio_puede_listar = request.user.has_perm('finanzas.cierres_medio_puede_listar')
 
         grupo_administracion_mostrar = False
         grupo_config_mostrar = False
@@ -48,9 +50,11 @@ def menu_processor(request):
                   {'id': 'ADM', 'descripcion': 'Administración',
                    'mostrar': get_preferencia(usuario, 'menu', 'ADM', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'LOC', 'descripcion': 'Localidades',
-                   'mostrar': get_preferencia(usuario, 'menu', 'LOC', 'L', False), 'visible': grupo_config_mostrar},
+                   'mostrar': get_preferencia(usuario, 'menu', 'LOC', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'CBL', 'descripcion': 'Contabilidad',
-                   'mostrar': get_preferencia(usuario, 'menu', 'CBL', 'L', False), 'visible': grupo_config_mostrar},
+                   'mostrar': get_preferencia(usuario, 'menu', 'CBL', 'L', False), 'visible': grupo_administracion_mostrar},
+                  {'id': 'FNZ', 'descripcion': 'Finanzas',
+                   'mostrar': get_preferencia(usuario, 'menu', 'FNZ', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'CFN', 'descripcion': 'Configuración',
                    'mostrar': get_preferencia(usuario, 'menu', 'CFN', 'L', False), 'visible': grupo_config_mostrar},
                   ]
@@ -93,6 +97,12 @@ def menu_processor(request):
                    'modelo': 'LOCALIDAD', 'visible': localidad_puede_listar},
                   {'id_grupo': 'CBL', 'url': reverse('plan_de_cuentas_listar'), 'titulo': 'Planes de cuentas',
                    'modelo': 'PLAN_DE_CUENTAS', 'visible': plan_de_cuentas_puede_listar},
+                  {'id_grupo': 'FNZ', 'url': reverse('caja_listar'), 'titulo': 'Cajas',
+                   'modelo': 'CAJA', 'visible': caja_puede_listar},
+                  # {'id_grupo': 'FNZ', 'url': reverse('caja_cierres_listar'), 'titulo': 'Cajas Cierres',
+                  #  'modelo': 'CAJA_CIERRES', 'visible': caja_cierres_puede_listar},
+                  # {'id_grupo': 'FNZ', 'url': reverse('cierres_medio_listar'), 'titulo': 'Cierres Medio',
+                  #  'modelo': 'CIERRES_MEDIO', 'visible': cierres_medio_puede_listar},
                   ]
 
         for menu in menues:

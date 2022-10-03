@@ -1,7 +1,9 @@
 # Project exclude paths
 /venv/
 */migrations
+*/__pycache__
 /media/
+*/templatetags/__pycache__
 
 # If you are using PyCharm #
 .idea/**/tasks.xml

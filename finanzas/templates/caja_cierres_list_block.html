@@ -1,0 +1,129 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+{% if filtros_form %}
+    <h1>Caja cierres</h1>
+    {% crispy filtros_form %}
+{% endif %}
+<br>
+
+<div style="overflow-x:auto;display: flex">
+
+        <table id="tabCierres" style=" width: calc(68%);display: inline-block;">
+            <thead>
+                <tr>
+                    <th>{% traducir 'numero' 'CAJA_CIERRES' %}</th>
+                    <th>{% traducir 'saldo apertura anterior' 'CAJA_CIERRES' %}</th>
+                    <th>{% traducir 'saldo cierre anterior' 'CAJA_CIERRES' %}</th>
+                    <th>{% traducir 'saldo cheques' 'CAJA_CIERRES' %}</th>
+                    <th>{% traducir 'saldo apertura' 'CAJA_CIERRES' %}</th>
+                    <th>{% traducir 'cierre' 'CAJA_CIERRES' %}</th>
+                    <th>{% traducir 'usuario' 'CAJA_CIERRES' %}</th>
+                    <th>{% traducir 'caja' 'CAJA_CIERRES' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for caja_cierres in paginado_c %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ caja_cierres.numero}}</td>
+                        <td> {{ caja_cierres.saldo_apertura_anterior | limpiar_none }}</td>
+                        <td> {{ caja_cierres.saldo_cierre_anterior | limpiar_none  }}</td>
+                        <td> {{ caja_cierres.saldo_cheques | limpiar_none  }}</td>
+                        <td> {{ caja_cierres.saldo_apertura | limpiar_none  }}</td>
+                        <td> {{ caja_cierres.cierre }}</td>
+                        <td> {{ caja_cierres.usuario | limpiar_none  }}</td>
+                        <td> {{ caja_cierres.caja | limpiar_none  }}</td>
+                        <td></td>
+                        <td><a href="{% url 'cierres_medio_agregar' caja_cierres.numero %}"
+                               class="file-open"
+                               title="{% traducir 'Cargar medio' 'CAJA_CIERRES' %}"></a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'CAJA_CIERRES' %}"
+                               onclick="return confirmarAccion('{% url 'caja_cierres_eliminar' caja_cierres.numero %}',
+                               '¿Eliminar cierre?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <table id="tabMedios" style="display: inline-block;" >
+            <thead>
+                <tr>
+                    <th>{% traducir 'medio de pago' 'CIERRES_MEDIO' %}</th>
+                    <th>{% traducir 'descripcion' 'CIERRES_MEDIO' %}</th>
+                    <th>{% traducir 'cuenta contable' 'CIERRES_MEDIO' %}</th>
+                    <th>{% traducir 'caja cierre' 'CIERRES_MEDIO' %}</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cierres_medio in paginado_m %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ cierres_medio.medio_de_pago | limpiar_none}}</td>
+                        <td> {{ cierres_medio.descripcion | limpiar_none }}</td>
+                        <td> {{ cierres_medio.cuenta_contable | limpiar_none  }}</td>
+                        <td> {{ cierres_medio.caja_cierre | limpiar_none  }}</td>
+                        <td></td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'CIERRES_MEDIO' %}"
+                               onclick="return confirmarAccion('{% url 'cierres_medio_eliminar' id=cierres_medio.pk %}',
+                               '¿Eliminar cierres medio?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+    {% include "paginador.html" %}
+</div>
+<script>
+function addRowHandlers() {
+  var table = document.getElementById("tabCierres");
+  var rows = table.getElementsByTagName("tr");
+  for (i = 0; i < rows.length; i++) {
+    var currentRow = table.rows[i];
+    var createClickHandler = function(row) {
+      return function() {
+        var cell = row.getElementsByTagName("td")[0];
+        var id = cell.innerHTML.trim();
+        table = document.getElementById("tabMedios");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[3];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (parseInt(txtValue) == id) {
+                    tr[0].style.display = "";
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+      };
+    };
+    currentRow.onclick = createClickHandler(currentRow);
+  }
+}
+function vaciarTabla(){
+    table = document.getElementById("tabMedios");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+        tr[i].style.display = "none";
+    }
+}
+window.onload = addRowHandlers();
+window.onload = vaciarTabla();
+</script>

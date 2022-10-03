@@ -12,3 +12,6 @@ class PlanDeCuentas(models.Model):
     desglosable = models.CharField(max_length=1, default="N", choices=SINO)
     monetaria = models.CharField(max_length=1, default="N", choices=SINO)
     observacion = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.descripcion
