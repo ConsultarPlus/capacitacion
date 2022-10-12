@@ -7,7 +7,7 @@ from tabla.funcs import boton_buscar
 from tabla.listas import MODELOS, ITEMS_X_PAG, SINO, ACTIVO, PERIODO, CAJA, TIPO
 from tabla.gets import get_choices_mas_vacio
 from tabla.listas import ITEMS_X_PAG, ACTIVO, PERIODO
-from administracion.models import Viajante, Transporte, CondicionDePago, MedioDePago, Moneda,Departamento, Deposito
+from administracion.models import Viajante, Transporte, CondicionDePago, MedioDePago, Moneda, Departamento, Deposito, GrupoContactos, GrupoEconomico, VCN
 
 
 class FiltroDepartamentos(forms.Form):
@@ -383,6 +383,72 @@ class MedioDePagoForm(forms.ModelForm):
                 Column('observacion', css_class='form-group col-md-3 mb-0'),
                 Column('incluir_ff', css_class='form-group col-md-3 mb-0'),
                 Column('moneda', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Grabar'),
+                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
+            )
+        )
+
+
+class GrupoContactosForm(forms.ModelForm):
+
+    class Meta:
+        model = GrupoContactos
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.fields['descripcion'].label = 'Descripción'
+        self.fields['codigo'].label = 'Código'
+        self.fields['cuenta_contable'].widget = SelectLiveSearchInput(choices=SINO)
+
+        self.helper.form_id = 'id_form'
+        self.helper.layout = Layout(Row(
+                Column('codigo', css_class='form-group col-md-2 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('descripcion', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('cuenta_contable', css_class='form-group col-md-2 mb-0'),
+                css_class='form-row'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Grabar'),
+                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
+            )
+        )
+
+
+class GrupoEconomicoForm(forms.ModelForm):
+
+    class Meta:
+        model = GrupoEconomico
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.fields['descripcion'].label = 'Descripción'
+        self.fields['codigo'].label = 'Código'
+        self.fields['tipo'].widget = SelectLiveSearchInput(choices=VCN)
+
+        self.helper.form_id = 'id_form'
+        self.helper.layout = Layout(Row(
+                Column('codigo', css_class='form-group col-md-2 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('descripcion', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('tipo', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             ButtonHolder(

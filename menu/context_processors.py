@@ -18,6 +18,8 @@ def menu_processor(request):
         deposito_puede_listar = request.user.has_perm('administracion.deposito_puede_listar')
         mediodepago_puede_listar = request.user.has_perm('administracion.mediodepago_puede_listar')
         moneda_puede_listar = request.user.has_perm('administracion.moneda_puede_listar')
+        grupocontactos_puede_listar = request.user.has_perm('administracion.grupocontactos_puede_listar')
+        grupoeconomico_puede_listar = request.user.has_perm('administracion.grupoeconomico_puede_listar')
 
         # CONFIGURACIÓN
         mostrar_admin = False
@@ -72,6 +74,10 @@ def menu_processor(request):
                    'modelo': 'MEDIODEPAGO', 'visible': mediodepago_puede_listar},
                   {'id_grupo': 'ADM', 'url': reverse('moneda_listar'), 'titulo': 'Monedas',
                    'modelo': 'MONEDA', 'visible': moneda_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('grupocontactos_listar'), 'titulo': 'Grupo Contactos',
+                   'modelo': 'GRUPOCONTACTOS', 'visible': grupocontactos_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('grupoeconomico_listar'), 'titulo': 'Grupo Economico',
+                   'modelo': 'GRUPOECONOMICO', 'visible': grupoeconomico_puede_listar},
                   {'id_grupo': 'CFN', 'url': '/admin/', 'titulo': 'Admin', 'modelo': 'GENERAL',
                    'visible': mostrar_admin},
                   {'id_grupo': 'CFN', 'url': reverse('documentos_listar'), 'titulo': 'Documentos',

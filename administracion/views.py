@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
-from administracion.models import Viajante, Transporte, CondicionDePago, Deposito, MedioDePago, Moneda, Departamento
-from administracion.forms import ViajanteForm, TransporteForm, CondicionDePagoForm, DepartamentoForm, DepositoForm, MedioDePagoForm, MonedaForm
-from administracion.filters import viajante_filtrar, transporte_filtrar, condiciondepago_filtrar, deposito_filtrar, mediodepago_filtrar, moneda_filtrar, departamento_filtrar
+from administracion.models import Viajante, Transporte, CondicionDePago, Deposito, MedioDePago, Moneda, Departamento,GrupoContactos, GrupoEconomico
+from administracion.forms import ViajanteForm, TransporteForm, CondicionDePagoForm, DepartamentoForm, DepositoForm, MedioDePagoForm, MonedaForm, GrupoContactosForm, GrupoEconomicoForm
+from administracion.filters import viajante_filtrar, transporte_filtrar, condiciondepago_filtrar, deposito_filtrar, mediodepago_filtrar, moneda_filtrar, departamento_filtrar, grupocontactos_filtrar, grupoeconomico_filtrar
 
 
 @login_required(login_url='ingresar')
@@ -480,6 +480,220 @@ def moneda_eliminar(request, id):
     try:
         moneda = Moneda.objects.get(id=id)
         moneda.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo'
+        messages.add_message(request, messages.ERROR, mensaje)
+
+    return redirect(url)@login_required(login_url='ingresar')
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.grupocontactos_puede_listar", None, raise_exception=True)
+def grupocontactos_listar(request):
+    contexto = grupocontactos_filtrar(request)
+    modo = request.GET.get('modo')
+    contexto['modo'] = modo
+
+    if modo == 'm' or modo == 's':
+        template_name = 'grupocontactos_list_block.html'
+    else:
+        template_name = 'grupocontactos_listar.html'
+
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.grupocontactos_editar", None, raise_exception=True)
+def grupocontactos_editar(request, id):
+    try:
+        grupocontactos = GrupoContactos.objects.get(id=id)
+    except Exception as mensaje:
+        messages.add_message(request, messages.ERROR, mensaje)
+        return redirect('grupocontactos_listar')
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = GrupoContactosForm(post, instance=grupocontactos)
+        if form.is_valid():
+            form.save()
+            return redirect('grupocontactos_listar')
+    else:
+        form = GrupoContactosForm(instance=grupocontactos)
+
+    template_name = 'GrupoContactosForm.html'
+    contexto = {'form': form, 'grupocontactos': grupocontactos}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.grupocontactos_agregar", None, raise_exception=True)
+def grupocontactos_agregar(request):
+    url = reverse('grupocontactos_agregar')
+    if request.POST:
+        form = GrupoContactosForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return redirect('grupocontactos_listar')
+    else:
+        form = GrupoContactosForm(initial={'activos': 'S'})
+
+    template_name = "GrupoContactosForm.html"
+
+    return render(request, template_name, {'form': form})
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.grupocontactos_eliminar", None, raise_exception=True)
+def grupocontactos_eliminar(request, id):
+    url = 'grupocontactos_listar'
+    try:
+        grupocontactos = GrupoContactos.objects.get(id=id)
+        grupocontactos.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo'
+        messages.add_message(request, messages.ERROR, mensaje)
+
+    return redirect(url)@login_required(login_url='ingresar')
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.moneda_puede_listar", None, raise_exception=True)
+def moneda_listar(request):
+    contexto = moneda_filtrar(request)
+    modo = request.GET.get('modo')
+    contexto['modo'] = modo
+
+    if modo == 'm' or modo == 's':
+        template_name = 'moneda_list_block.html'
+    else:
+        template_name = 'moneda_listar.html'
+
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.moneda_editar", None, raise_exception=True)
+def moneda_editar(request, id):
+    try:
+        moneda = Moneda.objects.get(id=id)
+    except Exception as mensaje:
+        messages.add_message(request, messages.ERROR, mensaje)
+        return redirect('moneda_listar')
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = MonedaForm(post, instance=moneda)
+        if form.is_valid():
+            form.save()
+            return redirect('moneda_listar')
+    else:
+        form = MonedaForm(instance=moneda)
+
+    template_name = 'MonedaForm.html'
+    contexto = {'form': form, 'moneda': moneda}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.moneda_agregar", None, raise_exception=True)
+def moneda_agregar(request):
+    url = reverse('moneda_agregar')
+    if request.POST:
+        form = MonedaForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return redirect('moneda_listar')
+    else:
+        form = MonedaForm(initial={'activos': 'S'})
+
+    template_name = "MonedaForm.html"
+
+    return render(request, template_name, {'form': form})
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.moneda_eliminar", None, raise_exception=True)
+def moneda_eliminar(request, id):
+    url = 'moneda_listar'
+    try:
+        moneda = Moneda.objects.get(id=id)
+        moneda.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo'
+        messages.add_message(request, messages.ERROR, mensaje)
+
+    return redirect(url)@login_required(login_url='ingresar')
+
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.grupoeconomico_puede_listar", None, raise_exception=True)
+def grupoeconomico_listar(request):
+    contexto = grupoeconomico_filtrar(request)
+    modo = request.GET.get('modo')
+    contexto['modo'] = modo
+
+    if modo == 'm' or modo == 's':
+        template_name = 'grupoeconomico_list_block.html'
+    else:
+        template_name = 'grupoeconomico_listar.html'
+
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.grupoeconomico_editar", None, raise_exception=True)
+def grupoeconomico_editar(request, id):
+    try:
+        grupoeconomico = GrupoEconomico.objects.get(id=id)
+    except Exception as mensaje:
+        messages.add_message(request, messages.ERROR, mensaje)
+        return redirect('grupoeconomico_listar')
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = GrupoEconomicoForm(post, instance=grupoeconomico)
+        if form.is_valid():
+            form.save()
+            return redirect('grupoeconomico_listar')
+    else:
+        form = GrupoEconomicoForm(instance=grupoeconomico)
+
+    template_name = 'GrupoEconomicoForm.html'
+    contexto = {'form': form, 'grupoeconomico': grupoeconomico}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.grupoeconomico_agregar", None, raise_exception=True)
+def grupoeconomico_agregar(request):
+    url = reverse('grupoeconomico_agregar')
+    if request.POST:
+        form = GrupoEconomicoForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return redirect('grupoeconomico_listar')
+    else:
+        form = GrupoEconomicoForm(initial={'activos': 'S'})
+
+    template_name = "GrupoEconomicoForm.html"
+
+    return render(request, template_name, {'form': form})
+
+
+@login_required(login_url='ingresar')
+@permission_required("administracion.grupoeconomico_eliminar", None, raise_exception=True)
+def grupoeconomico_eliminar(request, id):
+    url = 'grupoeconomico_listar'
+    try:
+        grupoeconomico = GrupoEconomico.objects.get(id=id)
+        grupoeconomico.delete()
     except Exception as e:
         mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
                   'otros registros. Otra opción es desactivarlo'
