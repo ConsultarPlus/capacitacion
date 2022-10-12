@@ -1,7 +1,7 @@
+from django import forms
 from crispy_forms.bootstrap import FieldWithButtons
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, ButtonHolder, Layout, Row, Column, Button
-from django import forms
 from finanzas.models import Caja, CajaCierres, CierresMedio
 from tabla.funcs import boton_buscar
 from tabla.listas import ITEMS_X_PAG
@@ -95,11 +95,8 @@ class CajaCierresForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
 
-        caja = kwargs.pop('caja')
         super().__init__(*args, **kwargs)
-        print(caja)
         self.helper = FormHelper()
-        self.fields['caja'].initial = caja
         self.helper.form_id = 'id_form'
         self.helper.layout = Layout(
             Row(
@@ -112,42 +109,9 @@ class CajaCierresForm(forms.ModelForm):
                 Column('saldo_apertura', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
-            Row(
-                Column('usuario', css_class='form-group col-md-4 mb-0'),
-                Column('caja', css_class='form-group col-md-4 mb-0'),
-                css_class='form-row'
-            ),
             ButtonHolder(
                 Submit('submit', 'Grabar'),
                 Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
-            )
-        )
-
-
-class FiltroCierresMedio(forms.Form):
-    buscar = forms.CharField(max_length=60, required=False)
-    items = forms.IntegerField(max_value=30,
-                               min_value=5,
-                               required=False,
-                               label='ítems x pág.')
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs)
-
-        self.helper = FormHelper()
-        self.helper.form_method = 'GET'
-        self.helper.disable_csrf = True
-        self.fields['items'].widget = SelectLiveSearchInput(choices=ITEMS_X_PAG)
-
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control-sm'
-
-        self.helper.layout = Layout(
-            Row(
-                Column('buscar', css_class='form-group col-md-2 mb-0 '),
-                FieldWithButtons('items', boton_buscar(), css_class='form-group col-md-2 mb-0'),
-                css_class='form-row'
             )
         )
 

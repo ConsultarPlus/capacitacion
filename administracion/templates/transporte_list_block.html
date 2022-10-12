@@ -9,7 +9,7 @@
 
     <h1>Transporte</h1>
     {% if filtros_form %}
-    {% crispy filtros_form %}
+        {% crispy filtros_form %}
     {% endif %}
 
     <div class="form-row form-row">
@@ -70,7 +70,7 @@
         <br>
         {% include "paginador.html" %}
     </div>
-    </div>
+</div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     {% if request.GET.multiple == 'True' %}
