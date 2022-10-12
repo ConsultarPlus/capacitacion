@@ -2,7 +2,6 @@ from django.db import models
 from contabilidad.models import PlanDeCuentas
 from perfiles.models import Perfil
 from administracion.models import MedioDePago
-from django.template import defaultfilters
 
 
 class Caja(models.Model):
