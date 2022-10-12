@@ -73,7 +73,9 @@ def caja_cierres_listar(request):
     template_name = 'caja_cierres_listar.html'
     return render(request, template_name, contexto)
 
-
+# los formularios de caja cierre y cierres medio no guardan los valores ingresados, ya que is_bound=True, pero de esta
+# forma se pueden automatizar muy facilmente enviandole los valores en un diccionario. Como en el futuro van a ser
+# automatizados me parecio innecesario hacer que se puedan ingresar valores solo para el testeo.
 @login_required(login_url='ingresar')
 @permission_required("finanzas.caja_cierres_agregar", None, raise_exception=True)
 def caja_cierres_agregar(request, id):
@@ -95,12 +97,12 @@ def caja_cierres_agregar(request, id):
 @permission_required("finanzas.cierres_medio_agregar", None, raise_exception=True)
 def cierres_medio_agregar(request, id):
     if request.POST:
-        form = CierresMedioForm(request.POST, request.FILES, cierre=id)
+        form = CierresMedioForm({'caja_cierre': id}, request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('caja_cierres_listar')
     else:
-        form = CierresMedioForm(cierre=id)
+        form = CierresMedioForm({'caja_cierre': id})
 
     template_name = 'CierresMedioForm.html'
     contexto = {'form': form}

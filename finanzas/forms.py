@@ -116,6 +116,7 @@ class CajaCierresForm(forms.ModelForm):
         )
 
 
+
 class CierresMedioForm(forms.ModelForm):
 
     class Meta:
@@ -133,12 +134,11 @@ class CierresMedioForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column('medio_de_pago', css_class='form-group col-md-3 mb-0'),
-                Column('descripcion', css_class='form-group col-md-6 mb-0'),
+                Column('cuenta_contable', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('cuenta_contable', css_class='form-group col-md-3 mb-0'),
-                Column('caja_cierre', css_class='form-group col-md-3 mb-0'),
+                Column('descripcion', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             ButtonHolder(
