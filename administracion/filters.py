@@ -165,7 +165,7 @@ def deposito_filtrar(query_dict):
                                            'items': items,
                                            'modo': modo})
     return {'filter': filtrado,
-            'deposito': paginado,
+            'paginado': paginado,
             'registros': registros,
             'filtros_form': form}
 

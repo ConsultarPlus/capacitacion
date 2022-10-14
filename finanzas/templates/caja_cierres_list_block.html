@@ -55,7 +55,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for cierres_medio in paginado_m %}
+                {% for cierres_medio in filter_m %}
                     <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
                         <td> {{ cierres_medio.medio_de_pago | limpiar_none}}</td>
                         <td> {{ cierres_medio.descripcion | limpiar_none }}</td>

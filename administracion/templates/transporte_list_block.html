@@ -60,7 +60,7 @@
                 <td>{{ item.direccion }}</td>
                 <td>{{ item.telefono }}</td>
                 <td>{{ item.email }}</td>
-                <td>{{ item.localidad }}</td>
+                <td>{{ item.localidad | limpiar_none }}</td>
                 <td><a href="{% url 'transporte_editar' item.id %}" class="changelink">Editar</a></td>
                 <td><a href="{% url 'transporte_eliminar' item.id %}" class="deletelink">Eliminar</a></td>
             </tr>

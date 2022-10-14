@@ -1,0 +1,73 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+<h1>Cuentas Bancarias</h1>
+{% if filtros_form %}
+    {% crispy filtros_form %}
+{% endif %}
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'cuenta_bancaria_agregar' %}" class="addlink">
+                    {% traducir 'Cuenta bancaria' 'CUENTA_BANCARIA' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'cuenta' 'CUENTA_BANCARIA' %}</th>
+                    <th>{% traducir 'descripcion' 'CUENTA_BANCARIA' %}</th>
+                    <th>{% traducir 'banco' 'CUENTA_BANCARIA' %}</th>
+                    <th>{% traducir 'sucursal' 'CUENTA_BANCARIA' %}</th>
+                    <th>{% traducir 'titular' 'CUENTA_BANCARIA' %}</th>
+                    <th>{% traducir 'emision_fecha' 'CUENTA_BANCARIA' %}</th>
+                    <th>{% traducir 'emision_saldo' 'CUENTA_BANCARIA' %}</th>
+                    <th>{% traducir 'acreditacion_fecha' 'CUENTA_BANCARIA' %}</th>
+                    <th>{% traducir 'acreditacion_saldo' 'CUENTA_BANCARIA' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cuenta_bancaria in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ cuenta_bancaria.cuenta | limpiar_none }}</td>
+                        <td> {{ cuenta_bancaria.descripcion | limpiar_none }}</td>
+                        <td> {{ cuenta_bancaria.banco | limpiar_none }}</td>
+                        <td> {{ cuenta_bancaria.sucursal | limpiar_none }}</td>
+                        <td> {{ cuenta_bancaria.titular | limpiar_none }}</td>
+                        <td> {{ cuenta_bancaria.emision_fecha | limpiar_none }}</td>
+                        <td> {{ cuenta_bancaria.emision_saldo | limpiar_none }}</td>
+                        <td> {{ cuenta_bancaria.acreditacion_fecha | limpiar_none }}</td>
+                        <td> {{ cuenta_bancaria.acreditacion_saldo | limpiar_none }}</td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'cuenta_bancaria_editar' cuenta_bancaria.id %}"
+                               title="{% traducir 'Editar' 'CUENTA_BANCARIA' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'CUENTA_BANCARIA' %}"
+                               onclick="return confirmarAccion('{% url 'cuenta_bancaria_eliminar' cuenta_bancaria.id %}',
+                               '¿Eliminar cuenta_bancaria?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>

@@ -8,6 +8,7 @@ urlpatterns = [
     path('localidades/', include('localidades.urls')),
     path('contabilidad/', include('contabilidad.urls')),
     path('finanzas/', include('finanzas.urls')),
+    path('bancos/', include('bancos.urls')),
     path('numeradores/', include('numeradores.urls')),
     path('tabla/', include('tabla.urls')),
     path('mensajes/', include('mensajes.urls')),

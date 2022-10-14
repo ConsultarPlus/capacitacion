@@ -49,12 +49,12 @@
                         {% autoescape off %}
                             <td> {{ deposito.activo | imagen_si_no }}</td>
                         {% endautoescape %}
-                        <td> {{ deposito.domicilio }}</td>
-                        <td> {{ deposito.telefono }}</td>
+                        <td> {{ deposito.domicilio | limpiar_none }}</td>
+                        <td> {{ deposito.telefono | limpiar_none }}</td>
                         {% autoescape off %}
                             <td> {{ deposito.externo | imagen_si_no }}</td>
                         {% endautoescape %}
-                        <td> {{ deposito.localidad }}</td>
+                        <td> {{ deposito.localidad | limpiar_none }}</td>
                         <td></td>
                         <td>
                             <a href="{% url 'deposito_editar' deposito.id %}"

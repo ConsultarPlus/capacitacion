@@ -25,6 +25,7 @@ ENTIDADES = (
     ('ZONA', 'Zona'),
     ('LOCALIDAD', 'Localidad'),
     ('RUBRO', 'Rubro'),
+    ('BANCO', 'Banco')
 )
 
 ACTIVO = (

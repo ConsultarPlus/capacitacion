@@ -34,8 +34,8 @@ def menu_processor(request):
         plantilla_puede_listar = request.user.has_perm('tabla.plantilla_puede_listar')
         plan_de_cuentas_puede_listar = request.user.has_perm('contabilidad.plan_de_cuentas_puede_listar')
         caja_puede_listar = request.user.has_perm('finanzas.caja_puede_listar')
-        caja_cierres_puede_listar = request.user.has_perm('finanzas.caja_cierres_puede_listar')
-        cierres_medio_puede_listar = request.user.has_perm('finanzas.cierres_medio_puede_listar')
+        cuenta_bancaria_puede_listar = request.user.has_perm('bancos.cuenta_bancaria_puede_listar')
+        chequera_puede_listar = request.user.has_perm('bancos.chequera_puede_listar')
 
         grupo_administracion_mostrar = False
         grupo_config_mostrar = False
@@ -55,6 +55,8 @@ def menu_processor(request):
                    'mostrar': get_preferencia(usuario, 'menu', 'CBL', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'FNZ', 'descripcion': 'Finanzas',
                    'mostrar': get_preferencia(usuario, 'menu', 'FNZ', 'L', False), 'visible': grupo_administracion_mostrar},
+                  {'id': 'BNC', 'descripcion': 'Bancos',
+                   'mostrar': get_preferencia(usuario, 'menu', 'BNC', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'CFN', 'descripcion': 'Configuración',
                    'mostrar': get_preferencia(usuario, 'menu', 'CFN', 'L', False), 'visible': grupo_config_mostrar},
                   ]
@@ -99,10 +101,10 @@ def menu_processor(request):
                    'modelo': 'PLAN_DE_CUENTAS', 'visible': plan_de_cuentas_puede_listar},
                   {'id_grupo': 'FNZ', 'url': reverse('caja_listar'), 'titulo': 'Cajas',
                    'modelo': 'CAJA', 'visible': caja_puede_listar},
-                  # {'id_grupo': 'FNZ', 'url': reverse('caja_cierres_listar'), 'titulo': 'Cajas Cierres',
-                  #  'modelo': 'CAJA_CIERRES', 'visible': caja_cierres_puede_listar},
-                  # {'id_grupo': 'FNZ', 'url': reverse('cierres_medio_listar'), 'titulo': 'Cierres Medio',
-                  #  'modelo': 'CIERRES_MEDIO', 'visible': cierres_medio_puede_listar},
+                  {'id_grupo': 'BNC', 'url': reverse('cuenta_bancaria_listar'), 'titulo': 'Cuentas bancarias',
+                   'modelo': 'CUENTA_BANCARIA', 'visible': cuenta_bancaria_puede_listar},
+                  {'id_grupo': 'BNC', 'url': reverse('chequera_listar'), 'titulo': 'Chequeras',
+                   'modelo': 'CHEQUERA', 'visible': chequera_puede_listar},
                   ]
 
         for menu in menues:

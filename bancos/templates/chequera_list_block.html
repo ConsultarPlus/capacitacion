@@ -1,0 +1,81 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+<h1>Chequera</h1>
+{% if filtros_form %}
+    {% crispy filtros_form %}
+{% endif %}
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'chequera_agregar' %}" class="addlink">
+                    {% traducir 'Chequera' 'CHEQUERA' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'inactiva' 'CHEQUERA' %}</th>
+                    <th>{% traducir 'electronica' 'CHEQUERA' %}</th>
+                    <th>{% traducir 'cuenta_bancaria' 'CHEQUERA' %}</th>
+                    <th>{% traducir 'serie' 'CHEQUERA' %}</th>
+                    <th>{% traducir 'recibida' 'CHEQUERA' %}</th>
+                    <th>{% traducir 'cheque_desde' 'CHEQUERA' %}</th>
+                    <th>{% traducir 'cheque_hasta' 'CHEQUERA' %}</th>
+                    <th>{% traducir 'pago_diferido' 'CHEQUERA' %}</th>
+                    <th>{% traducir 'dias_diferencia' 'CHEQUERA' %}</th>
+                    <th>{% traducir 'proximo_numero' 'CHEQUERA' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for chequera in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        {% autoescape off %}
+                        <td> {{ chequera.inactiva | imagen_si_no }}</td>
+                        {% endautoescape %}
+                        {% autoescape off %}
+                        <td> {{ chequera.electronica | imagen_si_no }}</td>
+                        {% endautoescape %}
+                        <td> {{ chequera.cuenta_bancaria | limpiar_none }}</td>
+                        <td> {{ chequera.serie | limpiar_none }}</td>
+                        <td> {{ chequera.recibida | limpiar_none }}</td>
+                        <td> {{ chequera.cheque_desde | limpiar_none }}</td>
+                        <td> {{ chequera.cheque_hasta | limpiar_none }}</td>
+                        {% autoescape off %}
+                        <td> {{ chequera.pago_diferido | imagen_si_no }}</td>
+                        {% endautoescape %}
+                        <td> {{ chequera.dias_diferencia | limpiar_none }}</td>
+                        <td> {{ chequera.proximo_numero | limpiar_none }}</td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'chequera_editar' chequera.id %}"
+                               title="{% traducir 'Editar' 'CHEQUERA' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'CHEQUERA' %}"
+                               onclick="return confirmarAccion('{% url 'chequera_eliminar' chequera.id %}',
+                               '¿Eliminar chequera?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>

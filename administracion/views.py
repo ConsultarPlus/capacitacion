@@ -204,7 +204,7 @@ def transporte_eliminar(request, id):
                   'otros registros. Otra opción es desactivarlo'
         messages.add_message(request, messages.ERROR, mensaje)
 
-    return redirect(url)@login_required(login_url='ingresar')
+    return redirect(url)
 
 
 @permission_required("administracion.condiciondepago_puede_listar", None, raise_exception=True)
@@ -279,13 +279,7 @@ def condiciondepago_eliminar(request, id):
 @permission_required("administracion.deposito_puede_listar", None, raise_exception=True)
 def deposito_listar(request):
     contexto = deposito_filtrar(request)
-    modo = request.GET.get('modo')
-    contexto['modo'] = modo
-
-    if modo == 'm' or modo == 's':
-        template_name = 'deposito_list_block.html'
-    else:
-        template_name = 'deposito_listar.html'
+    template_name = 'deposito_listar.html'
 
     return render(request, template_name, contexto)
 
@@ -343,7 +337,7 @@ def deposito_eliminar(request, id):
                   'otros registros. Otra opción es desactivarlo'
         messages.add_message(request, messages.ERROR, mensaje)
 
-    return redirect(url)@login_required(login_url='ingresar')
+    return redirect(url)
 
 
 @login_required(login_url='ingresar')
@@ -414,7 +408,7 @@ def mediodepago_eliminar(request, id):
                   'otros registros. Otra opción es desactivarlo'
         messages.add_message(request, messages.ERROR, mensaje)
 
-    return redirect(url)@login_required(login_url='ingresar')
+    return redirect(url)
 
 
 @login_required(login_url='ingresar')
@@ -485,4 +479,4 @@ def moneda_eliminar(request, id):
                   'otros registros. Otra opción es desactivarlo'
         messages.add_message(request, messages.ERROR, mensaje)
 
-    return redirect(url)@login_required(login_url='ingresar')
+    return redirect(url)
