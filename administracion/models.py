@@ -96,6 +96,24 @@ class Moneda(models.Model):
         return self.descripcion
 
 
+class GrupoContactos(models.Model):
+    codigo = models.CharField(max_length=3, null=False, blank=False)
+    descripcion = models.CharField(max_length=60, null=False, blank=False)
+    cuenta_contable = models.CharField(max_length=1, choices=SINO, null=True, blank=True)
+
+
+VCN = (
+    ('V', 'Ventas'),
+    ('C', 'Compras'),
+    ('N', 'Ventas y Compras'),
+)
+
+
+class GrupoEconomico(models.Model):
+    codigo = models.CharField(max_length=3, null=False, blank=False)
+    descripcion = models.CharField(max_length=60, null=False, blank=False)
+    tipo = models.CharField(max_length=1, choices=VCN, null=False, blank=False)
+
 class MedioDePago(models.Model):
     codigo = models.CharField(max_length=2, null=False, blank=False)
     descripcion = models.CharField(max_length=60, null=False, blank=False)

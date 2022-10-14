@@ -4,6 +4,8 @@ from administracion.views import transporte_listar, transporte_editar, transport
 from administracion.views import condiciondepago_listar, condiciondepago_editar, condiciondepago_agregar, condiciondepago_eliminar
 from administracion.views import deposito_listar, deposito_editar, deposito_agregar, deposito_eliminar
 from administracion.views import mediodepago_listar, mediodepago_editar, mediodepago_agregar, mediodepago_eliminar
+from administracion.views import grupocontactos_listar, grupocontactos_editar, grupocontactos_agregar, grupocontactos_eliminar
+from administracion.views import grupoeconomico_listar, grupoeconomico_editar, grupoeconomico_agregar, grupoeconomico_eliminar
 from administracion.views import moneda_listar, moneda_editar, moneda_agregar, moneda_eliminar
 from .views import departamento_listar, departamento_agregar, departamento_editar, departamento_eliminar, \
     deposito_eliminar, deposito_editar, deposito_agregar, deposito_listar
@@ -48,6 +50,18 @@ urlpatterns = [
     path('moneda_editar/<int:id>', moneda_editar, name='moneda_editar'),
     path('moneda_agregar/', moneda_agregar, name='moneda_agregar'),
     path('moneda_eliminar/<int:id>', moneda_eliminar, name='moneda_eliminar'),
+
+
+    path('grupocontactos_listar/', grupocontactos_listar, name='grupocontactos_listar'),
+    path('grupocontactos_editar/<int:id>', grupocontactos_editar, name='grupocontactos_editar'),
+    path('grupocontactos_agregar/', grupocontactos_agregar, name='grupocontactos_agregar'),
+    path('grupocontactos_eliminar/<int:id>', grupocontactos_eliminar, name='grupocontactos_eliminar'),
+
+
+    path('grupoeconomico_listar/', grupoeconomico_listar, name='grupoeconomico_listar'),
+    path('grupoeconomico_editar/<int:id>', grupoeconomico_editar, name='grupoeconomico_editar'),
+    path('grupoeconomico_agregar/', grupoeconomico_agregar, name='grupoeconomico_agregar'),
+    path('grupoeconomico_eliminar/<int:id>', grupoeconomico_eliminar, name='grupoeconomico_eliminar'),
 ]
 
 
