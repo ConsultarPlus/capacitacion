@@ -69,20 +69,27 @@ class CuentaBancariaForm(forms.ModelForm):
             Row(
                 Column('cuenta', css_class='form-group col-md-3 mb-0'),
                 Column('descripcion', css_class='form-group col-md-6 mb-0'),
-                Column('banco', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('sucursal', css_class='form-group col-md-3 mb-0'),
-                Column('titular', css_class='form-group col-md-6 mb-0'),
-                Column('emision_fecha', css_class='form-group col-md-6 mb-0'),
+                Column('banco', css_class='form-group col-md-3 mb-0'),
+                Column('sucursal', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
-
+                Column('cuenta_contable', css_class='form-group col-md-3 mb-0'),
+                Column('pago_dif', css_class='form-group col-md-3 mb-0'),
+                Column('titular', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('emision_fecha', css_class='form-group col-md-3 mb-0'),
                 Column('emision_saldo', css_class='form-group col-md-3 mb-0'),
-                Column('acreditacion_fecha', css_class='form-group col-md-6 mb-0'),
-                Column('acreditacion_saldo', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('acreditacion_fecha', css_class='form-group col-md-3 mb-0'),
+                Column('acreditacion_saldo', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             ButtonHolder(

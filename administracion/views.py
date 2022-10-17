@@ -624,7 +624,6 @@ def moneda_eliminar(request, id):
     return redirect(url)@login_required(login_url='ingresar')
 
 
-
 @login_required(login_url='ingresar')
 @permission_required("administracion.grupoeconomico_puede_listar", None, raise_exception=True)
 def grupoeconomico_listar(request):
