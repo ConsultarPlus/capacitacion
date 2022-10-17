@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from bancos.forms import FiltroCuentaBancaria, FiltroChequera
-from bancos.models import CuentaBancaria, Chequera
+from bancos.models import CuentaBancaria, Chequera, MovBancario
 from tabla.filters import paginador
 
 
@@ -50,3 +50,24 @@ def chequera_filtrar(query_dict):
             'registros': registros,
             'filtros_form': form}
 
+
+def mov_bancario_filtrar(query_dict):
+    buscar = query_dict.GET.get('buscar')
+    items = query_dict.GET.get('items')
+
+    filtrado = MovBancario.objects.all()
+
+    if buscar != '' and buscar is not None:
+        filtrado = filtrado.filter(Q(tipo__icontains=buscar) |
+                                   Q(numero__icontains=buscar)
+                                   )
+
+    registros = filtrado.count()
+    paginado = paginador(query_dict, filtrado)
+
+    form = FiltroChequera(initial={'buscar': buscar,
+                                   'items': items})
+    return {'filter': filtrado,
+            'paginado': paginado,
+            'registros': registros,
+            'filtros_form': form}

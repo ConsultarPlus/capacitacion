@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from perfiles.funcs import debe_cambiar_clave, get_preferencia
 from django.contrib.auth.decorators import login_required, permission_required

@@ -20,6 +20,7 @@ def menu_processor(request):
         moneda_puede_listar = request.user.has_perm('administracion.moneda_puede_listar')
         grupocontactos_puede_listar = request.user.has_perm('administracion.grupocontactos_puede_listar')
         grupoeconomico_puede_listar = request.user.has_perm('administracion.grupoeconomico_puede_listar')
+        departamento_puede_listar = request.user.has_perm('administracion.administracion_puede_listar')
 
         # CONFIGURACIÓN
         mostrar_admin = False
@@ -28,19 +29,26 @@ def menu_processor(request):
         numerador_puede_listar = request.user.has_perm('numeradores.numerador_puede_listar')
         tabla_puede_listar = request.user.has_perm('tablas.tabla_puede_listar')
         variable_puede_listar = request.user.has_perm('tablas.variable_puede_listar')
-        departamento_puede_listar = request.user.has_perm('administracion.administracion_puede_listar')
+        documento_puede_listar = request.user.has_perm('documentos.puede_listar')
+        plantilla_puede_listar = request.user.has_perm('tabla.plantilla_puede_listar')
+        grupo_administracion_mostrar = False
+        grupo_config_mostrar = False
+
+        # LOCALIDADES
         pais_puede_listar = request.user.has_perm('localidades.pais_puede_listar')
         provincia_puede_listar = request.user.has_perm('localidades.provincia_puede_listar')
         localidad_puede_listar = request.user.has_perm('localidades.localidad_puede_listar')
-        documento_puede_listar = request.user.has_perm('documentos.puede_listar')
-        plantilla_puede_listar = request.user.has_perm('tabla.plantilla_puede_listar')
+
+        # CONTABILIDAD
         plan_de_cuentas_puede_listar = request.user.has_perm('contabilidad.plan_de_cuentas_puede_listar')
+
+        # FINANZAS
         caja_puede_listar = request.user.has_perm('finanzas.caja_puede_listar')
+
+        # BANCOS
         cuenta_bancaria_puede_listar = request.user.has_perm('bancos.cuenta_bancaria_puede_listar')
         chequera_puede_listar = request.user.has_perm('bancos.chequera_puede_listar')
-
-        grupo_administracion_mostrar = False
-        grupo_config_mostrar = False
+        mov_bancario_puede_listar = request.user.has_perm('bancos.mov_bancario_puede_listar')
 
         if viajante_puede_listar:
             grupo_administracion_mostrar = True
@@ -111,6 +119,8 @@ def menu_processor(request):
                    'modelo': 'CUENTA_BANCARIA', 'visible': cuenta_bancaria_puede_listar},
                   {'id_grupo': 'BNC', 'url': reverse('chequera_listar'), 'titulo': 'Chequeras',
                    'modelo': 'CHEQUERA', 'visible': chequera_puede_listar},
+                  {'id_grupo': 'BNC', 'url': reverse('mov_bancario_listar'), 'titulo': 'Movimientos bancarios',
+                   'modelo': 'MOV_BANCARIO', 'visible': mov_bancario_puede_listar},
                   ]
 
         for menu in menues:

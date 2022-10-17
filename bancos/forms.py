@@ -5,7 +5,7 @@ from crispy_forms.bootstrap import FieldWithButtons
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, ButtonHolder, Layout, Row, Column, Button
 from tabla.widgets import DatePickerInput
-from bancos.models import CuentaBancaria, Chequera
+from bancos.models import CuentaBancaria, Chequera, MovBancario
 from tabla.funcs import boton_buscar
 from tabla.listas import ITEMS_X_PAG
 from tabla.widgets import SelectLiveSearchInput
@@ -166,6 +166,114 @@ class ChequeraForm(forms.ModelForm):
             Row(
                 Column('dias_diferencia', css_class='form-group col-md-4 mb-0'),
                 Column('proximo_numero', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Grabar'),
+                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
+            )
+        )
+
+
+class FiltroMovBancario(forms.Form):
+    buscar = forms.CharField(max_length=60, required=False)
+    items = forms.IntegerField(max_value=30,
+                               min_value=5,
+                               required=False,
+                               label='ítems x pág.')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_method = 'GET'
+        self.helper.disable_csrf = True
+        self.fields['items'].widget = SelectLiveSearchInput(choices=ITEMS_X_PAG)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control-sm'
+
+        self.helper.layout = Layout(
+            Row(
+                Column('buscar', css_class='form-group col-md-2 mb-0 '),
+                FieldWithButtons('items', boton_buscar(), css_class='form-group col-md-2 mb-0'),
+                css_class='form-row'
+            )
+        )
+
+
+class MovBancarioForm(forms.ModelForm):
+    class Meta:
+        model = MovBancario
+        fields = '__all__'
+
+    emision = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False,
+                              initial=datetime.date.today().strftime('%d/%m/%Y'))
+    vencimiento = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False,
+                                  initial=datetime.date.today().strftime('%d/%m/%Y'))
+    acreditacion = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False,
+                                   initial=datetime.date.today().strftime('%d/%m/%Y'))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        try:
+            emision = kwargs['initial']['emision']
+            self.fields['emision'].initial = emision
+        except Exception as e:
+            pass
+        try:
+            vencimiento = kwargs['initial']['vencimiento']
+            self.fields['vencimiento'].initial = vencimiento
+        except Exception as e:
+            pass
+        try:
+            acreditacion = kwargs['initial']['acreditacion']
+            self.fields['acreditacion'].initial = acreditacion
+        except Exception as e:
+            pass
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'id_form'
+        self.helper.layout = Layout(
+            Row(
+                Column('tipo', css_class='form-group col-md-3 mb-0'),
+                Column('numero', css_class='form-group col-md-3 mb-0'),
+                Column('cuenta_bancaria', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('emision', css_class='form-group col-md-3 mb-0'),
+                Column('vencimiento', css_class='form-group col-md-3 mb-0'),
+                Column('acreditacion', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('importe', css_class='form-group col-md-4 mb-0'),
+                Column('concepto_bancario', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('clearing', css_class='form-group col-md-4 mb-0'),
+                Column('observacion', css_class='form-group col-md-4 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('nro_conciliacion', css_class='form-group col-md-3 mb-0'),
+                Column('id_asociado', css_class='form-group col-md-3 mb-0'),
+                Column('usuario', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('moneda', css_class='form-group col-md-3 mb-0'),
+                Column('cotizacion', css_class='form-group col-md-3 mb-0'),
+                Column('transferido', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('chepro_anulado', css_class='form-group col-md-3 mb-0'),
+                Column('lote', css_class='form-group col-md-3 mb-0'),
+                Column('sucursal', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             ButtonHolder(

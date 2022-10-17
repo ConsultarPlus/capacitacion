@@ -1,0 +1,93 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+<h1>Movimientos Bancarios</h1>
+{% if filtros_form %}
+    {% crispy filtros_form %}
+{% endif %}
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'mov_bancario_agregar' %}" class="addlink">
+                    {% traducir 'Movimientos Bancarios' 'MOV_BANCARIO' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'tipo' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'numero' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'cuenta_bancaria' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'emision' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'vencimiento' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'acreditacion' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'importe' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'concepto_bancario' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'clearing' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'observacion' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'nro_conciliacion' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'id_asociado' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'usuario' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'moneda' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'cotizacion' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'transferido' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'chepro_anulado' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'lote' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'sucursal' 'MOV_BANCARIO' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mov_bancario in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ mov_bancario.tipo | limpiar_none }}</td>
+                        <td> {{ mov_bancario.numero | limpiar_none }}</td>
+                        <td> {{ mov_bancario.cuenta_bancaria | limpiar_none }}</td>
+                        <td> {{ mov_bancario.emision | limpiar_none }}</td>
+                        <td> {{ mov_bancario.vencimiento | limpiar_none }}</td>
+                        <td> {{ mov_bancario.acreditacion | limpiar_none }}</td>
+                        <td> {{ mov_bancario.importe | limpiar_none }}</td>
+                        <td> {{ mov_bancario.concepto_bancario | limpiar_none }}</td>
+                        <td> {{ mov_bancario.clearing | limpiar_none }}</td>
+                        <td> {{ mov_bancario.observacion | limpiar_none }}</td>
+                        <td> {{ mov_bancario.nro_conciliacion | limpiar_none }}</td>
+                        <td> {{ mov_bancario.id_asociado | limpiar_none }}</td>
+                        <td> {{ mov_bancario.usuario | limpiar_none }}</td>
+                        <td> {{ mov_bancario.moneda | limpiar_none }}</td>
+                        <td> {{ mov_bancario.cotizacion | limpiar_none }}</td>
+                        <td> {{ mov_bancario.transferido | limpiar_none }}</td>
+                        <td> {{ mov_bancario.chepro_anulado | limpiar_none }}</td>
+                        <td> {{ mov_bancario.lote | limpiar_none }}</td>
+                        <td> {{ mov_bancario.sucursal | limpiar_none }}</td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'mov_bancario_editar' mov_bancario.id %}"
+                               title="{% traducir 'Editar' 'MOV_BANCARIO' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'MOV_BANCARIO' %}"
+                               onclick="return confirmarAccion('{% url 'mov_bancario_eliminar' mov_bancario.id %}',
+                               '¿Eliminar movimiento bancario?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>

@@ -109,3 +109,12 @@ MODELOS = (
            ('GENERAL', 'General'),
            ('DEPARTAMENTO', 'Departamento')
            )
+
+TIPO_MOV_BANCARIO = (
+    ('CR', 'Crédito'),
+    ('DB', 'Débito'),
+    ('DP', 'DEPÓSITO'),
+    ('NE', 'NEGOCIACIÓN'),
+    ('CA', 'CAUCIÓN'),
+    ('RE', 'RETORNO')
+    )
