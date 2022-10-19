@@ -41,12 +41,12 @@ def cuenta_bancaria_editar(request, id):
 
     if request.method == 'POST':
         post = request.POST.copy()
-        form = CuentaBancariaForm(post, request.FILES, instance=cuenta_bancaria)
+        form = CuentaBancariaForm(post, request.FILES, instance=cuenta_bancaria, id=id)
         if form.is_valid():
             form.save()
             return redirect('cuenta_bancaria_listar')
     else:
-        form = CuentaBancariaForm(instance=cuenta_bancaria)
+        form = CuentaBancariaForm(instance=cuenta_bancaria, id=id)
 
     template_name = 'CuentaBancariaForm.html'
     contexto = {'form': form, 'CuentaBancaria': CuentaBancaria}
@@ -101,12 +101,12 @@ def chequera_editar(request, id):
 
     if request.method == 'POST':
         post = request.POST.copy()
-        form = ChequeraForm(post, request.FILES, instance=chequera)
+        form = ChequeraForm(post, request.FILES, instance=chequera, id=id)
         if form.is_valid():
             form.save()
             return redirect('chequera_listar')
     else:
-        form = ChequeraForm(instance=chequera)
+        form = ChequeraForm(instance=chequera, id=id)
 
     template_name = 'ChequeraForm.html'
     contexto = {'form': form, 'Chequera': Chequera}
@@ -162,12 +162,12 @@ def mov_bancario_editar(request, id):
 
     if request.method == 'POST':
         post = request.POST.copy()
-        form = MovBancarioForm(post, request.FILES, instance=mov_bancario)
+        form = MovBancarioForm(post, request.FILES, instance=mov_bancario, id=id)
         if form.is_valid():
             form.save()
             return redirect('mov_bancario_listar')
     else:
-        form = MovBancarioForm(instance=mov_bancario)
+        form = MovBancarioForm(instance=mov_bancario, id=id)
 
     template_name = 'MovBancarioForm.html'
     contexto = {'form': form, 'MovBancario': MovBancario}

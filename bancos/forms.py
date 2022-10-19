@@ -43,28 +43,39 @@ class CuentaBancariaForm(forms.ModelForm):
         model = CuentaBancaria
         fields = '__all__'
 
-    emision_fecha = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False,
-                                    initial=datetime.date.today().strftime('%d/%m/%Y'))
-    acreditacion_fecha = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False,
-                                         initial=datetime.date.today().strftime('%d/%m/%Y   '))
+    emision_fecha = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+    acreditacion_fecha = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
 
     def __init__(self, *args, **kwargs):
+
+        try:
+            id = kwargs.pop('id')
+            initial = kwargs.get('initial', {})
+        except Exception as e:
+            pass
+        try:
+            initial['emision_fecha'] = CuentaBancaria.objects.get(pk=id).emision_fecha.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            initial['acreditacion_fecha'] = CuentaBancaria.objects.get(pk=id).acreditacion_fecha.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            kwargs['initial'] = initial
+        except Exception as e:
+            pass
+
         super().__init__(*args, **kwargs)
 
+        self.fields['emision_fecha'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
+        self.fields['acreditacion_fecha'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
         self.helper = FormHelper()
         self.helper.form_id = 'id_form'
-        try:
-            emision_fecha = kwargs['initial']['emision_fecha']
-            self.fields['emision_fecha'].initial = emision_fecha
-        except Exception as e:
-            pass
-
-        try:
-            acreditacion_fecha = kwargs['initial']['acreditacion_fecha']
-            self.fields['acreditacion_fecha'].initial = acreditacion_fecha
-        except Exception as e:
-            pass
-
         self.helper.layout = Layout(
             Row(
                 Column('cuenta', css_class='form-group col-md-3 mb-0'),
@@ -131,18 +142,29 @@ class ChequeraForm(forms.ModelForm):
         model = Chequera
         fields = '__all__'
 
-    recibida = forms.DateField(input_formats=['%d/%m/%y'], widget=DatePickerInput(), required=False,
-                               initial=datetime.date.today().strftime('%d/%m/%y'))
+    recibida = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
         try:
-            recibida = kwargs['initial']['recibida']
-            self.fields['recibida'].initial = recibida
+            id = kwargs.pop('id')
+            initial = kwargs.get('initial', {})
+        except Exception as e:
+            pass
+        try:
+            initial['recibida'] = Chequera.objects.get(pk=id).recibida.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            kwargs['initial'] = initial
         except Exception as e:
             pass
 
+        super().__init__(*args, **kwargs)
+
+        self.fields['recibida'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
         self.helper = FormHelper()
         self.helper.form_id = 'id_form'
         self.helper.layout = Layout(
@@ -207,32 +229,45 @@ class MovBancarioForm(forms.ModelForm):
         model = MovBancario
         fields = '__all__'
 
-    emision = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False,
-                              initial=datetime.date.today().strftime('%d/%m/%Y'))
-    vencimiento = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False,
-                                  initial=datetime.date.today().strftime('%d/%m/%Y'))
-    acreditacion = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False,
-                                   initial=datetime.date.today().strftime('%d/%m/%Y'))
+    emision = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+    vencimiento = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+    acreditacion = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
 
     def __init__(self, *args, **kwargs):
+
+        try:
+            id = kwargs.pop('id')
+            initial = kwargs.get('initial', {})
+        except Exception as e:
+            pass
+        try:
+            initial['emision'] = MovBancario.objects.get(pk=id).emision.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            initial['vencimiento'] = MovBancario.objects.get(pk=id).vencimiento.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            initial['acreditacion'] = MovBancario.objects.get(pk=id).acreditacion.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            kwargs['initial'] = initial
+        except Exception as e:
+            pass
+
         super().__init__(*args, **kwargs)
 
-        try:
-            emision = kwargs['initial']['emision']
-            self.fields['emision'].initial = emision
-        except Exception as e:
-            pass
-        try:
-            vencimiento = kwargs['initial']['vencimiento']
-            self.fields['vencimiento'].initial = vencimiento
-        except Exception as e:
-            pass
-        try:
-            acreditacion = kwargs['initial']['acreditacion']
-            self.fields['acreditacion'].initial = acreditacion
-        except Exception as e:
-            pass
-
+        self.fields['emision'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
+        self.fields['vencimiento'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
+        self.fields['acreditacion'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
         self.helper = FormHelper()
         self.helper.form_id = 'id_form'
         self.helper.layout = Layout(
