@@ -21,7 +21,7 @@ class Departamento(models.Model):
 
 
 class Deposito(models.Model):
-    codigo = models.CharField(max_length=5)
+    codigo = models.CharField(max_length=5, verbose_name="Código")
     descripcion = models.CharField(max_length=60, verbose_name='Descripción')
     afecta_stock = models.CharField(max_length=1, default="N", choices=SINO)
     activo = models.CharField(max_length=1, default="N", choices=SINO)

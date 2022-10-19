@@ -186,7 +186,7 @@ def localidad_eliminar(request, id):
     return redirect(url)
 
 
-# funcion auxiliar para filtrar las provincias que se muestran en el filtro de busqueda según el país
+# funciones auxiliares para filtrar las provincias y localidades que se muestran en el filtro de busqueda
 def cargar_provincias(request):
     pais_id = request.GET.get('pais')
 
@@ -196,3 +196,14 @@ def cargar_provincias(request):
         provincia = Provincia.objects.none()
 
     return render(request, 'provincias_dropdown.html', {'provincia': provincia})
+
+
+def cargar_localidades(request):
+    provincia_id = request.GET.get('provincia')
+
+    if provincia_id != '' and provincia_id is not None:
+        localidad = Localidad.objects.filter(provincia=provincia_id).order_by('descripcion')
+    else:
+        localidad = Localidad.objects.none()
+
+    return render(request, 'localidades_dropdown.html', {'localidad': localidad})

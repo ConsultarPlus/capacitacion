@@ -47,8 +47,6 @@ def cuenta_contable_valida2(request, form):  # esta funcion es un quilombo, segu
         pos_total += pos + 1
         cuenta_contable_disp = cuenta_contable_disp[pos + 1:]  # cortar la cuenta contable para el siguiente chequeo
 
-        print("\n\n", cuenta_contable, pos_total, cuenta_contable_disp, pos, var_dict[f'V_N{i+1}'])
-
         if var_dict[f'V_N{i+1}'] != pos and pos != -1 or pos == -1 and var_dict[f'V_N{i+1}'] != len(cuenta_contable_disp):  # verifica que la sintaxis sea correcta
             mensaje = 'La sintaxis de la cuenta contable no es correcta.'
             messages.add_message(request, messages.ERROR, mensaje)

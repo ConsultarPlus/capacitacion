@@ -2,9 +2,11 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Button, ButtonHolder, HTML
 from crispy_forms.bootstrap import FieldWithButtons
+
+from localidades.models import Pais, Provincia
 from tabla.widgets import SelectLiveSearchInput
 from tabla.funcs import boton_buscar
-from tabla.listas import MODELOS, ITEMS_X_PAG, SINO, ACTIVO, PERIODO, CAJA, TIPO
+from tabla.listas import SINO, CAJA, TIPO
 from tabla.gets import get_choices_mas_vacio
 from tabla.listas import ITEMS_X_PAG, ACTIVO, PERIODO
 from administracion.models import Viajante, Transporte, CondicionDePago, MedioDePago, Moneda, Departamento, Deposito, GrupoContactos, GrupoEconomico, VCN
@@ -286,17 +288,17 @@ class CondicionDePagoForm(forms.ModelForm):
 
 class DepositoForm(forms.ModelForm):
 
+    pais = forms.ModelChoiceField(queryset=Pais.objects.all(), required=False)
+    provincia = forms.ModelChoiceField(queryset=Provincia.objects.all(), required=False)
+
     class Meta:
         model = Deposito
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.helper = FormHelper()
-        self.fields['codigo'].label = 'Código'
-        self.fields['descripcion'].label = 'Descripción'
-        self.fields['domicilio'].label = 'Domicilio'
-        self.fields['telefono'].label = 'Teléfono'
         self.fields['activo'].widget = SelectLiveSearchInput(choices=ACTIVO)
         self.fields['afecta_stock'].widget = SelectLiveSearchInput(choices=SINO)
         self.fields['externo'].widget = SelectLiveSearchInput(choices=SINO)
@@ -321,8 +323,10 @@ class DepositoForm(forms.ModelForm):
             css_class='form-row'
             ),
             Row(
-                Column('localidad', css_class='form-group col-md-3 mb-0'),
-                css_class='form-row'
+            Column('pais', css_class='form-group col-md-2 mb-0'),
+            Column('provincia', css_class='form-group col-md-2 mb-0'),
+            Column('localidad', css_class='form-group col-md-2 mb-0'),
+            css_class='form-row'
             ),
             ButtonHolder(
                 Submit('submit', 'Grabar'),

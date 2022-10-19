@@ -11,8 +11,12 @@
 
     {% crispy form %}
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="{% static " js/registros_de_entidad.js" %} " ></script>
+    <form hidden id="urlsForm"
+        cargar_provincias-url="{% url 'ajax_cargar_provincias' %}"
+        cargar_localidades-url="{% url 'ajax_cargar_localidades' %}"
+        novalidate>
+    </form>
+    <script src='{% static "js/provincias_ajax.js" %}'></script>
+    <script src='{% static "js/localidades_ajax.js" %}'></script>
 
 {% endblock %}

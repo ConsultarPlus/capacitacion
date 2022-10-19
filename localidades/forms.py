@@ -150,7 +150,6 @@ class FiltroLocalidad(forms.Form):
 
         try:
             seleccionar_provincia = kwargs['initial']['provincia']
-            print('seleccionar_provincia', seleccionar_provincia)
             if seleccionar_provincia is not None and seleccionar_provincia != '':
                 self.fields['provincia'].initial = seleccionar_provincia
         except (ValueError, TypeError):
