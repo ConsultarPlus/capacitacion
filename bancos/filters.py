@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from bancos.forms import FiltroCuentaBancaria, FiltroChequera
-from bancos.models import CuentaBancaria, Chequera, MovBancario
+from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle
 from tabla.filters import paginador
 
 
@@ -71,3 +71,14 @@ def mov_bancario_filtrar(query_dict):
             'paginado': paginado,
             'registros': registros,
             'filtros_form': form}
+
+
+def mov_bancarios_detalle_filtrar(query_dict):
+
+    filtrado = MovBancarios_Detalle.objects.all()
+    registros = filtrado.count()
+    paginado = paginador(query_dict, filtrado)
+
+    return {'filter': filtrado,
+            'paginado': paginado,
+            'registros': registros}

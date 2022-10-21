@@ -2,9 +2,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, redirect
 
-from bancos.filters import cuenta_bancaria_filtrar, chequera_filtrar, mov_bancario_filtrar
-from bancos.forms import ChequeraForm, CuentaBancariaForm, MovBancarioForm
-from bancos.models import CuentaBancaria, Chequera, MovBancario
+from bancos.filters import cuenta_bancaria_filtrar, chequera_filtrar, mov_bancario_filtrar, \
+    mov_bancarios_detalle_filtrar
+from bancos.forms import ChequeraForm, CuentaBancariaForm, MovBancarioForm, MovBancarios_DetalleForm
+from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle
+from perfiles.models import Perfil
+from tabla.listas import TIPO_MOV_BANCARIO, DP_NE_CA_RE
 
 
 @login_required(login_url='ingresar')
@@ -127,7 +130,6 @@ def chequera_eliminar(request, id):
     return redirect(url)
 
 
-
 @login_required(login_url='ingresar')
 def mov_bancario_listar(request):
     contexto = mov_bancario_filtrar(request)
@@ -138,16 +140,26 @@ def mov_bancario_listar(request):
 @login_required(login_url='ingresar')
 @permission_required("finanzas.mov_bancario_agregar", None, raise_exception=True)
 def mov_bancario_agregar(request):
+    usuario_actual = Perfil.objects.get(user=request.user.pk)
     if request.POST:
-        form = MovBancarioForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        print(request.POST['submit'])
+        movForm = MovBancarioForm(request.POST, request.FILES, user=usuario_actual, choices=DP_NE_CA_RE)
+        detallesForm = MovBancarios_DetalleForm(request.POST, request.FILES)
+
+        if request.POST['submit'] == "Grabar detalle" and detallesForm.is_valid():
+            detallesForm.save()
+            return redirect('mov_bancario_agregar')
+        if request.POST['submit'] == "Grabar movimiento" and movForm.is_valid():
+            movForm.save()
             return redirect('mov_bancario_listar')
     else:
-        form = MovBancarioForm()
+        movForm = MovBancarioForm(user=usuario_actual, choices=DP_NE_CA_RE)
+        detallesForm = MovBancarios_DetalleForm()
 
     template_name = 'MovBancarioForm.html'
-    contexto = {'form': form}
+    contexto = {'movForm': movForm,
+                'detallesForm': detallesForm}
+    contexto.update(mov_bancarios_detalle_filtrar(request))
     return render(request, template_name, contexto)
 
 
@@ -162,15 +174,17 @@ def mov_bancario_editar(request, id):
 
     if request.method == 'POST':
         post = request.POST.copy()
-        form = MovBancarioForm(post, request.FILES, instance=mov_bancario, id=id)
-        if form.is_valid():
-            form.save()
+        movForm = MovBancarioForm(post, request.FILES, instance=mov_bancario, id=id, choices=TIPO_MOV_BANCARIO)
+        detallesForm = MovBancarios_DetalleForm(request.POST, request.FILES)
+        if movForm.is_valid():
+            movForm.save()
             return redirect('mov_bancario_listar')
     else:
-        form = MovBancarioForm(instance=mov_bancario, id=id)
+        movForm = MovBancarioForm(instance=mov_bancario, id=id, choices=TIPO_MOV_BANCARIO)
+        detallesForm = MovBancarios_DetalleForm()
 
     template_name = 'MovBancarioForm.html'
-    contexto = {'form': form, 'MovBancario': MovBancario}
+    contexto = {'movForm': movForm, 'detallesForm': detallesForm, 'MovBancario': MovBancario}
     return render(request, template_name, contexto)
 
 
@@ -185,4 +199,13 @@ def mov_bancario_eliminar(request, id):
         mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
                   'otros registros. Otra opción es desactivarlo.'
         messages.add_message(request, messages.ERROR, mensaje)
+    return redirect(url)
+
+
+@login_required(login_url='ingresar')
+@permission_required("finanzas.mov_bancarios_detalle_eliminar", None, raise_exception=True)
+def mov_bancarios_detalle_eliminar(request, id):
+    url = 'mov_bancario_agregar'
+    mov_bancarios_detalle = MovBancarios_Detalle.objects.get(pk=id)
+    mov_bancarios_detalle.delete()
     return redirect(url)
