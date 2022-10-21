@@ -1,0 +1,1 @@
+for /f "tokens=*" %%F IN ('DIR .\ /AD /B') do @py manage.py migrate %%F zero
