@@ -83,7 +83,8 @@ class CuentaBancariaForm(forms.ModelForm):
             ),
             Row(
                 Column('banco', css_class='form-group col-md-3 mb-0'),
-                Column('sucursal', css_class='form-group col-md-4 mb-0'),
+                Column('sucursal', css_class='form-group col-md-3 mb-0'),
+                Column('moneda', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -303,7 +304,6 @@ class MovBancarioForm(forms.ModelForm):
             Row(
                 Column('importe', css_class='form-group col-md-2 mb-0'),
                 Column('cotizacion', css_class='form-group col-md-2 mb-0'),
-                Column('moneda', css_class='form-group col-md-1  mb-0'),
                 css_class='form-row'
             ),
             Row(

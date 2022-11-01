@@ -30,6 +30,7 @@
                     <th>{% traducir 'banco' 'CUENTA_BANCARIA' %}</th>
                     <th>{% traducir 'sucursal' 'CUENTA_BANCARIA' %}</th>
                     <th>{% traducir 'titular' 'CUENTA_BANCARIA' %}</th>
+                    <th>{% traducir 'moneda' 'CUENTA_BANCARIA' %}</th>
                     <th>{% traducir 'cuenta contable' 'CUENTA_BANCARIA' %}</th>
                     <th>{% traducir 'pago diferido' 'CUENTA_BANCARIA' %}</th>
                     <th>{% traducir 'emision fecha' 'CUENTA_BANCARIA' %}</th>
@@ -49,6 +50,7 @@
                         <td> {{ cuenta_bancaria.banco | limpiar_none }}</td>
                         <td> {{ cuenta_bancaria.sucursal | limpiar_none }}</td>
                         <td> {{ cuenta_bancaria.titular | limpiar_none }}</td>
+                        <td> {{ cuenta_bancaria.moneda | limpiar_none }}</td>
                         <td> {{ cuenta_bancaria.cuenta_contable | limpiar_none }}</td>
                         <td> {{ cuenta_bancaria.pago_dif | limpiar_none }}</td>
                         <td> {{ cuenta_bancaria.emision_fecha | limpiar_none }}</td>

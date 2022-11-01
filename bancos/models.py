@@ -15,6 +15,7 @@ class CuentaBancaria(models.Model):
                               limit_choices_to={'entidad': 'BANCO'})
     sucursal = models.CharField(max_length=60, null=True, blank=True)
     titular = models.CharField(max_length=60, null=True, blank=True)
+    moneda = models.ForeignKey(Moneda, null=True, blank=True, on_delete=models.DO_NOTHING)
     cuenta_contable = models.ForeignKey(PlanDeCuentas, null=True, blank=True, on_delete=models.DO_NOTHING, related_name="cuenta_contable_fkcc")
     pago_dif = models.ForeignKey(PlanDeCuentas, null=True, blank=True, on_delete=models.DO_NOTHING, related_name="pago_dif_fkcc")
     emision_fecha = models.DateField(null=True, blank=True)
@@ -58,7 +59,7 @@ class MovBancario(models.Model):
     nro_conciliacion = models.IntegerField(null=True, blank=True)
     id_asociado = models.IntegerField(null=True, blank=True)
     usuario = models.ForeignKey(Perfil, null=True, blank=True, on_delete=models.DO_NOTHING)
-    moneda = models.ForeignKey(Moneda, null=True, blank=True, on_delete=models.DO_NOTHING)
+
     cotizacion = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True)
     transferido = models.CharField(max_length=12, null=True, blank=True)
     chepro_anulado = models.IntegerField(null=True, blank=True)
