@@ -8,10 +8,11 @@
     {% else %}
         <h2>Agregar</h2>
     {% endif %}
-
     {% crispy movForm %}
     <br>
     {% crispy detallesForm %}
     {% include "mov_bancarios_detalle_list_block.html" %}
+<script src="{% static "js/confirmarAccion.js" %} " ></script>
 
 {% endblock %}
+

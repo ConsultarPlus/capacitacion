@@ -1,10 +1,11 @@
+from datetime import date
 from django import forms
 from crispy_forms.bootstrap import FieldWithButtons
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, ButtonHolder, Layout, Row, Column, Button
-from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle
+from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle, Cheques_Terceros
 from tabla.funcs import boton_buscar
-from tabla.listas import ITEMS_X_PAG, TIPO_MOV_BANCARIO
+from tabla.listas import ITEMS_X_PAG
 from tabla.widgets import SelectLiveSearchInput
 from tabla.widgets import DatePickerInput
 
@@ -226,10 +227,17 @@ class MovBancarioForm(forms.ModelForm):
     class Meta:
         model = MovBancario
         fields = '__all__'
+        labels = {
+            "numero": "Número",
+            "cotizacion": "Cotización",
+            "observacion": "Observación",
+            "nro_conciliacion": "Numero de conciliación",
+        }
 
-    emision = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+
+    emision = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False, label="Emisión")
     vencimiento = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
-    acreditacion = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+    acreditacion = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False, label="Acreditación")
 
     def __init__(self, *args, **kwargs):
 
@@ -286,9 +294,10 @@ class MovBancarioForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('emision', css_class='form-group col-md-1 mb-0'),
-                Column('vencimiento', css_class='form-group col-md-1 mb-0'),
-                Column('acreditacion', css_class='form-group col-md-1 mb-0'),
+                Column('emision', css_class='form-group col-md-2 mb-0'),
+                Column('vencimiento', css_class='form-group col-md-2 mb-0'),
+                Column('clearing', css_class='form-group col-md-1 mb-0'),
+                Column('acreditacion', css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -299,7 +308,6 @@ class MovBancarioForm(forms.ModelForm):
             ),
             Row(
                 Column('concepto_bancario', css_class='form-group col-md-3 mb-0'),
-                Column('clearing', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -322,7 +330,7 @@ class MovBancarioForm(forms.ModelForm):
                 css_class='form-row'
             ),
             ButtonHolder(
-                Submit('submit', 'Grabar movimiento', css_id='movSubmit'),
+                Submit('submit', 'Grabar movimiento', css_id='movSubmit', form="mov_form"),
                 Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
             )
         )
@@ -332,18 +340,67 @@ class MovBancarios_DetalleForm(forms.ModelForm):
     class Meta:
         model = MovBancarios_Detalle
         fields = '__all__'
+        labels = {
+            "medio_pago": "Medio de pago",
+            "importe_det": "Importe",
+        }
 
-    vencimiento = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+    vencimiento_det = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False, label="Vencimiento")
 
     def __init__(self, *args, **kwargs):
 
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'detalles_form'
+        self.fields['vencimiento_det'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
+        self.helper.layout = Layout(
+            Row(
+                Column('medio_pago', css_class='form-group col-md-1 mb-0'),
+                Column('cheque', css_class='form-group col-md-1 mb-0'),
+                Column('importe_det', css_class='form-group col-md-1 mb-0'),
+                Column('vencimiento_det', css_class='form-group col-md-1 mb-0'),
+                Column('cheque_numero', css_class='form-group col-md-1 mb-0'),
+                Column('estado_anterior', css_class='form-group col-md-1 mb-0'),
+                Submit('submit', 'Grabar detalle', css_id="detallesSubmit", form="detalles_form"),
+                css_class='form-row'
+            ),
+        )
+
+        
+class Cheques_TercerosForm(forms.ModelForm):
+    class Meta:
+        model = Cheques_Terceros
+        fields = '__all__'
+
+    vencimiento = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+    acreditacion = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False, label="Acreditación")
+    ingreso = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+    egreso = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        
         initial = kwargs.get('initial', {})
         try:
             id = kwargs.pop('id')
         except Exception as e:
             pass
         try:
-            initial['vencimiento'] = MovBancarios_Detalle.objects.get(pk=id).vencimiento.strftime('%d/%m/%Y')
+            initial['vencimiento'] = Cheques_Terceros.objects.get(pk=id).vencimiento.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            initial['acreditacion'] = Cheques_Terceros.objects.get(pk=id).acreditacion.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            initial['ingreso'] = Cheques_Terceros.objects.get(pk=id).egreso.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            initial['egreso'] = Cheques_Terceros.objects.get(pk=id).ingreso.strftime('%d/%m/%Y')
         except Exception as e:
             pass
         kwargs['initial'] = initial
@@ -353,17 +410,68 @@ class MovBancarios_DetalleForm(forms.ModelForm):
         self.fields['vencimiento'].widget.attrs.update({
             'autocomplete': 'off'
         })
+        self.fields['acreditacion'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
+        self.fields['ingreso'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
+        self.fields['egreso'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
         self.helper = FormHelper()
-        self.helper.form_id = 'detalles_form'
+        self.helper.form_id = 'form'
         self.helper.layout = Layout(
             Row(
-                Column('medio_pago', css_class='form-group col-md-1 mb-0'),
-                Column('cheque', css_class='form-group col-md-1 mb-0'),
-                Column('importe', css_class='form-group col-md-1 mb-0'),
-                Column('vencimiento', css_class='form-group col-md-1 mb-0'),
-                Column('cheque_numero', css_class='form-group col-md-1 mb-0'),
-                Column('estado_anterior', css_class='form-group col-md-1 mb-0'),
-                Submit('submit', 'Grabar detalle', css_id="detallesSubmit"),
+                Column('importe', css_class='form-group col-md-3 mb-0'),
+                Column('vencimiento', css_class='form-group col-md-3 mb-0'),
+                Column('banco', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
+            Row(
+                Column('sucursal', css_class='form-group col-md-3 mb-0'),
+                Column('localidad', css_class='form-group col-md-3 mb-0'),
+                Column('numero', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('clearing', css_class='form-group col-md-3 mb-0'),
+                Column('acreditacion', css_class='form-group col-md-3 mb-0'),
+                Column('ingreso', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('egreso', css_class='form-group col-md-3 mb-0'),
+                Column('estado', css_class='form-group col-md-3 mb-0'),
+                Column('endosado', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('observacion', css_class='form-group col-md-3 mb-0'),
+                Column('asociado_ingreso', css_class='form-group col-md-3 mb-0'),
+                Column('asociado_egreso', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('librador', css_class='form-group col-md-3 mb-0'),
+                Column('librador_cuit', css_class='form-group col-md-3 mb-0'),
+                Column('caja', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('a_la_orden', css_class='form-group col-md-3 mb-0'),
+                Column('imputado_difcot', css_class='form-group col-md-3 mb-0'),
+                Column('marcha_rechazado', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('debcre', css_class='form-group col-md-3 mb-0'),
+                Column('cuenta_nro', css_class='form-group col-md-3 mb-0'),
+                Column('electronico', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Grabar', css_id='Submit'),
+                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
+            )
         )

@@ -1,6 +1,5 @@
 from django.db import models
 from tabla.listas import SINO
-from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Pais(models.Model):
@@ -22,7 +21,7 @@ class Provincia(models.Model):
     alicuota = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
-        return self.descripcion
+        return f"{self.descripcion}, {self.pais}"
 
 
 class Localidad(models.Model):
@@ -32,4 +31,4 @@ class Localidad(models.Model):
     provincia = models.ForeignKey(Provincia, on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self):
-        return self.descripcion
+        return f"{self.descripcion}, {self.provincia.descripcion}, {self.provincia.pais}"

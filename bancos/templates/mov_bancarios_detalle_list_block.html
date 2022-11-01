@@ -4,14 +4,14 @@
 
 <div style="overflow-x:auto;">
     <br>
-        <table id="tab">
+        <table id="detalles_tab">
             <thead>
                 <tr>
-                    <th>{% traducir 'medio_pago' 'MOV_BANCARIOS_DETALLES' %}</th>
-                    <th>{% traducir 'cheque' 'MOV_BANCARIOS_DETALLES' %}</th>
-                    <th>{% traducir 'importe' 'MOV_BANCARIOS_DETALLES' %}</th>
-                    <th>{% traducir 'vencimiento' 'MOV_BANCARIOS_DETALLES' %}</th>
-                    <th>{% traducir 'cheque_numero' 'MOV_BANCARIOS_DETALLES' %}</th>
+                    <th>{% traducir 'medio de pago' 'MOV_BANCARIOS_DETALLE' %}</th>
+                    <th>{% traducir 'cheque' 'MOV_BANCARIOS_DETALLE' %}</th>
+                    <th>{% traducir 'importe' 'MOV_BANCARIOS_DETALLE' %}</th>
+                    <th>{% traducir 'vencimiento' 'MOV_BANCARIOS_DETALLE' %}</th>
+                    <th>{% traducir 'cheque numero' 'MOV_BANCARIOS_DETALLE' %}</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -21,13 +21,13 @@
                     <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
                         <td> {{ mov_bancarios_detalle.medio_pago | limpiar_none }}</td>
                         <td> {{ mov_bancarios_detalle.cheque | limpiar_none }}</td>
-                        <td> {{ mov_bancarios_detalle.importe | limpiar_none }}</td>
-                        <td> {{ mov_bancarios_detalle.vencimiento | limpiar_none }}</td>
+                        <td> {{ mov_bancarios_detalle.importe_det | limpiar_none }}</td>
+                        <td> {{ mov_bancarios_detalle.vencimiento_det | limpiar_none }}</td>
                         <td> {{ mov_bancarios_detalle.cheque_numero | limpiar_none }}</td>
                         <td></td>
                         <td><a href="#"
                                class="deletelink"
-                               title="{% traducir 'Eliminar' 'MOV_BANCARIOS_DETALLES' %}"
+                               title="{% traducir 'Eliminar' 'MOV_BANCARIOS_DETALLE' %}"
                                onclick="return confirmarAccion('{% url 'mov_bancarios_detalle_eliminar' mov_bancarios_detalle.id %}',
                                '¿Eliminar detalle?')"></a>
                         </td>

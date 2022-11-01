@@ -49,6 +49,7 @@ def menu_processor(request):
         cuenta_bancaria_puede_listar = request.user.has_perm('bancos.cuenta_bancaria_puede_listar')
         chequera_puede_listar = request.user.has_perm('bancos.chequera_puede_listar')
         mov_bancario_puede_listar = request.user.has_perm('bancos.mov_bancario_puede_listar')
+        cheques_terceros_puede_listar = request.user.has_perm('bancos.cheques_terceros_puede_listar')
 
         if viajante_puede_listar:
             grupo_administracion_mostrar = True
@@ -121,6 +122,8 @@ def menu_processor(request):
                    'modelo': 'CHEQUERA', 'visible': chequera_puede_listar},
                   {'id_grupo': 'BNC', 'url': reverse('mov_bancario_listar'), 'titulo': 'Movimientos bancarios',
                    'modelo': 'MOV_BANCARIO', 'visible': mov_bancario_puede_listar},
+                  {'id_grupo': 'BNC', 'url': reverse('cheques_terceros_listar'), 'titulo': 'Cheques de terceros',
+                   'modelo': 'CHEQUES_TERCEROS', 'visible': cheques_terceros_puede_listar},
                   ]
 
         for menu in menues:

@@ -1,0 +1,107 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+<h1>Cheques de terceros</h1>
+{% if filtros_form %}
+    {% crispy filtros_form %}
+{% endif %}
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'cheques_terceros_agregar' %}" class="addlink">
+                    {% traducir 'Cheque terceros' 'CHEQUES_TERCEROS' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'importe' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'vencimiento' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'sucursal' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'localidad' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'numero' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'clearing' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'acreditacion' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'ingreso' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'egreso' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'estado' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'endosado' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'observacion' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'asociado ingreso' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'asociado egreso' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'librador' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'librador cuit' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'caja' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'a la orden' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'imputado difcot' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'marcha rechazado' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'debcre' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'cuenta nro' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'electronico' 'CHEQUES_TERCEROS' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cheques_terceros in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ cheques_terceros.importe | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.vencimiento | limpiar_none  }}</td>
+                        <td> {{ cheques_terceros.sucursal | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.localidad | limpiar_none  }}</td>
+                        <td> {{ cheques_terceros.numero | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.clearing | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.acreditacion | limpiar_none  }}</td>
+                        <td> {{ cheques_terceros.ingreso | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.egreso | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.estado | estado_descripcion  }}</td>
+                        {% autoescape off %}
+                            <td> {{ cheques_terceros.endosado | imagen_si_no }}</td>
+                        {% endautoescape %}
+                        <td> {{ cheques_terceros.observacion | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.asociado_ingreso | limpiar_none  }}</td>
+                        <td> {{ cheques_terceros.asociado_egreso | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.librador | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.librador_cuit | limpiar_none  }}</td>
+                        <td> {{ cheques_terceros.caja | limpiar_none }}</td>
+                        {% autoescape off %}
+                            <td> {{ cheques_terceros.a_la_orden | imagen_si_no }}</td>
+                        {% endautoescape %}
+                        <td> {{ cheques_terceros.imputado_difcot | limpiar_none  }}</td>
+                        <td> {{ cheques_terceros.marcha_rechazado | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.debcre | limpiar_none }}</td>
+                        <td> {{ cheques_terceros.cuenta_nro | limpiar_none  }}</td>
+                        {% autoescape off %}
+                            <td> {{ cheques_terceros.electronico | imagen_si_no }}</td>
+                        {% endautoescape %}
+                        <td></td>
+                        <td>
+                            <a href="{% url 'cheques_terceros_editar' cheques_terceros.id %}"
+                               title="{% traducir 'Editar' 'CHEQUES_TERCEROS' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'CHEQUES_TERCEROS' %}"
+                               onclick="return confirmarAccion('{% url 'cheques_terceros_eliminar' cheques_terceros.id %}',
+                               '¿Eliminar cheque de terceros?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>
