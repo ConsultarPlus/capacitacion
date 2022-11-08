@@ -114,6 +114,7 @@ class GrupoEconomico(models.Model):
     descripcion = models.CharField(max_length=60, null=False, blank=False)
     tipo = models.CharField(max_length=1, choices=VCN, null=False, blank=False)
 
+
 class MedioDePago(models.Model):
     codigo = models.CharField(max_length=2, null=False, blank=False)
     descripcion = models.CharField(max_length=60, null=False, blank=False)

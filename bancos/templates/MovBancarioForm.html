@@ -12,7 +12,113 @@
     <br>
     {% crispy detallesForm %}
     {% include "mov_bancarios_detalle_list_block.html" %}
-<script src="{% static "js/confirmarAccion.js" %} " ></script>
+    <script type="text/javascript">
+        function parseNull(x){
+            if (x == null || x == undefined){
+                return "--";
+            }
+            return x;
+        }
+
+        function cargarTabla(){
+            $.ajax({
+                type:'GET',
+                url: "{% url 'mov_bancarios_detalle_listar' %}",
+                success: function(data){
+                    lista = data.detalles_data
+                    if(data.status == "guardado"){
+                        output = ""
+                        for(i=0; i<lista.length; i++){
+                            if(i % 2 == 0){
+                                row = "row2"
+                            }
+                            else{
+                                row = "row1"
+                            }
+                            output += "<tr class=" + row + "><td>" + parseNull(lista[i].medio_pago_id) +
+                            "</td><td>" + parseNull(lista[i].cheque) +
+                            "</td><td>" + parseNull(lista[i].importe_det) +
+                            "</td><td>" + parseNull(lista[i].vencimiento_det) +
+                            "</td><td>" + parseNull(lista[i].cheque_numero) +
+                            "</td><td>" + parseNull(lista[i].estado_anterior) +
+                            "</td><td>" + "<a href='#' class='deletelink' title='Eliminar' data-sid=" + lista[i].id + "></a>" + "</td></tr>"
+                        }
+                        console.log(output)
+                        $("#detalles_body").html(output)
+                    }
+                }
+            })
+        }
+
+        function agregarDetalle(e){
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'mov_bancarios_detalle_agregar' %}",
+                data: {
+                    medio_pago: $('#id_medio_pago').val(),
+                    cheque: $('#id_cheque').val(),
+                    importe_det: $('#id_importe_det').val(),
+                    vencimiento_det: $('#id_vencimiento_det').val(),
+                    cheque_numero: $('#id_cheque_numero').val(),
+                    estado_anterior: $('#id_estado_anterior').val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function (data){
+                    lista = data.detalles_data
+                    if(data.status == "guardado"){
+                        output = ""
+                        for(i=0; i<lista.length; i++){
+                            if(i % 2 == 0){
+                                row = "row2"
+                            }
+                            else{
+                                row = "row1"
+                            }
+                            output += "<tr class=" + row + "><td>" + parseNull(lista[i].medio_pago_id) +
+                            "</td><td>" + parseNull(lista[i].cheque) +
+                            "</td><td>" + parseNull(lista[i].importe_det) +
+                            "</td><td>" + parseNull(lista[i].vencimiento_det) +
+                            "</td><td>" + parseNull(lista[i].cheque_numero) +
+                            "</td><td>" + parseNull(lista[i].estado_anterior) +
+                            "</td><td>" + "<a href='#' class='deletelink' title='Eliminar' data-sid=" + lista[i].id + "></a>" + "</td></tr>"
+                        }
+                        $("#detalles_body").html(output)
+                    }
+                }
+            })
+        }
+
+        $(window).on('load', cargarTabla)
+        $(document).on('submit', '#detalles_form', agregarDetalle)
+
+        $("tbody").on("click", ".deletelink", function(){
+            event.preventDefault();
+            console.log("Borrando...");
+            let id = $(this).attr("data-sid")
+            _data = {sid:id}
+            _this = $(this)
+            $.ajax({
+                url: "{% url 'mov_bancarios_detalle_eliminar' %}",
+                method: "POST",
+                data: _data,
+                success: function(data){
+                    if(data.status == 1){
+                        $(_this).closest("tr").remove();
+                        cargarTabla();
+                    }
+                    if(data.status == 0){
+                        console.log("No se puede borrar el detalle")
+                    }
+                }
+
+            })
+        })
+    </script>
+    <script src="{% static 'js/confirmarAccion.js' %} " ></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 
 {% endblock %}
 

@@ -12,11 +12,11 @@
                     <th>{% traducir 'importe' 'MOV_BANCARIOS_DETALLE' %}</th>
                     <th>{% traducir 'vencimiento' 'MOV_BANCARIOS_DETALLE' %}</th>
                     <th>{% traducir 'cheque numero' 'MOV_BANCARIOS_DETALLE' %}</th>
-                    <th></th>
+                    <th>{% traducir 'estado anterior' 'MOV_BANCARIOS_DETALLE' %}</th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="detalles_body">
                 {% for mov_bancarios_detalle in paginado %}
                     <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
                         <td> {{ mov_bancarios_detalle.medio_pago | limpiar_none }}</td>
@@ -28,7 +28,7 @@
                         <td><a href="#"
                                class="deletelink"
                                title="{% traducir 'Eliminar' 'MOV_BANCARIOS_DETALLE' %}"
-                               onclick="return confirmarAccion('{% url 'mov_bancarios_detalle_eliminar' mov_bancarios_detalle.id %}',
+                               onclick="return confirmarAccion('{% url 'mov_bancarios_detalle_eliminar' %}',
                                '¿Eliminar detalle?')"></a>
                         </td>
                     </tr>
@@ -36,5 +36,4 @@
             </tbody>
         </table>
     <br>
-    {% include "paginador.html" %}
 </div>

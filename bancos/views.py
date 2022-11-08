@@ -1,7 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import render, redirect
-from django.urls import resolve
+from django.http import JsonResponse
+from datetime import datetime
+
+from django.views.decorators.csrf import csrf_exempt
+
+from administracion.models import MedioDePago
 from bancos.filters import cuenta_bancaria_filtrar, chequera_filtrar, mov_bancario_filtrar, \
     mov_bancarios_detalle_filtrar, cheques_terceros_filtrar
 from bancos.forms import ChequeraForm, CuentaBancariaForm, MovBancarioForm, MovBancarios_DetalleForm, \
@@ -71,6 +76,9 @@ def cuenta_bancaria_eliminar(request, id):
     return redirect(url)
 
 
+########################################################################################################################
+
+
 @login_required(login_url='ingresar')
 def chequera_listar(request):
     contexto = chequera_filtrar(request)
@@ -129,6 +137,9 @@ def chequera_eliminar(request, id):
                   'otros registros. Otra opción es desactivarlo.'
         messages.add_message(request, messages.ERROR, mensaje)
     return redirect(url)
+
+
+########################################################################################################################
 
 
 @login_required(login_url='ingresar')
@@ -233,29 +244,89 @@ def mov_bancario_eliminar(request, id):
     return redirect(url)
 
 
+########################################################################################################################
+
+
+@csrf_exempt
 @login_required(login_url='ingresar')
 @permission_required("bancos.mov_bancarios_detalle_eliminar", None, raise_exception=True)
-def mov_bancarios_detalle_eliminar(request, id):
-    if request.META['HTTP_REFERER']:
-        url = request.META['HTTP_REFERER']
-    else:
-        url = 'mov_bancario_agregar_dc'
-    print(url)
-    try:
-        mov_bancarios_detalle = MovBancarios_Detalle.objects.get(id=id)
-        mov_bancarios_detalle.delete()
-    except Exception as e:
-        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
-                  'otros registros. Otra opción es desactivarlo.'
-        messages.add_message(request, messages.ERROR, mensaje)
-    return redirect(url)
+def mov_bancarios_detalle_eliminar(request):
+    if request.method == "POST":
+        id = request.POST.get("sid")
+        try:
+            detalle = MovBancarios_Detalle.objects.get(pk=id)
+            detalle.delete()
+            return JsonResponse({"status": 1})
+        except Exception as e:
+            pass
+    return JsonResponse({"status": 0})
 
 
 @login_required(login_url='ingresar')
 def mov_bancarios_detalle_listar(request):
-    contexto = mov_bancarios_detalle_filtrar(request)
-    template_name = 'mov_bancarios_detalle_list_block.html'
-    return render(request, template_name, contexto)
+    if request.method == 'GET':
+        detalles_list = list(MovBancarios_Detalle.objects.values())
+        print(detalles_list)
+        for objeto in detalles_list:
+            if objeto['medio_pago_id'] is not None:
+                objeto['medio_pago_id'] = MedioDePago.objects.get(pk=objeto['medio_pago_id']).descripcion
+            if objeto['vencimiento_det'] is not None:
+                objeto['vencimiento_det'] = objeto['vencimiento_det'].strftime('%d/%m/%Y')
+
+        success = 'guardado'
+        return JsonResponse({"status": success, "detalles_data": detalles_list})
+    else:
+        success = 'todo mal'
+        return JsonResponse({"status": success})
+
+
+def empty2none(x):
+    return x if x is not '' else None
+
+@login_required(login_url='ingresar')
+def mov_bancarios_detalle_agregar(request):
+    if request.method == 'POST':
+        print(f"{request.POST} + \n\n")
+
+        medio_pago_id = request.POST.get('medio_pago', None)
+        if medio_pago_id is not None and medio_pago_id is not '':
+            medio_pago = MedioDePago.objects.get(pk=medio_pago_id)
+        else:
+            medio_pago = None
+
+        cheque = empty2none(request.POST.get('cheque', None))
+        importe_det = empty2none(request.POST.get('importe_det', None))
+
+        vencimiento_det_unparsed = request.POST.get('vencimiento_det', None)
+        if vencimiento_det_unparsed is not None and vencimiento_det_unparsed is not '':
+            vencimiento_det = datetime.strptime(vencimiento_det_unparsed, '%d/%m/%Y').strftime('%Y-%m-%d')
+        else:
+            vencimiento_det = None
+
+        cheque_numero = empty2none(request.POST.get('cheque_numero', None))
+        estado_anterior = empty2none(request.POST.get('estado_anterior', None))
+        nuevo_detalle = MovBancarios_Detalle(medio_pago=medio_pago,
+                                             cheque=cheque, importe_det=importe_det,
+                                             vencimiento_det=vencimiento_det, cheque_numero=cheque_numero,
+                                             estado_anterior=estado_anterior)
+        nuevo_detalle.save()
+
+        detalles_list = list(MovBancarios_Detalle.objects.values())
+        print(detalles_list)
+        for objeto in detalles_list:
+            if objeto['medio_pago_id'] is not None:
+                objeto['medio_pago_id'] = MedioDePago.objects.get(pk=objeto['medio_pago_id']).descripcion
+            if objeto['vencimiento_det'] is not None:
+                objeto['vencimiento_det'] = objeto['vencimiento_det'].strftime('%d/%m/%Y')
+
+        success = 'guardado'
+        return JsonResponse({"status": success, "detalles_data": detalles_list})
+    else:
+        success = 'Todo mal'
+        return JsonResponse({"status": success})
+
+
+########################################################################################################################
 
 
 @login_required(login_url='ingresar')

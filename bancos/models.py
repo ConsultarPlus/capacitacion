@@ -72,11 +72,11 @@ class MovBancario(models.Model):
 
 class MovBancarios_Detalle(models.Model):
     medio_pago = models.ForeignKey(MedioDePago, null=True, blank=True, on_delete=models.DO_NOTHING)
-    cheque = models.IntegerField(null=True, blank=True)
-    importe_det = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True)
-    vencimiento_det = models.DateField(null=True, blank=True)
-    cheque_numero = models.IntegerField(null=True, blank=True)
-    estado_anterior = models.CharField(max_length=1, null=True, blank=True)
+    cheque = models.IntegerField(null=True, blank=True, default=None)
+    importe_det = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True, default=None)
+    vencimiento_det = models.DateField(null=True, blank=True, default=None)
+    cheque_numero = models.IntegerField(null=True, blank=True, default=None)
+    estado_anterior = models.CharField(max_length=1, null=True, blank=True, default=None)
 
 
 class Cheques_Terceros(models.Model):
