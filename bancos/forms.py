@@ -239,7 +239,6 @@ class MovBancarioForm(forms.ModelForm):
             "nro_conciliacion": "Numero de conciliación",
         }
 
-
     emision = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False, label="Emisión")
     vencimiento = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
     acreditacion = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False, label="Acreditación")
@@ -301,8 +300,11 @@ class MovBancarioForm(forms.ModelForm):
             Row(
                 Column('emision', css_class='form-group col-md-2 mb-0'),
                 Column('vencimiento', css_class='form-group col-md-2 mb-0'),
-                Column('clearing', css_class='form-group col-md-1 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
                 Column('acreditacion', css_class='form-group col-md-2 mb-0'),
+                Column('clearing', css_class='form-group col-md-1 mb-0'),
                 css_class='form-row'
             ),
             Row(

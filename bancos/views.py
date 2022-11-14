@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required, login_required
+from django.forms import modelform_factory
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from datetime import datetime
@@ -160,7 +161,11 @@ def mov_bancario_agregar(request):
             nuevo_mov = movForm.save()
             return redirect('mov_bancario_editar', id=nuevo_mov.pk)
     else:
-        movForm = MovBancarioForm(user=usuario_actual, choices=choices)
+        mov_form = modelform_factory(MovBancario, MovBancarioForm, fields=("numero", "tipo", "cuenta_bancaria",
+                                                                           "sucursal", "emision", "vencimiento",
+                                                                           "acreditacion", "importe", "cotizacion",
+                                                                           "concepto_bancario", "observacion", "usuario"))
+        movForm = mov_form(user=usuario_actual, choices=choices)
 
     template_name = 'MovBancarioForm.html'
     contexto = {'movForm': movForm}
@@ -179,7 +184,10 @@ def mov_bancario_agregar_dc(request):
             nuevo_mov = movForm.save()
             return redirect('mov_bancario_editar', id=nuevo_mov.pk)
     else:
-        movForm = MovBancarioForm(user=usuario_actual, choices=choices)
+        mov_form = modelform_factory(MovBancario, MovBancarioForm, fields=("numero", "tipo", "cuenta_bancaria",
+                                                                           "emision", "clearing", "acreditacion",
+                                                                           "usuario", "concepto_bancario"))
+        movForm = mov_form(user=usuario_actual, choices=choices)
 
     template_name = 'MovBancarioForm.html'
     contexto = {'movForm': movForm}
@@ -204,7 +212,17 @@ def mov_bancario_editar(request, id):
             movForm.save()
             return redirect('mov_bancario_listar')
     else:
-        movForm = MovBancarioForm(instance=mov_bancario, id=id, choices=TIPO_MOV_BANCARIO)
+        if mov_bancario.tipo == "CR" or mov_bancario.tipo == "DB":
+            mov_form = modelform_factory(MovBancario, MovBancarioForm, fields=("numero", "tipo", "cuenta_bancaria",
+                                                                               "emision", "clearing", "acreditacion",
+                                                                               "usuario", "concepto_bancario"))
+        else:
+            mov_form = modelform_factory(MovBancario, MovBancarioForm, fields=("numero", "tipo", "cuenta_bancaria",
+                                                                               "sucursal", "emision", "vencimiento",
+                                                                               "acreditacion", "importe", "cotizacion",
+                                                                               "concepto_bancario", "observacion",
+                                                                               "usuario"))
+        movForm = mov_form(instance=mov_bancario, id=id, choices=TIPO_MOV_BANCARIO)
         detallesForm = MovBancarios_DetalleForm()
 
     template_name = 'MovBancarioForm.html'
@@ -248,7 +266,6 @@ def mov_bancarios_detalle_eliminar(request):
 def mov_bancarios_detalle_listar(request):
     if request.method == 'GET':
         mov_bancario_id = empty2none(request.GET['mov_bancario'])
-        print(mov_bancario_id)
         detalles_list = list(MovBancarios_Detalle.objects.filter(mov_bancario=mov_bancario_id).values())
         for objeto in detalles_list:
             if objeto['medio_pago_id'] is not None:
@@ -270,7 +287,6 @@ def empty2none(x):
 @login_required(login_url='ingresar')
 def mov_bancarios_detalle_agregar(request):
     if request.method == 'POST':
-        print(f"{request.POST} + \n\n")
 
         mov_bancario_id = empty2none(request.POST.get('mov_bancario', None))
         if mov_bancario_id is not None and mov_bancario_id is not '':
@@ -302,7 +318,6 @@ def mov_bancarios_detalle_agregar(request):
         nuevo_detalle.save()
 
         detalles_list = list(MovBancarios_Detalle.objects.filter(mov_bancario=mov_bancario_id).values())
-        print(detalles_list)
 
         for objeto in detalles_list:
             if objeto['medio_pago_id'] is not None:
