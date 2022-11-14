@@ -176,8 +176,8 @@ def mov_bancario_agregar_dc(request):
     if request.POST:
         movForm = MovBancarioForm(request.POST, request.FILES, user=usuario_actual, choices=choices)
         if request.POST['submit'] == "Grabar movimiento":
-            movForm.save()
-            return redirect('mov_bancario_listar')
+            nuevo_mov = movForm.save()
+            return redirect('mov_bancario_editar', id=nuevo_mov.pk)
     else:
         movForm = MovBancarioForm(user=usuario_actual, choices=choices)
 
