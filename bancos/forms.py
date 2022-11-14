@@ -5,7 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, ButtonHolder, Layout, Row, Column, Button
 from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle, Cheques_Terceros
 from tabla.funcs import boton_buscar
-from tabla.listas import ITEMS_X_PAG
+from tabla.listas import ITEMS_X_PAG, TIPO_MOV_BANCARIO
 from tabla.widgets import SelectLiveSearchInput
 from tabla.widgets import DatePickerInput
 
@@ -199,6 +199,7 @@ class ChequeraForm(forms.ModelForm):
 
 class FiltroMovBancario(forms.Form):
     buscar = forms.CharField(max_length=60, required=False)
+    tipo = forms.CharField(required=False)
     items = forms.IntegerField(max_value=30,
                                min_value=5,
                                required=False,
@@ -207,9 +208,11 @@ class FiltroMovBancario(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        tipo_mov = (('', 'Todos'),) + TIPO_MOV_BANCARIO
         self.helper = FormHelper()
         self.helper.form_method = 'GET'
         self.helper.disable_csrf = True
+        self.fields['tipo'].widget = SelectLiveSearchInput(choices=tipo_mov)
         self.fields['items'].widget = SelectLiveSearchInput(choices=ITEMS_X_PAG)
 
         for field_name, field in self.fields.items():
@@ -218,6 +221,7 @@ class FiltroMovBancario(forms.Form):
         self.helper.layout = Layout(
             Row(
                 Column('buscar', css_class='form-group col-md-2 mb-0 '),
+                Column('tipo', css_class='form-group col-md-2 mb-0 '),
                 FieldWithButtons('items', boton_buscar(), css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             )
