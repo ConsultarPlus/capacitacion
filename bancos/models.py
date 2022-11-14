@@ -59,7 +59,6 @@ class MovBancario(models.Model):
     nro_conciliacion = models.IntegerField(null=True, blank=True)
     id_asociado = models.IntegerField(null=True, blank=True)
     usuario = models.ForeignKey(Perfil, null=True, blank=True, on_delete=models.DO_NOTHING)
-
     cotizacion = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True)
     transferido = models.CharField(max_length=12, null=True, blank=True)
     chepro_anulado = models.IntegerField(null=True, blank=True)
@@ -71,6 +70,7 @@ class MovBancario(models.Model):
 
 
 class MovBancarios_Detalle(models.Model):
+    mov_bancario = models.ForeignKey(MovBancario, on_delete=models.DO_NOTHING)
     medio_pago = models.ForeignKey(MedioDePago, null=True, blank=True, on_delete=models.DO_NOTHING)
     cheque = models.IntegerField(null=True, blank=True, default=None)
     importe_det = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True, default=None)

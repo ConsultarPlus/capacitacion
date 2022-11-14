@@ -404,6 +404,7 @@ def incluir_plantilla(plantilla_id):
 
     return plantilla_html
 
+
 @register.filter
 def estado_descripcion(valor):
     for tupla in ESTADO:

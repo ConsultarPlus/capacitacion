@@ -150,29 +150,20 @@ def mov_bancario_listar(request):
 
 
 @login_required(login_url='ingresar')
-@permission_required("bancos.mov_bancario_agregar", None, raise_exception=True)
+@permission_required("bancos.mov_bancario_agregar_dc", None, raise_exception=True)
 def mov_bancario_agregar(request):
     choices = DP_NE_CA_RE
     usuario_actual = Perfil.objects.get(user=request.user.pk)
     if request.POST:
         movForm = MovBancarioForm(request.POST, request.FILES, user=usuario_actual, choices=choices)
-        detallesForm = MovBancarios_DetalleForm(request.POST, request.FILES)
-        print("movForm: ", movForm.data)
-        print("detallesForm: ", detallesForm.data)
-        if request.POST['submit'] == "Grabar detalle" and detallesForm.is_valid():
-            detallesForm.save()
-            return redirect('mov_bancario_agregar')
-        if request.POST['submit'] == "Grabar movimiento" and movForm.is_valid():
-            movForm.save()
-            return redirect('mov_bancario_listar')
+        if request.POST['submit'] == "Grabar movimiento":
+            nuevo_mov = movForm.save()
+            return redirect('mov_bancario_editar', id=nuevo_mov.pk)
     else:
-
         movForm = MovBancarioForm(user=usuario_actual, choices=choices)
-        detallesForm = MovBancarios_DetalleForm()
 
     template_name = 'MovBancarioForm.html'
-    contexto = {'movForm': movForm,
-                'detallesForm': detallesForm}
+    contexto = {'movForm': movForm}
     contexto.update(mov_bancarios_detalle_filtrar(request))
     return render(request, template_name, contexto)
 
@@ -184,23 +175,14 @@ def mov_bancario_agregar_dc(request):
     usuario_actual = Perfil.objects.get(user=request.user.pk)
     if request.POST:
         movForm = MovBancarioForm(request.POST, request.FILES, user=usuario_actual, choices=choices)
-        detallesForm = MovBancarios_DetalleForm(request.POST, request.FILES)
-        print("movForm: ", movForm.data)
-        print("detallesForm: ", detallesForm.data)
-        if request.POST['submit'] == "Grabar detalle" and detallesForm.is_valid():
-            detallesForm.save()
-            return redirect('mov_bancario_agregar_dc')
-        if request.POST['submit'] == "Grabar movimiento" and movForm.is_valid():
+        if request.POST['submit'] == "Grabar movimiento":
             movForm.save()
             return redirect('mov_bancario_listar')
     else:
-
         movForm = MovBancarioForm(user=usuario_actual, choices=choices)
-        detallesForm = MovBancarios_DetalleForm()
 
     template_name = 'MovBancarioForm.html'
-    contexto = {'movForm': movForm,
-                'detallesForm': detallesForm}
+    contexto = {'movForm': movForm}
     contexto.update(mov_bancarios_detalle_filtrar(request))
     return render(request, template_name, contexto)
 
@@ -226,7 +208,7 @@ def mov_bancario_editar(request, id):
         detallesForm = MovBancarios_DetalleForm()
 
     template_name = 'MovBancarioForm.html'
-    contexto = {'movForm': movForm, 'detallesForm': detallesForm, 'MovBancario': MovBancario}
+    contexto = {'movForm': movForm, 'detallesForm': detallesForm, 'MovBancario': MovBancario, 'id': id}
     return render(request, template_name, contexto)
 
 
@@ -265,8 +247,9 @@ def mov_bancarios_detalle_eliminar(request):
 @login_required(login_url='ingresar')
 def mov_bancarios_detalle_listar(request):
     if request.method == 'GET':
-        detalles_list = list(MovBancarios_Detalle.objects.values())
-        print(detalles_list)
+        mov_bancario_id = empty2none(request.GET['mov_bancario'])
+        print(mov_bancario_id)
+        detalles_list = list(MovBancarios_Detalle.objects.filter(mov_bancario=mov_bancario_id).values())
         for objeto in detalles_list:
             if objeto['medio_pago_id'] is not None:
                 objeto['medio_pago_id'] = MedioDePago.objects.get(pk=objeto['medio_pago_id']).descripcion
@@ -283,10 +266,17 @@ def mov_bancarios_detalle_listar(request):
 def empty2none(x):
     return x if x is not '' else None
 
+
 @login_required(login_url='ingresar')
 def mov_bancarios_detalle_agregar(request):
     if request.method == 'POST':
         print(f"{request.POST} + \n\n")
+
+        mov_bancario_id = empty2none(request.POST.get('mov_bancario', None))
+        if mov_bancario_id is not None and mov_bancario_id is not '':
+            mov_bancario = MovBancario.objects.get(pk=mov_bancario_id)
+        else:
+            mov_bancario = None
 
         medio_pago_id = request.POST.get('medio_pago', None)
         if medio_pago_id is not None and medio_pago_id is not '':
@@ -305,14 +295,15 @@ def mov_bancarios_detalle_agregar(request):
 
         cheque_numero = empty2none(request.POST.get('cheque_numero', None))
         estado_anterior = empty2none(request.POST.get('estado_anterior', None))
-        nuevo_detalle = MovBancarios_Detalle(medio_pago=medio_pago,
+        nuevo_detalle = MovBancarios_Detalle(mov_bancario=mov_bancario, medio_pago=medio_pago,
                                              cheque=cheque, importe_det=importe_det,
                                              vencimiento_det=vencimiento_det, cheque_numero=cheque_numero,
                                              estado_anterior=estado_anterior)
         nuevo_detalle.save()
 
-        detalles_list = list(MovBancarios_Detalle.objects.values())
+        detalles_list = list(MovBancarios_Detalle.objects.filter(mov_bancario=mov_bancario_id).values())
         print(detalles_list)
+
         for objeto in detalles_list:
             if objeto['medio_pago_id'] is not None:
                 objeto['medio_pago_id'] = MedioDePago.objects.get(pk=objeto['medio_pago_id']).descripcion
