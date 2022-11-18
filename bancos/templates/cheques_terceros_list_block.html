@@ -27,6 +27,7 @@
                 <tr>
                     <th>{% traducir 'importe' 'CHEQUES_TERCEROS' %}</th>
                     <th>{% traducir 'vencimiento' 'CHEQUES_TERCEROS' %}</th>
+                    <th>{% traducir 'banco' 'CHEQUES_TERCEROS' %}</th>
                     <th>{% traducir 'sucursal' 'CHEQUES_TERCEROS' %}</th>
                     <th>{% traducir 'localidad' 'CHEQUES_TERCEROS' %}</th>
                     <th>{% traducir 'número' 'CHEQUES_TERCEROS' %}</th>
@@ -58,6 +59,7 @@
                     <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
                         <td> {{ cheques_terceros.importe | limpiar_none }}</td>
                         <td> {{ cheques_terceros.vencimiento | limpiar_none  }}</td>
+                        <td> {{ cheques_terceros.banco | limpiar_none  }}</td>
                         <td> {{ cheques_terceros.sucursal | limpiar_none }}</td>
                         <td> {{ cheques_terceros.localidad | limpiar_none  }}</td>
                         <td> {{ cheques_terceros.numero | limpiar_none }}</td>

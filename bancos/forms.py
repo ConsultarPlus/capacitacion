@@ -3,7 +3,7 @@ from django import forms
 from crispy_forms.bootstrap import FieldWithButtons
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, ButtonHolder, Layout, Row, Column, Button
-from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle, Cheques_Terceros
+from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle, Cheques_Terceros, Cheques_Propios
 from tabla.funcs import boton_buscar
 from tabla.listas import ITEMS_X_PAG, TIPO_MOV_BANCARIO
 from tabla.widgets import SelectLiveSearchInput
@@ -402,11 +402,11 @@ class Cheques_TercerosForm(forms.ModelForm):
         except Exception as e:
             pass
         try:
-            initial['ingreso'] = Cheques_Terceros.objects.get(pk=id).egreso.strftime('%d/%m/%Y')
+            initial['ingreso'] = Cheques_Terceros.objects.get(pk=id).ingreso.strftime('%d/%m/%Y')
         except Exception as e:
             pass
         try:
-            initial['egreso'] = Cheques_Terceros.objects.get(pk=id).ingreso.strftime('%d/%m/%Y')
+            initial['egreso'] = Cheques_Terceros.objects.get(pk=id).egreso.strftime('%d/%m/%Y')
         except Exception as e:
             pass
         kwargs['initial'] = initial
@@ -474,6 +474,89 @@ class Cheques_TercerosForm(forms.ModelForm):
                 Column('debcre', css_class='form-group col-md-3 mb-0'),
                 Column('cuenta_nro', css_class='form-group col-md-3 mb-0'),
                 Column('electronico', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Grabar', css_id='Submit'),
+                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
+            )
+        )
+
+
+class Cheques_PropiosForm(forms.ModelForm):
+    class Meta:
+        model = Cheques_Propios
+        fields = '__all__'
+
+    vencimiento = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+    acreditacion = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False,
+                                   label="Acreditación")
+    emision = forms.DateField(input_formats=['%d/%m/%Y'], widget=DatePickerInput(), required=False)
+
+    def __init__(self, *args, **kwargs):
+
+        initial = kwargs.get('initial', {})
+        try:
+            id = kwargs.pop('id')
+            print(id)
+        except Exception as e:
+            pass
+        try:
+            initial['vencimiento'] = Cheques_Propios.objects.get(pk=id).vencimiento.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            initial['acreditacion'] = Cheques_Propios.objects.get(pk=id).acreditacion.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        try:
+            initial['emision'] = Cheques_Propios.objects.get(pk=id).emision.strftime('%d/%m/%Y')
+        except Exception as e:
+            pass
+        kwargs['initial'] = initial
+
+        super().__init__(*args, **kwargs)
+
+        self.fields['vencimiento'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
+        self.fields['acreditacion'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
+        self.fields['emision'].widget.attrs.update({
+            'autocomplete': 'off'
+        })
+        self.helper = FormHelper()
+        self.helper.form_id = 'form'
+        self.helper.layout = Layout(
+            Row(
+                Column('numero', css_class='form-group col-md-3 mb-0'),
+                Column('chequera', css_class='form-group col-md-3 mb-0'),
+                Column('importe', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('emision', css_class='form-group col-md-3 mb-0'),
+                Column('vencimiento', css_class='form-group col-md-3 mb-0'),
+                Column('acreditacion', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('observacion', css_class='form-group col-md-3 mb-0'),
+                Column('entregado_a', css_class='form-group col-md-3 mb-0'),
+                Column('estado', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('depositado', css_class='form-group col-md-3 mb-0'),
+                Column('asociado_id', css_class='form-group col-md-3 mb-0'),
+                Column('caja_nro', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('caja_tipo', css_class='form-group col-md-3 mb-0'),
+                Column('nro_conciliacion', css_class='form-group col-md-3 mb-0'),
+                Column('lote', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             ButtonHolder(

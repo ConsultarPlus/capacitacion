@@ -1,0 +1,85 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+<h1>Cheques propios</h1>
+{% if filtros_form %}
+    {% crispy filtros_form %}
+{% endif %}
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'cheques_propios_agregar' %}" class="addlink">
+                    {% traducir 'Cheque propio' 'CHEQUES_PROPIOS' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'número' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'chequera' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'emisión' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'vencimiento' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'acreditación' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'importe' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'observación' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'entregado a' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'estado' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'depositado' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'asociado id' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'caja nro' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'caja tipo' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'nro conciliacion' 'CHEQUES_PROPIOS' %}</th>
+                    <th>{% traducir 'lote' 'CHEQUES_PROPIOS' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cheques_propios in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ cheques_propios.numero | limpiar_none }}</td>
+                        <td> {{ cheques_propios.chequera | limpiar_none  }}</td>
+                        <td> {{ cheques_propios.emision | limpiar_none  }}</td>
+                        <td> {{ cheques_propios.vencimiento | limpiar_none }}</td>
+                        <td> {{ cheques_propios.acreditacion | limpiar_none  }}</td>
+                        <td> {{ cheques_propios.importe | limpiar_none }}</td>
+                        <td> {{ cheques_propios.observacion | limpiar_none }}</td>
+                        <td> {{ cheques_propios.entregado_a | limpiar_none  }}</td>
+                        <td> {{ cheques_propios.estado | limpiar_none }}</td>
+                        <td> {{ cheques_propios.depositado | limpiar_none }}</td>
+                        <td> {{ cheques_propios.asociado_id | limpiar_none  }}</td>
+                        <td> {{ cheques_propios.caja_nro | limpiar_none }}</td>
+                        <td> {{ cheques_propios.caja_tipo | limpiar_none  }}</td>
+                        <td> {{ cheques_propios.nro_conciliacion | limpiar_none }}</td>
+                        <td> {{ cheques_propios.lote | limpiar_none }}</td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'cheques_propios_editar' cheques_propios.id %}"
+                               title="{% traducir 'Editar' 'CHEQUES_PROPIOS' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'CHEQUES_PROPIOS' %}"
+                               onclick="return confirmarAccion('{% url 'cheques_propios_eliminar' cheques_propios.id %}',
+                               '¿Eliminar cheque de terceros?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>

@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from bancos.forms import FiltroCuentaBancaria, FiltroChequera, FiltroMovBancario
-from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle, Cheques_Terceros
+from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle, Cheques_Terceros, Cheques_Propios
 from tabla.filters import paginador
 
 
@@ -93,6 +93,27 @@ def cheques_terceros_filtrar(query_dict):
     items = query_dict.GET.get('items')
 
     filtrado = Cheques_Terceros.objects.all()
+
+    if buscar != '' and buscar is not None:
+        filtrado = filtrado.filter(Q(numero__icontains=buscar) |
+                                   Q(cuenta_nro__icontains=buscar)
+                                   )
+
+    registros = filtrado.count()
+    paginado = paginador(query_dict, filtrado)
+
+    form = FiltroChequera(initial={'buscar': buscar,
+                                   'items': items})
+    return {'filter': filtrado,
+            'paginado': paginado,
+            'registros': registros,
+            'filtros_form': form}
+
+def cheques_propios_filtrar(query_dict):
+    buscar = query_dict.GET.get('buscar')
+    items = query_dict.GET.get('items')
+
+    filtrado = Cheques_Propios.objects.all()
 
     if buscar != '' and buscar is not None:
         filtrado = filtrado.filter(Q(numero__icontains=buscar) |

@@ -9,10 +9,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 from administracion.models import MedioDePago
 from bancos.filters import cuenta_bancaria_filtrar, chequera_filtrar, mov_bancario_filtrar, \
-    mov_bancarios_detalle_filtrar, cheques_terceros_filtrar
+    mov_bancarios_detalle_filtrar, cheques_terceros_filtrar, cheques_propios_filtrar
 from bancos.forms import ChequeraForm, CuentaBancariaForm, MovBancarioForm, MovBancarios_DetalleForm, \
-    Cheques_TercerosForm
-from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle, Cheques_Terceros
+    Cheques_TercerosForm, Cheques_PropiosForm
+from bancos.models import CuentaBancaria, Chequera, MovBancario, MovBancarios_Detalle, Cheques_Terceros, Cheques_Propios
 from perfiles.models import Perfil
 from tabla.listas import TIPO_MOV_BANCARIO, DP_NE_CA_RE, DEBITO_CREDITO
 
@@ -382,6 +382,69 @@ def cheques_terceros_eliminar(request, id):
     try:
         cheques_terceros = Cheques_Terceros.objects.get(id=id)
         cheques_terceros.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo.'
+        messages.add_message(request, messages.ERROR, mensaje)
+    return redirect(url)
+
+
+########################################################################################################################
+
+
+@login_required(login_url='ingresar')
+def cheques_propios_listar(request):
+    contexto = cheques_propios_filtrar(request)
+    template_name = 'cheques_propios_listar.html'
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("bancos.cheques_propios_agregar", None, raise_exception=True)
+def cheques_propios_agregar(request):
+    if request.POST:
+        form = Cheques_PropiosForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('cheques_propios_listar')
+    else:
+        form = Cheques_PropiosForm()
+
+    template_name = 'Cheques_PropiosForm.html'
+    contexto = {'form': form}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("bancos.cheques_propios_editar", None, raise_exception=True)
+def cheques_propios_editar(request, id):
+    try:
+        cheques_propios = Cheques_Propios.objects.get(id=id)
+    except Exception as mensaje:
+        messages.add_message(request, messages.ERROR, mensaje)
+        return redirect('cheques_propios_listar')
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = Cheques_PropiosForm(post, request.FILES, instance=cheques_propios, id=id)
+        if form.is_valid():
+            form.save()
+            return redirect('cheques_propios_listar')
+    else:
+        form = Cheques_PropiosForm(instance=cheques_propios, id=id)
+
+    template_name = 'Cheques_PropiosForm.html'
+    contexto = {'form': form, 'Cheques_Propios': Cheques_Propios}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("bancos.cheques_propios_eliminar", None, raise_exception=True)
+def cheques_propios_eliminar(request, id):
+    url = 'cheques_propios_listar'
+    try:
+        cheques_propios = Cheques_Propios.objects.get(id=id)
+        cheques_propios.delete()
     except Exception as e:
         mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
                   'otros registros. Otra opción es desactivarlo.'

@@ -82,7 +82,8 @@ class MovBancarios_Detalle(models.Model):
 class Cheques_Terceros(models.Model):
     importe = models.DecimalField(max_digits=16, decimal_places=2, blank=True, null=True)
     vencimiento = models.DateField(null=True, blank=True)
-    # banco = models.ForeignKey(Bancos)
+    banco = models.ForeignKey(Tabla, null=True, on_delete=models.DO_NOTHING, blank=True, related_name='CHEQUET_BANCO',
+                              limit_choices_to={'entidad': 'BANCO'})
     sucursal = models.CharField(max_length=3, null=True, blank=True)
     localidad = models.ForeignKey(Localidad, null=True, blank=True, on_delete=models.DO_NOTHING)
     numero = models.IntegerField(null=True, blank=True)
@@ -104,3 +105,24 @@ class Cheques_Terceros(models.Model):
     debcre = models.ForeignKey(MovBancario, null=True, blank=True, on_delete=models.DO_NOTHING)
     cuenta_nro = models.CharField(max_length=15, blank=True, null=True)
     electronico = models.CharField(max_length=1, default='N', choices=SINO, blank=True, null=True)
+
+
+class Cheques_Propios(models.Model):
+    numero = models.IntegerField(null=True, blank=True)
+    chequera = models.ForeignKey(Chequera, on_delete=models.DO_NOTHING, null=True, blank=True)
+    emision = models.DateField(null=True, blank=True)
+    vencimiento = models.DateField(null=True, blank=True)
+    acreditacion = models.DateField(null=True, blank=True)
+    importe = models.DecimalField(max_digits=16, decimal_places=2, null=True, blank=True)
+    observacion = models.CharField(max_length=100, null=True, blank=True)
+    # cliente = models.ForeignKey(Cliente)
+    entregado_a = models.CharField(max_length=60, null=True, blank=True)
+    estado = models.CharField(max_length=1, null=True, blank=True)
+    depositado = models.CharField(max_length=8, null=True, blank=True)
+    asociado_id = models.IntegerField(null=True, blank=True)
+    caja_nro = models.IntegerField(null=True, blank=True)
+    caja_tipo = models.CharField(max_length=1, null=True, blank=True)
+    nro_conciliacion = models.IntegerField(null=True, blank=True)
+    # asiento_pago_diferido = models.ForeignKey(Asientos)
+    lote = models.IntegerField(null=True, blank=True)
+
