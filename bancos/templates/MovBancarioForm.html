@@ -10,10 +10,11 @@
     {% endif %}
     {% crispy movForm %}
     <br>
-    {% if id %}
+    {% if id %} <!-- si estoy editando el movimiento, por lo tanto hay una ID, se carga la tabla detalles-->
         {% crispy detallesForm %}
         {% include "mov_bancarios_detalle_list_block.html" %}
         <script type="text/javascript">
+        // parseNull -> devuelve "--" si el string es null o undefined
         function parseNull(x){
             if (x == null || x == undefined){
                 return "--";
@@ -21,8 +22,9 @@
             return x;
         }
 
+        // cargarTabla -> obtiene una lista con los detalles con id igual al movimiento actual y imprime la tabla con ellos
         function cargarTabla(){
-            $.ajax({
+            $.ajax({                                                 // ajax request para obtener lista de detalles
                 type:'GET',
                 url: "{% url 'mov_bancarios_detalle_listar' %}",
                 data: {
@@ -30,15 +32,16 @@
                 },
                 success: function(data){
                     lista = data.detalles_data
-                    if(data.status == "guardado"){
+                    if(data.status == "bien"){
                         output = ""
-                        for(i=0; i<lista.length; i++){
-                            if(i % 2 == 0){
+                        for(i=0; i<lista.length; i++){              // si todo esta bien se comienza a recorrer la lista
+                            if(i % 2 == 0){                         // se asigna si la fila es par o impar para el color
                                 row = "row2"
                             }
                             else{
                                 row = "row1"
-                            }
+                            }                                       // se guarda el html para todos los campos de la fila en la var output
+                                                                    // los campos que se imprimen podrian cambiarse si es un CD o DNCR
                             output += "<tr class=" + row + "><td>" + parseNull(lista[i].medio_pago_id) +
                             "</td><td>" + parseNull(lista[i].cheque) +
                             "</td><td>" + parseNull(lista[i].importe_det) +
@@ -47,18 +50,18 @@
                             "</td><td>" + parseNull(lista[i].estado_anterior) +
                             "</td><td>" + "<a href='#' class='deletelink' title='Eliminar' data-sid=" + lista[i].id + "></a>" + "</td></tr>"
                         }
-                        console.log(output)
-                        $("#detalles_body").html(output)
+                        $("#detalles_body").html(output)            // se agrega el html a la tabla
                     }
                 }
             })
         }
 
+        // agregarDetalle -> agrega un detalle nuevo
         function agregarDetalle(e){
             e.preventDefault();
             $.ajax({
-                type: 'POST',
-                url: "{% url 'mov_bancarios_detalle_agregar' %}",
+                type: 'POST',           // ajax post que envia todos los valores del formulario y el csrftoken (es necesario)
+                url: "{% url 'mov_bancarios_detalle_agregar' %}",   // la funcion agregar de la view se encarga de agregarlo
                 data: {
                     mov_bancario: {{id}},
                     medio_pago: $('#id_medio_pago').val(),
@@ -70,47 +73,28 @@
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                 },
                 success: function (data){
-                    lista = data.detalles_data
-                    if(data.status == "guardado"){
-                        output = ""
-                        for(i=0; i<lista.length; i++){
-                            if(i % 2 == 0){
-                                row = "row2"
-                            }
-                            else{
-                                row = "row1"
-                            }
-                            output += "<tr class=" + row + "><td>" + parseNull(lista[i].medio_pago_id) +
-                            "</td><td>" + parseNull(lista[i].cheque) +
-                            "</td><td>" + parseNull(lista[i].importe_det) +
-                            "</td><td>" + parseNull(lista[i].vencimiento_det) +
-                            "</td><td>" + parseNull(lista[i].cheque_numero) +
-                            "</td><td>" + parseNull(lista[i].estado_anterior) +
-                            "</td><td>" + "<a href='#' class='deletelink' title='Eliminar' data-sid=" + lista[i].id + "></a>" + "</td></tr>"
-                        }
-                        $("#detalles_body").html(output)
-                        document.getElementById("detalles_form").reset();
-                    }
+                    cargarTabla();                                    // se recarga la tabla
+                    document.getElementById("detalles_form").reset(); // y se resetea el formulario
                 }
             })
         }
 
-        $(window).on('load', cargarTabla)
-        $(document).on('submit', '#detalles_form', agregarDetalle)
+        $(window).on('load', cargarTabla)                             // se carga la tabla con js al inicio para que funcione el boton eliminar
+        $(document).on('submit', '#detalles_form', agregarDetalle)    // se llama al funcion agregarDetalle cuando se submitea el form detalles
 
-        $("tbody").on("click", ".deletelink", function(){
-            event.preventDefault();
-            console.log("Borrando...");
+        // funcion eliminar detalle
+        $("tbody").on("click", ".deletelink", function(){             // cuando se clickea cualquier boton de la clase "deletelink" se ejecuta
+            event.preventDefault();                                   // previene que se auto-scrollee hacia arriba
             let id = $(this).attr("data-sid")
             _data = {sid:id}
-            _this = $(this)
-            $.ajax({
+            //_this = $(this)
+            $.ajax({                                                  // hacemos el ajax post a eliminar enviando la id del objeto a eliminar
                 url: "{% url 'mov_bancarios_detalle_eliminar' %}",
                 method: "POST",
                 data: _data,
                 success: function(data){
-                    if(data.status == 1){
-                        $(_this).closest("tr").remove();
+                    if(data.status == 1){                             // luego de eliminar debemos volver a cargar la tabla
+                        //$(_this).closest("tr").remove();            // esta linea no es necesaria
                         cargarTabla();
                     }
                     if(data.status == 0){

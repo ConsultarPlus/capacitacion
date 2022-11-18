@@ -266,17 +266,18 @@ def mov_bancarios_detalle_eliminar(request):
 def mov_bancarios_detalle_listar(request):
     if request.method == 'GET':
         mov_bancario_id = empty2none(request.GET['mov_bancario'])
-        detalles_list = list(MovBancarios_Detalle.objects.filter(mov_bancario=mov_bancario_id).values())
-        for objeto in detalles_list:
+        detalles_list = list(MovBancarios_Detalle.objects.filter(mov_bancario=mov_bancario_id).values()) # guarda los detalles asociados al mov bancario dado en una lista
+
+        for objeto in detalles_list: # hay que cambiar la id del medio de pago por el objeto en si y parsear la fecha
             if objeto['medio_pago_id'] is not None:
                 objeto['medio_pago_id'] = MedioDePago.objects.get(pk=objeto['medio_pago_id']).descripcion
             if objeto['vencimiento_det'] is not None:
                 objeto['vencimiento_det'] = objeto['vencimiento_det'].strftime('%d/%m/%Y')
 
-        success = 'guardado'
+        success = 'bien'
         return JsonResponse({"status": success, "detalles_data": detalles_list})
     else:
-        success = 'todo mal'
+        success = 'mal'
         return JsonResponse({"status": success})
 
 
@@ -287,6 +288,8 @@ def empty2none(x):
 @login_required(login_url='ingresar')
 def mov_bancarios_detalle_agregar(request):
     if request.method == 'POST':
+
+        # se revisa si los valores son vacios antes de operar con ellos
 
         mov_bancario_id = empty2none(request.POST.get('mov_bancario', None))
         if mov_bancario_id is not None and mov_bancario_id is not '':
@@ -300,36 +303,27 @@ def mov_bancarios_detalle_agregar(request):
         else:
             medio_pago = None
 
-        cheque = empty2none(request.POST.get('cheque', None))
-        importe_det = empty2none(request.POST.get('importe_det', None))
-
         vencimiento_det_unparsed = request.POST.get('vencimiento_det', None)
         if vencimiento_det_unparsed is not None and vencimiento_det_unparsed is not '':
             vencimiento_det = datetime.strptime(vencimiento_det_unparsed, '%d/%m/%Y').strftime('%Y-%m-%d')
         else:
             vencimiento_det = None
 
+        cheque = empty2none(request.POST.get('cheque', None))
+        importe_det = empty2none(request.POST.get('importe_det', None))
         cheque_numero = empty2none(request.POST.get('cheque_numero', None))
         estado_anterior = empty2none(request.POST.get('estado_anterior', None))
+
         nuevo_detalle = MovBancarios_Detalle(mov_bancario=mov_bancario, medio_pago=medio_pago,
                                              cheque=cheque, importe_det=importe_det,
                                              vencimiento_det=vencimiento_det, cheque_numero=cheque_numero,
                                              estado_anterior=estado_anterior)
         nuevo_detalle.save()
-
-        detalles_list = list(MovBancarios_Detalle.objects.filter(mov_bancario=mov_bancario_id).values())
-
-        for objeto in detalles_list:
-            if objeto['medio_pago_id'] is not None:
-                objeto['medio_pago_id'] = MedioDePago.objects.get(pk=objeto['medio_pago_id']).descripcion
-            if objeto['vencimiento_det'] is not None:
-                objeto['vencimiento_det'] = objeto['vencimiento_det'].strftime('%d/%m/%Y')
-
-        success = 'guardado'
-        return JsonResponse({"status": success, "detalles_data": detalles_list})
+        success = 'bien'
     else:
-        success = 'Todo mal'
-        return JsonResponse({"status": success})
+        success = 'mal'
+
+    return JsonResponse({"status": success})
 
 
 ########################################################################################################################
