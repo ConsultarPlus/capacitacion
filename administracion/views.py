@@ -82,6 +82,7 @@ def viajante_listar(request):
     return render(request, template_name, contexto)
 
 
+@login_required(login_url='ingresar')
 @permission_required("administracion.viajante_editar", None, raise_exception=True)
 def viajante_editar(request, id):
     try:
@@ -104,7 +105,7 @@ def viajante_editar(request, id):
     return render(request, template_name, contexto)
 
 
-
+@login_required(login_url='ingresar')
 @permission_required("administracion.viajante_agregar", None, raise_exception=True)
 def viajante_agregar(request):
     url = reverse('viajante_agregar')
@@ -113,6 +114,7 @@ def viajante_agregar(request):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.save()
+            print("HOLAAA")
             return redirect('viajante_listar')
     else:
         form = ViajanteForm(initial={'activos': 'S'})
@@ -551,78 +553,6 @@ def grupocontactos_eliminar(request, id):
         messages.add_message(request, messages.ERROR, mensaje)
 
     return redirect(url)@login_required(login_url='ingresar')
-
-
-@login_required(login_url='ingresar')
-@permission_required("administracion.moneda_puede_listar", None, raise_exception=True)
-def moneda_listar(request):
-    contexto = moneda_filtrar(request)
-    modo = request.GET.get('modo')
-    contexto['modo'] = modo
-
-    if modo == 'm' or modo == 's':
-        template_name = 'moneda_list_block.html'
-    else:
-        template_name = 'moneda_listar.html'
-
-    return render(request, template_name, contexto)
-
-
-@login_required(login_url='ingresar')
-@permission_required("administracion.moneda_editar", None, raise_exception=True)
-def moneda_editar(request, id):
-    try:
-        moneda = Moneda.objects.get(id=id)
-    except Exception as mensaje:
-        messages.add_message(request, messages.ERROR, mensaje)
-        return redirect('moneda_listar')
-
-    if request.method == 'POST':
-        post = request.POST.copy()
-        form = MonedaForm(post, instance=moneda)
-        if form.is_valid():
-            form.save()
-            return redirect('moneda_listar')
-    else:
-        form = MonedaForm(instance=moneda)
-
-    template_name = 'MonedaForm.html'
-    contexto = {'form': form, 'moneda': moneda}
-    return render(request, template_name, contexto)
-
-
-@login_required(login_url='ingresar')
-@permission_required("administracion.moneda_agregar", None, raise_exception=True)
-def moneda_agregar(request):
-    url = reverse('moneda_agregar')
-    if request.POST:
-        form = MonedaForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.save()
-            return redirect('moneda_listar')
-    else:
-        form = MonedaForm(initial={'activos': 'S'})
-
-    template_name = "MonedaForm.html"
-
-    return render(request, template_name, {'form': form})
-
-
-@login_required(login_url='ingresar')
-@permission_required("administracion.moneda_eliminar", None, raise_exception=True)
-def moneda_eliminar(request, id):
-    url = 'moneda_listar'
-    try:
-        moneda = Moneda.objects.get(id=id)
-        moneda.delete()
-    except Exception as e:
-        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
-                  'otros registros. Otra opción es desactivarlo'
-        messages.add_message(request, messages.ERROR, mensaje)
-
-    return redirect(url)@login_required(login_url='ingresar')
-
 
 
 @login_required(login_url='ingresar')
