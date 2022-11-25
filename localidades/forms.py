@@ -49,7 +49,13 @@ class PaisForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column('codigo', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
                 Column('descripcion', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
                 Column('siap', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),

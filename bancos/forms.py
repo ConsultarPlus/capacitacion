@@ -78,19 +78,25 @@ class CuentaBancariaForm(forms.ModelForm):
         self.helper.layout = Layout(
             Row(
                 Column('cuenta', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
                 Column('descripcion', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
             Row(
                 Column('banco', css_class='form-group col-md-3 mb-0'),
                 Column('sucursal', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
                 Column('moneda', css_class='form-group col-md-3 mb-0'),
+                Column('titular', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
                 Column('cuenta_contable', css_class='form-group col-md-3 mb-0'),
                 Column('pago_dif', css_class='form-group col-md-3 mb-0'),
-                Column('titular', css_class='form-group col-md-4 mb-0'),
                 css_class='form-row'
             ),
             Row(
@@ -169,25 +175,25 @@ class ChequeraForm(forms.ModelForm):
         self.helper.form_id = 'id_form'
         self.helper.layout = Layout(
             Row(
-                Column('inactiva', css_class='form-group col-md-3 mb-0'),
-                Column('electronica', css_class='form-group col-md-3 mb-0'),
-                Column('cuenta_bancaria', css_class='form-group col-md-3 mb-0'),
+                Column('inactiva', css_class='form-group col-md-1 mb-0'),
+                Column('electronica', css_class='form-group col-md-1 mb-0'),
+                Column('cuenta_bancaria', css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('serie', css_class='form-group col-md-3 mb-0'),
-                Column('recibida', css_class='form-group col-md-3 mb-0'),
-                Column('cheque_desde', css_class='form-group col-md-3 mb-0'),
+                Column('serie', css_class='form-group col-md-2 mb-0'),
+                Column('recibida', css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('cheque_hasta', css_class='form-group col-md-4 mb-0'),
-                Column('pago_diferido', css_class='form-group col-md-4 mb-0'),
+                Column('cheque_desde', css_class='form-group col-md-2 mb-0'),
+                Column('cheque_hasta', css_class='form-group col-md-2 mb-0'),
+                Column('proximo_numero', css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('dias_diferencia', css_class='form-group col-md-4 mb-0'),
-                Column('proximo_numero', css_class='form-group col-md-4 mb-0'),
+                Column('pago_diferido', css_class='form-group col-md-1 mb-0'),
+                Column('dias_diferencia', css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             ),
             ButtonHolder(
@@ -429,52 +435,55 @@ class Cheques_TercerosForm(forms.ModelForm):
         self.helper.form_id = 'form'
         self.helper.layout = Layout(
             Row(
-                Column('importe', css_class='form-group col-md-3 mb-0'),
-                Column('vencimiento', css_class='form-group col-md-3 mb-0'),
+                Column('numero', css_class='form-group col-md-2 mb-0'),
+                Column('endosado', css_class='form-group col-md-1 mb-0'),
+                Column('a_la_orden', css_class='form-group col-md-1 mb-0'),
+                Column('electronico', css_class='form-group col-md-1 mb-0'),
+
+                css_class='form-row'
+            ),
+            Row(
                 Column('banco', css_class='form-group col-md-3 mb-0'),
+                Column('sucursal', css_class='form-group col-md-1 mb-0'),
+                Column('cuenta_nro', css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('sucursal', css_class='form-group col-md-3 mb-0'),
                 Column('localidad', css_class='form-group col-md-3 mb-0'),
-                Column('numero', css_class='form-group col-md-3 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('clearing', css_class='form-group col-md-3 mb-0'),
-                Column('acreditacion', css_class='form-group col-md-3 mb-0'),
-                Column('ingreso', css_class='form-group col-md-3 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('egreso', css_class='form-group col-md-3 mb-0'),
-                Column('estado', css_class='form-group col-md-3 mb-0'),
-                Column('endosado', css_class='form-group col-md-3 mb-0'),
-                css_class='form-row'
-            ),
-            Row(
-                Column('observacion', css_class='form-group col-md-3 mb-0'),
-                Column('asociado_ingreso', css_class='form-group col-md-3 mb-0'),
-                Column('asociado_egreso', css_class='form-group col-md-3 mb-0'),
+                Column('importe', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             Row(
                 Column('librador', css_class='form-group col-md-3 mb-0'),
                 Column('librador_cuit', css_class='form-group col-md-3 mb-0'),
-                Column('caja', css_class='form-group col-md-3 mb-0'),
+            ),
+            Row(
+                Column('ingreso', css_class='form-group col-md-2 mb-0'),
+                Column('vencimiento', css_class='form-group col-md-2 mb-0'),
+                Column('clearing', css_class='form-group col-md-1 mb-0'),
+                Column('acreditacion', css_class='form-group col-md-2 mb-0'),
+
+                Column('egreso', css_class='form-group col-md-1 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('a_la_orden', css_class='form-group col-md-3 mb-0'),
-                Column('imputado_difcot', css_class='form-group col-md-3 mb-0'),
-                Column('marcha_rechazado', css_class='form-group col-md-3 mb-0'),
+                Column('asociado_ingreso', css_class='form-group col-md-3 mb-0'),
+                Column('asociado_egreso', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('debcre', css_class='form-group col-md-3 mb-0'),
-                Column('cuenta_nro', css_class='form-group col-md-3 mb-0'),
-                Column('electronico', css_class='form-group col-md-3 mb-0'),
+                Column('caja', css_class='form-group col-md-1 mb-0'),
+                Column('estado', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
+            ),
+            Row(
+                Column('imputado_difcot', css_class='form-group col-md-2 mb-0'),
+                Column('marcha_rechazado', css_class='form-group col-md-2 mb-0'),
+                Column('debcre', css_class='form-group col-md-2 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('observacion', css_class='form-group col-md-6 mb-0'),
             ),
             ButtonHolder(
                 Submit('submit', 'Grabar', css_id='Submit'),
@@ -530,19 +539,21 @@ class Cheques_PropiosForm(forms.ModelForm):
         self.helper.form_id = 'form'
         self.helper.layout = Layout(
             Row(
-                Column('numero', css_class='form-group col-md-3 mb-0'),
-                Column('chequera', css_class='form-group col-md-3 mb-0'),
-                Column('importe', css_class='form-group col-md-3 mb-0'),
+                Column('chequera', css_class='form-group col-md-2 mb-0'),
+                Column('numero', css_class='form-group col-md-2 mb-0'),
+                Column('importe', css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('emision', css_class='form-group col-md-3 mb-0'),
-                Column('vencimiento', css_class='form-group col-md-3 mb-0'),
-                Column('acreditacion', css_class='form-group col-md-3 mb-0'),
+                Column('emision', css_class='form-group col-md-2 mb-0'),
+                Column('vencimiento', css_class='form-group col-md-2 mb-0'),
+                Column('acreditacion', css_class='form-group col-md-2 mb-0'),
                 css_class='form-row'
             ),
             Row(
-                Column('observacion', css_class='form-group col-md-3 mb-0'),
+                Column('observacion', css_class='form-group col-md-6 mb-0'),
+            ),
+            Row(
                 Column('entregado_a', css_class='form-group col-md-3 mb-0'),
                 Column('estado', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
@@ -550,11 +561,13 @@ class Cheques_PropiosForm(forms.ModelForm):
             Row(
                 Column('depositado', css_class='form-group col-md-3 mb-0'),
                 Column('asociado_id', css_class='form-group col-md-3 mb-0'),
-                Column('caja_nro', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             Row(
+                Column('caja_nro', css_class='form-group col-md-3 mb-0'),
                 Column('caja_tipo', css_class='form-group col-md-3 mb-0'),
+            ),
+            Row(
                 Column('nro_conciliacion', css_class='form-group col-md-3 mb-0'),
                 Column('lote', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'

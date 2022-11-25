@@ -117,7 +117,7 @@ class Cheques_Propios(models.Model):
     observacion = models.CharField(max_length=100, null=True, blank=True)
     # cliente = models.ForeignKey(Cliente)
     entregado_a = models.CharField(max_length=60, null=True, blank=True)
-    estado = models.CharField(max_length=1, null=True, blank=True)
+    estado = models.CharField(max_length=1, default='A', choices=ESTADO, blank=True, null=True)
     depositado = models.CharField(max_length=8, null=True, blank=True)
     asociado_id = models.IntegerField(null=True, blank=True)
     caja_nro = models.IntegerField(null=True, blank=True)
