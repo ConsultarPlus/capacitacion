@@ -377,6 +377,7 @@ class MovBancarios_DetalleForm(forms.ModelForm):
                 Column('cheque_numero', css_class='form-group col-md-1 mb-0'),
                 Column('estado_anterior', css_class='form-group col-md-1 mb-0'),
                 Submit('submit', 'Grabar detalle', css_id="detallesSubmit", form="detalles_form"),
+                Column('det_id', type='hidden', css_class='form-group col-md-1 mb-0', id='det_id'),
                 css_class='form-row'
             ),
         )
@@ -507,7 +508,6 @@ class Cheques_PropiosForm(forms.ModelForm):
         initial = kwargs.get('initial', {})
         try:
             id = kwargs.pop('id')
-            print(id)
         except Exception as e:
             pass
         try:

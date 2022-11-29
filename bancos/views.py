@@ -181,8 +181,8 @@ def mov_bancario_agregar_dc(request):
     if request.POST:
         movForm = MovBancarioForm(request.POST, request.FILES, user=usuario_actual, choices=choices)
         if request.POST['submit'] == "Grabar movimiento":
-            nuevo_mov = movForm.save()
-            return redirect('mov_bancario_editar', id=nuevo_mov.pk)
+            movForm.save()
+            return redirect('mov_bancario_listar')
     else:
         mov_form = modelform_factory(MovBancario, MovBancarioForm, fields=("numero", "tipo", "cuenta_bancaria",
                                                                            "emision", "clearing", "acreditacion",
@@ -216,17 +216,20 @@ def mov_bancario_editar(request, id):
             mov_form = modelform_factory(MovBancario, MovBancarioForm, fields=("numero", "tipo", "cuenta_bancaria",
                                                                                "emision", "clearing", "acreditacion",
                                                                                "usuario", "concepto_bancario"))
+            movForm = mov_form(instance=mov_bancario, id=id, choices=DEBITO_CREDITO)
+            hay_detalles = False
         else:
             mov_form = modelform_factory(MovBancario, MovBancarioForm, fields=("numero", "tipo", "cuenta_bancaria",
                                                                                "sucursal", "emision", "vencimiento",
                                                                                "acreditacion", "importe", "cotizacion",
                                                                                "concepto_bancario", "observacion",
                                                                                "usuario"))
-        movForm = mov_form(instance=mov_bancario, id=id, choices=TIPO_MOV_BANCARIO)
+            movForm = mov_form(instance=mov_bancario, id=id, choices=DP_NE_CA_RE)
+            hay_detalles = True
         detallesForm = MovBancarios_DetalleForm()
 
     template_name = 'MovBancarioForm.html'
-    contexto = {'movForm': movForm, 'detallesForm': detallesForm, 'MovBancario': MovBancario, 'id': id}
+    contexto = {'movForm': movForm, 'detallesForm': detallesForm, 'MovBancario': MovBancario, 'id': id, 'detalles':hay_detalles}
     return render(request, template_name, contexto)
 
 
@@ -266,7 +269,8 @@ def mov_bancarios_detalle_eliminar(request):
 def mov_bancarios_detalle_listar(request):
     if request.method == 'GET':
         mov_bancario_id = empty2none(request.GET['mov_bancario'])
-        detalles_list = list(MovBancarios_Detalle.objects.filter(mov_bancario=mov_bancario_id).values()) # guarda los detalles asociados al mov bancario dado en una lista
+        detalles = MovBancarios_Detalle.objects.all().order_by('pk')                 # ordena los detalles por id
+        detalles_list = list(detalles.filter(mov_bancario=mov_bancario_id).values()) # guarda los detalles asociados al mov bancario dado en una lista
 
         for objeto in detalles_list: # hay que cambiar la id del medio de pago por el objeto en si y parsear la fecha
             if objeto['medio_pago_id'] is not None:
@@ -274,11 +278,9 @@ def mov_bancarios_detalle_listar(request):
             if objeto['vencimiento_det'] is not None:
                 objeto['vencimiento_det'] = objeto['vencimiento_det'].strftime('%d/%m/%Y')
 
-        success = 'bien'
-        return JsonResponse({"status": success, "detalles_data": detalles_list})
+        return JsonResponse({"status": 'bien', "detalles_data": detalles_list})
     else:
-        success = 'mal'
-        return JsonResponse({"status": success})
+        return JsonResponse({"status": 'mal'})
 
 
 def empty2none(x):
@@ -314,16 +316,35 @@ def mov_bancarios_detalle_agregar(request):
         cheque_numero = empty2none(request.POST.get('cheque_numero', None))
         estado_anterior = empty2none(request.POST.get('estado_anterior', None))
 
-        nuevo_detalle = MovBancarios_Detalle(mov_bancario=mov_bancario, medio_pago=medio_pago,
-                                             cheque=cheque, importe_det=importe_det,
-                                             vencimiento_det=vencimiento_det, cheque_numero=cheque_numero,
-                                             estado_anterior=estado_anterior)
+        det_id = empty2none(request.POST.get('det_id', None))
+        if det_id is None:
+            nuevo_detalle = MovBancarios_Detalle(mov_bancario=mov_bancario, medio_pago=medio_pago,
+                                                 cheque=cheque, importe_det=importe_det,
+                                                 vencimiento_det=vencimiento_det, cheque_numero=cheque_numero,
+                                                 estado_anterior=estado_anterior)
+        else:
+            nuevo_detalle = MovBancarios_Detalle(pk=det_id, mov_bancario=mov_bancario, medio_pago=medio_pago,
+                                                 cheque=cheque, importe_det=importe_det,
+                                                 vencimiento_det=vencimiento_det, cheque_numero=cheque_numero,
+                                                 estado_anterior=estado_anterior)
         nuevo_detalle.save()
         success = 'bien'
     else:
         success = 'mal'
 
     return JsonResponse({"status": success})
+
+
+@csrf_exempt
+def mov_bancarios_detalle_editar(request):
+    if request.method == "POST":
+        id = request.POST.get("sid")
+        detalle = MovBancarios_Detalle.objects.get(pk=id)
+        detalles_data = {"id": id, "medio_pago_id": detalle.medio_pago, "cheque": detalle.cheque,
+                         "importe_det": detalle.importe_det, "vencimiento_det": detalle.vencimiento_det,
+                         "cheque_numero": detalle.cheque_numero, "estado_anterior": detalle.estado_anterior}
+
+        return JsonResponse(detalles_data)
 
 
 ########################################################################################################################

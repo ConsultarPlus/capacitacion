@@ -10,7 +10,7 @@
     {% endif %}
     {% crispy movForm %}
     <br>
-    {% if id %} <!-- si estoy editando el movimiento, por lo tanto hay una ID, se carga la tabla detalles-->
+    {% if id and detalles %} <!-- si estoy editando el movimiento, por lo tanto hay una ID, se carga la tabla detalles-->
         {% crispy detallesForm %}
         {% include "mov_bancarios_detalle_list_block.html" %}
         <script type="text/javascript">
@@ -48,6 +48,7 @@
                             "</td><td>" + parseNull(lista[i].vencimiento_det) +
                             "</td><td>" + parseNull(lista[i].cheque_numero) +
                             "</td><td>" + parseNull(lista[i].estado_anterior) +
+                            "</td><td>" + "<a href='#' class='changelink' title='Editar' data-sid=" + lista[i].id + "></a>" +
                             "</td><td>" + "<a href='#' class='deletelink' title='Eliminar' data-sid=" + lista[i].id + "></a>" + "</td></tr>"
                         }
                         $("#detalles_body").html(output)            // se agrega el html a la tabla
@@ -70,11 +71,13 @@
                     vencimiento_det: $('#id_vencimiento_det').val(),
                     cheque_numero: $('#id_cheque_numero').val(),
                     estado_anterior: $('#id_estado_anterior').val(),
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    det_id: document.getElementById("det_id").value
                 },
                 success: function (data){
                     cargarTabla();                                    // se recarga la tabla
-                    document.getElementById("detalles_form").reset(); // y se resetea el formulario
+                    document.getElementById("detalles_form").reset(); // se resetea el formulario
+                    document.getElementById("det_id").value = null;   // se vacia campo auxiliar
                 }
             })
         }
@@ -87,14 +90,12 @@
             event.preventDefault();                                   // previene que se auto-scrollee hacia arriba
             let id = $(this).attr("data-sid")
             _data = {sid:id}
-            //_this = $(this)
             $.ajax({                                                  // hacemos el ajax post a eliminar enviando la id del objeto a eliminar
                 url: "{% url 'mov_bancarios_detalle_eliminar' %}",
                 method: "POST",
                 data: _data,
                 success: function(data){
                     if(data.status == 1){                             // luego de eliminar debemos volver a cargar la tabla
-                        //$(_this).closest("tr").remove();            // esta linea no es necesaria
                         cargarTabla();
                     }
                     if(data.status == 0){
@@ -102,6 +103,39 @@
                     }
                 }
 
+            })
+        })
+
+        // parseFecha -> recibe un string de fecha parseado default por el formato de django y lo convierte al que usamos nosotros
+        function parseFecha(fecha){
+            if(fecha === null){
+                return null;
+            }
+            var fechaArray = fecha.split("-");
+            var parsedFecha = fechaArray[2] + "/" + fechaArray[1] + "/" + fechaArray[0];
+            return parsedFecha;
+        }
+
+        // funcion editar detalle
+        $("tbody").on("click", ".changelink", function(){
+            event.preventDefault();                                   // previene que se auto-scrollee hacia arriba
+            let id = $(this).attr("data-sid");
+            _data = {sid:id};
+            _this = $(this)
+            $.ajax({
+                url: "{% url 'mov_bancarios_detalle_editar' %}",      // ajax request para recibir los campos del detalle a editar, dada la id
+                method: "POST",
+                data: _data,
+
+                success: function(data){                              // se cargan los valores del detalle en los campos del formulario
+                    document.getElementById("id_medio_pago").value      = data.medio_pago_id
+                    document.getElementById("id_cheque").value          = data.cheque
+                    document.getElementById("id_importe_det").value     = data.importe_det
+                    document.getElementById("id_vencimiento_det").value = parseFecha(data.vencimiento_det)
+                    document.getElementById("id_cheque_numero").value   = data.cheque_numero
+                    document.getElementById("id_estado_anterior").value = data.estado_anterior
+                    document.getElementById("det_id").value             = data.id   // campo invisible para guardar la id del detalle que se esta modificando
+                }
             })
         })
     </script>

@@ -5,7 +5,7 @@ from bancos.views import cuenta_bancaria_eliminar, chequera_eliminar, chequera_e
     mov_bancario_editar, mov_bancario_agregar, mov_bancario_listar, mov_bancarios_detalle_eliminar, \
     mov_bancario_agregar_dc, mov_bancarios_detalle_listar, cheques_terceros_eliminar, cheques_terceros_editar, \
     cheques_terceros_agregar, cheques_terceros_listar, mov_bancarios_detalle_agregar, cheques_propios_eliminar, \
-    cheques_propios_editar, cheques_propios_agregar, cheques_propios_listar
+    cheques_propios_editar, cheques_propios_agregar, cheques_propios_listar, mov_bancarios_detalle_editar
 
 urlpatterns = [
     path('cuenta_bancaria_listar/', cuenta_bancaria_listar, name='cuenta_bancaria_listar'),
@@ -27,6 +27,7 @@ urlpatterns = [
     path('mov_bancarios_detalle_listar/', mov_bancarios_detalle_listar, name='mov_bancarios_detalle_listar'),
     path('mov_bancarios_detalle_eliminar/', mov_bancarios_detalle_eliminar, name='mov_bancarios_detalle_eliminar'),
     path('mov_bancarios_detalle_agregar/', mov_bancarios_detalle_agregar, name='mov_bancarios_detalle_agregar'),
+    path('mov_bancarios_detalle_editar/', mov_bancarios_detalle_editar, name='mov_bancarios_detalle_editar'),
 
     path('cheques_terceros_listar/', cheques_terceros_listar, name='cheques_terceros_listar'),
     path('cheques_terceros_agregar/', cheques_terceros_agregar, name='cheques_terceros_agregar'),

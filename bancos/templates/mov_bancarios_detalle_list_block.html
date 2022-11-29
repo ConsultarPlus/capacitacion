@@ -14,6 +14,7 @@
                     <th>{% traducir 'cheque numero' 'MOV_BANCARIOS_DETALLE' %}</th>
                     <th>{% traducir 'estado anterior' 'MOV_BANCARIOS_DETALLE' %}</th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody id="detalles_body">
@@ -25,6 +26,12 @@
                         <td> {{ mov_bancarios_detalle.vencimiento_det | limpiar_none }}</td>
                         <td> {{ mov_bancarios_detalle.cheque_numero | limpiar_none }}</td>
                         <td></td>
+                        <td>
+                            <a href="{% url 'mov_bancarios_detalle_editar' mov_bancarios_detalle.id %}"
+                               title="{% traducir 'Editar' 'MOV_BANCARIOS_DETALLE' %}"
+                               class="changelink">
+                            </a>
+                        </td>
                         <td><a href="#"
                                class="deletelink"
                                title="{% traducir 'Eliminar' 'MOV_BANCARIOS_DETALLE' %}"
