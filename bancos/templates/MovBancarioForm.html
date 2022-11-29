@@ -8,10 +8,142 @@
     {% else %}
         <h2>Agregar</h2>
     {% endif %}
-
     {% crispy movForm %}
     <br>
-    {% crispy detallesForm %}
-    {% include "mov_bancarios_detalle_list_block.html" %}
+    {% if id and detalles %} <!-- si estoy editando el movimiento, por lo tanto hay una ID, se carga la tabla detalles-->
+        {% crispy detallesForm %}
+        {% include "mov_bancarios_detalle_list_block.html" %}
+        <script type="text/javascript">
+        // parseNull -> devuelve "--" si el string es null o undefined
+        function parseNull(x){
+            if (x == null || x == undefined){
+                return "--";
+            }
+            return x;
+        }
+
+        // cargarTabla -> obtiene una lista con los detalles con id igual al movimiento actual y imprime la tabla con ellos
+        function cargarTabla(){
+            $.ajax({                                                 // ajax request para obtener lista de detalles
+                type:'GET',
+                url: "{% url 'mov_bancarios_detalle_listar' %}",
+                data: {
+                    mov_bancario: {{id}},
+                },
+                success: function(data){
+                    lista = data.detalles_data
+                    if(data.status == "bien"){
+                        output = ""
+                        for(i=0; i<lista.length; i++){              // si todo esta bien se comienza a recorrer la lista
+                            if(i % 2 == 0){                         // se asigna si la fila es par o impar para el color
+                                row = "row2"
+                            }
+                            else{
+                                row = "row1"
+                            }                                       // se guarda el html para todos los campos de la fila en la var output
+                                                                    // los campos que se imprimen podrian cambiarse si es un CD o DNCR
+                            output += "<tr class=" + row + "><td>" + parseNull(lista[i].medio_pago_id) +
+                            "</td><td>" + parseNull(lista[i].cheque) +
+                            "</td><td>" + parseNull(lista[i].importe_det) +
+                            "</td><td>" + parseNull(lista[i].vencimiento_det) +
+                            "</td><td>" + parseNull(lista[i].cheque_numero) +
+                            "</td><td>" + parseNull(lista[i].estado_anterior) +
+                            "</td><td>" + "<a href='#' class='changelink' title='Editar' data-sid=" + lista[i].id + "></a>" +
+                            "</td><td>" + "<a href='#' class='deletelink' title='Eliminar' data-sid=" + lista[i].id + "></a>" + "</td></tr>"
+                        }
+                        $("#detalles_body").html(output)            // se agrega el html a la tabla
+                    }
+                }
+            })
+        }
+
+        // agregarDetalle -> agrega un detalle nuevo
+        function agregarDetalle(e){
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',           // ajax post que envia todos los valores del formulario y el csrftoken (es necesario)
+                url: "{% url 'mov_bancarios_detalle_agregar' %}",   // la funcion agregar de la view se encarga de agregarlo
+                data: {
+                    mov_bancario: {{id}},
+                    medio_pago: $('#id_medio_pago').val(),
+                    cheque: $('#id_cheque').val(),
+                    importe_det: $('#id_importe_det').val(),
+                    vencimiento_det: $('#id_vencimiento_det').val(),
+                    cheque_numero: $('#id_cheque_numero').val(),
+                    estado_anterior: $('#id_estado_anterior').val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    det_id: document.getElementById("det_id").value
+                },
+                success: function (data){
+                    cargarTabla();                                    // se recarga la tabla
+                    document.getElementById("detalles_form").reset(); // se resetea el formulario
+                    document.getElementById("det_id").value = null;   // se vacia campo auxiliar
+                }
+            })
+        }
+
+        $(window).on('load', cargarTabla)                             // se carga la tabla con js al inicio para que funcione el boton eliminar
+        $(document).on('submit', '#detalles_form', agregarDetalle)    // se llama al funcion agregarDetalle cuando se submitea el form detalles
+
+        // funcion eliminar detalle
+        $("tbody").on("click", ".deletelink", function(){             // cuando se clickea cualquier boton de la clase "deletelink" se ejecuta
+            event.preventDefault();                                   // previene que se auto-scrollee hacia arriba
+            let id = $(this).attr("data-sid")
+            _data = {sid:id}
+            $.ajax({                                                  // hacemos el ajax post a eliminar enviando la id del objeto a eliminar
+                url: "{% url 'mov_bancarios_detalle_eliminar' %}",
+                method: "POST",
+                data: _data,
+                success: function(data){
+                    if(data.status == 1){                             // luego de eliminar debemos volver a cargar la tabla
+                        cargarTabla();
+                    }
+                    if(data.status == 0){
+                        console.log("No se puede borrar el detalle")
+                    }
+                }
+
+            })
+        })
+
+        // parseFecha -> recibe un string de fecha parseado default por el formato de django y lo convierte al que usamos nosotros
+        function parseFecha(fecha){
+            if(fecha === null){
+                return null;
+            }
+            var fechaArray = fecha.split("-");
+            var parsedFecha = fechaArray[2] + "/" + fechaArray[1] + "/" + fechaArray[0];
+            return parsedFecha;
+        }
+
+        // funcion editar detalle
+        $("tbody").on("click", ".changelink", function(){
+            event.preventDefault();                                   // previene que se auto-scrollee hacia arriba
+            let id = $(this).attr("data-sid");
+            _data = {sid:id};
+            _this = $(this)
+            $.ajax({
+                url: "{% url 'mov_bancarios_detalle_editar' %}",      // ajax request para recibir los campos del detalle a editar, dada la id
+                method: "POST",
+                data: _data,
+
+                success: function(data){                              // se cargan los valores del detalle en los campos del formulario
+                    document.getElementById("id_medio_pago").value      = data.medio_pago_id
+                    document.getElementById("id_cheque").value          = data.cheque
+                    document.getElementById("id_importe_det").value     = data.importe_det
+                    document.getElementById("id_vencimiento_det").value = parseFecha(data.vencimiento_det)
+                    document.getElementById("id_cheque_numero").value   = data.cheque_numero
+                    document.getElementById("id_estado_anterior").value = data.estado_anterior
+                    document.getElementById("det_id").value             = data.id   // campo invisible para guardar la id del detalle que se esta modificando
+                }
+            })
+        })
+    </script>
+    {% endif %}
+    <script src="{% static 'js/confirmarAccion.js' %} " ></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 
 {% endblock %}
+

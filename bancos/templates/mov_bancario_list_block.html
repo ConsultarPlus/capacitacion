@@ -11,8 +11,13 @@
         <table>
             <tr class="model-group">
                 <th>
+                    <a href="{% url 'mov_bancario_agregar_dc' %}" class="addlink">
+                    {% traducir 'Débito / Crédito' 'MOV_BANCARIO' %}
+                    </a>
+                </th>
+                <th>
                     <a href="{% url 'mov_bancario_agregar' %}" class="addlink">
-                    {% traducir 'Débito/Crédito' 'MOV_BANCARIO' %}
+                    {% traducir 'Depósito / Neg. / Caución / Retorno' 'MOV_BANCARIO' %}
                     </a>
                 </th>
             </tr>
@@ -26,22 +31,21 @@
             <thead>
                 <tr>
                     <th>{% traducir 'tipo' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'numero' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'cuenta_bancaria' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'emision' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'número' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'cuenta bancaria' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'emisión' 'MOV_BANCARIO' %}</th>
                     <th>{% traducir 'vencimiento' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'acreditacion' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'acreditación' 'MOV_BANCARIO' %}</th>
                     <th>{% traducir 'importe' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'concepto_bancario' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'concepto bancario' 'MOV_BANCARIO' %}</th>
                     <th>{% traducir 'clearing' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'observacion' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'nro_conciliacion' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'id_asociado' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'observación' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'nro conciliación' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'id asociado' 'MOV_BANCARIO' %}</th>
                     <th>{% traducir 'usuario' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'moneda' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'cotizacion' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'cotización' 'MOV_BANCARIO' %}</th>
                     <th>{% traducir 'transferido' 'MOV_BANCARIO' %}</th>
-                    <th>{% traducir 'chepro_anulado' 'MOV_BANCARIO' %}</th>
+                    <th>{% traducir 'chepro anulado' 'MOV_BANCARIO' %}</th>
                     <th>{% traducir 'lote' 'MOV_BANCARIO' %}</th>
                     <th>{% traducir 'sucursal' 'MOV_BANCARIO' %}</th>
                     <th></th>
@@ -65,7 +69,6 @@
                         <td> {{ mov_bancario.nro_conciliacion | limpiar_none }}</td>
                         <td> {{ mov_bancario.id_asociado | limpiar_none }}</td>
                         <td> {{ mov_bancario.usuario | limpiar_none }}</td>
-                        <td> {{ mov_bancario.moneda | limpiar_none }}</td>
                         <td> {{ mov_bancario.cotizacion | limpiar_none }}</td>
                         <td> {{ mov_bancario.transferido | limpiar_none }}</td>
                         <td> {{ mov_bancario.chepro_anulado | limpiar_none }}</td>

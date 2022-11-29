@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from django.template.defaulttags import register
 from django.urls import resolve
-from tabla.listas import PRIORIDAD, PREPOSICIONES
+from tabla.listas import PRIORIDAD, PREPOSICIONES, ESTADO
 from tabla.models import MODELOS, Traduccion, Plantilla
 
 
@@ -403,3 +403,10 @@ def incluir_plantilla(plantilla_id):
         plantilla_html = 'No se indicó el ID de la plantilla a incluir'
 
     return plantilla_html
+
+
+@register.filter
+def estado_descripcion(valor):
+    for tupla in ESTADO:
+        if tupla[0] == valor:
+            return tupla[1]

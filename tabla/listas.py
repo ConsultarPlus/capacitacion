@@ -122,3 +122,14 @@ TIPO_MOV_BANCARIO = (
 DEBITO_CREDITO = TIPO_MOV_BANCARIO[0:2]
 
 DP_NE_CA_RE = TIPO_MOV_BANCARIO[2:6]
+
+ESTADO = (
+    ("A", "Cartera"),
+    ("C", "Caucionado"),
+    ("D", "Depositado"),
+    ("V", "Devuelto"),
+    ("E", "Entregado"),
+    ("G", "Gestion Judicial"),
+    ("N", "Negociado"),
+    ("R", "Reemplazado"),
+    ("X", "Reservado"))
