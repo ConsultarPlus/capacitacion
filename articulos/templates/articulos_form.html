@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+
+    {% if articulo %}
+        <h2>({{articulo.artcod }}) {{articulo.descripcion }}</h2>
+    {% else %}
+        <h2>Agregar</h2>
+    {% endif %}
+
+    {% crispy form %}
+
+     <form hidden id="urlsForm"
+            rubro-url="{% url 'cargar_rubro' %}"
+            seccion-url="{% url 'cargar_seccion' %}"
+            novalidate>
+     </form>
+    <script>
+      $("#id_departamento").change(function () {
+        var url = $("#urlsForm").attr("rubro-url");
+        var departamento_id = $("#id_departamento").val();
+        var rubro = document.getElementById("id_rubro")
+        $.ajax({
+          url: url,
+          data: {'id_depto': departamento_id},
+          success: function (data) {
+            document.getElementById("id_rubro").value = data;
+          }
+        });
+         var url_seccion = $("#urlsForm").attr("seccion-url");
+           $.ajax({
+          url: url_seccion,
+          data: {'id_depto': departamento_id},
+          success: function (data) {
+            document.getElementById("id_seccion").value = data;
+          }
+        });
+      });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="{% static " js/cargar_listas.js" %} " ></script>
+{% endblock %}

@@ -68,6 +68,7 @@ PROJECT_APPS = [
     'administracion',
     'localidades',
     'contabilidad',
+    'articulos',
     'finanzas',
     'bancos'
 ]
