@@ -316,6 +316,7 @@ def mov_bancarios_detalle_agregar(request):
         cheque_numero = empty2none(request.POST.get('cheque_numero', None))
         estado_anterior = empty2none(request.POST.get('estado_anterior', None))
 
+        # chequea si se esta editando (si hay una id), si es el caso entonces se agrega la id al detalle creado
         det_id = empty2none(request.POST.get('det_id', None))
         if det_id is None:
             nuevo_detalle = MovBancarios_Detalle(mov_bancario=mov_bancario, medio_pago=medio_pago,
@@ -340,7 +341,11 @@ def mov_bancarios_detalle_editar(request):
     if request.method == "POST":
         id = request.POST.get("sid")
         detalle = MovBancarios_Detalle.objects.get(pk=id)
-        detalles_data = {"id": id, "medio_pago_id": detalle.medio_pago, "cheque": detalle.cheque,
+        if detalle.medio_pago is not None:
+            medio_pago = detalle.medio_pago.id
+        else:
+            medio_pago = None
+        detalles_data = {"id": id, "medio_pago_id": medio_pago, "cheque": detalle.cheque,
                          "importe_det": detalle.importe_det, "vencimiento_det": detalle.vencimiento_det,
                          "cheque_numero": detalle.cheque_numero, "estado_anterior": detalle.estado_anterior}
 
