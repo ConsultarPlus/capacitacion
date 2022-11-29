@@ -5,8 +5,10 @@ from .views import menu, pagina_anterior
 urlpatterns = [
     path('', menu, name='menu'),
     path('administracion/', include('administracion.urls')),
+    path('articulos/', include('articulos.urls')),
     path('localidades/', include('localidades.urls')),
     path('contabilidad/', include('contabilidad.urls')),
+    path('clientes/', include('clientes.urls')),
     path('finanzas/', include('finanzas.urls')),
     path('bancos/', include('bancos.urls')),
     path('numeradores/', include('numeradores.urls')),

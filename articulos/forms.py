@@ -1,11 +1,12 @@
 from django import forms
+
+from administracion.models import Departamento
 from .models import Articulo
-from django.urls import reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Button, ButtonHolder, HTML
-from xadmin.settings import MEDIA_URL, STATIC_URL
+# from xadmin.settings import MEDIA_URL, STATIC_URL
 from crispy_forms.bootstrap import FieldWithButtons
-from tabla.listas import ITEMS_X_PAG, PORCENTAJEIVA
+from tabla.listas import ITEMS_X_PAG, _PORCENTAJEIVA
 from tabla.widgets import SelectLiveSearchInput
 from tabla.funcs import boton_buscar
 from tabla.gets import get_choices, get_choices_mas_vacio
@@ -31,11 +32,12 @@ class ArticuloForm(forms.ModelForm):
         self.fields['rubro'].disabled = True
         self.fields['codbar'].label = 'Código de Barra'
         self.fields['iva'].label = 'Iva %'
-        self.fields['iva'].widget = SelectLiveSearchInput(choices=PORCENTAJEIVA)
+        self.fields['iva'].widget = SelectLiveSearchInput(choices=_PORCENTAJEIVA)
         self.fields['precio'].label = 'Precio'
         self.fields['moneda'].label = 'Moneda'
         self.fields['departamento'].label = 'Departamento'
-        self.fields['departamento'].widget = SelectLiveSearchInput(choices=get_choices('DEPARTAMENTO'))
+        # self.fields['departamento'].widget = SelectLiveSearchInput(choices=get_choices('DEPARTAMENTO'))  # queda mas lindo con bootstrap, pero sin esto anda
+        # self.fields['departamento'].widget = SelectLiveSearchInput(choices=Departamento.objects.all())   # intento fallido
         self.fields['marca'].widget = SelectLiveSearchInput(choices=get_choices('MARCA'))
         self.fields['color'].widget = SelectLiveSearchInput(choices=get_choices('COLOR'))
         self.fields['artuniven'].label = 'Unidad'
@@ -52,9 +54,11 @@ class ArticuloForm(forms.ModelForm):
                 pass
 
             if self.instance.artimg:
-                img = MEDIA_URL+str(self.instance.artimg)
+                # img = MEDIA_URL+str(self.instance.artimg)
+                img = str(self.instance.artimg)
             else:
-                img = STATIC_URL + "img/usuario_incognito.png"
+                # img = STATIC_URL +"img/usuario_incognito.png"
+                img = "img/usuario_incognito.png"
             link = """ <div  class="col form-group col-md-10 mb-0 " > """
             link += """ <div id="div_foto_preview" class="form-group"> """
             link += """ <div class=""><a>"""
@@ -129,7 +133,8 @@ class ArticuloForm(forms.ModelForm):
 
 class FiltroArticulo(forms.Form):
     marca = forms.IntegerField(required=False)
-    departamento = forms.IntegerField(required=False)
+    departamento = forms.ModelChoiceField(queryset=Departamento.objects.all(), required=False)
+    # departamento = forms.IntegerField(required=False)
     buscar = forms.CharField(max_length=60, required=False)
     modo = forms.CharField(required=False)
     items = forms.IntegerField(max_value=30,
@@ -145,10 +150,17 @@ class FiltroArticulo(forms.Form):
         self.fields['buscar'].label = ''
         self.fields['items'].label = ''
         self.fields['items'].widget = SelectLiveSearchInput(choices=ITEMS_X_PAG)
-        self.fields['departamento'].widget = SelectLiveSearchInput(choices=get_choices('DEPARTAMENTO'))
+        # self.fields['departamento'].widget = SelectLiveSearchInput(choices=get_choices('DEPARTAMENTO'))
         self.fields['marca'].widget = SelectLiveSearchInput(choices=get_choices_mas_vacio('MARCA'))
         self.fields['modo'].widget.attrs['hidden'] = True
         self.fields['modo'].label = ""
+
+        try:
+            seleccionar_departamento = kwargs['initial']['departamento']
+            if seleccionar_departamento is not None and seleccionar_departamento != '':
+                self.fields['departamento'].initial = seleccionar_departamento
+        except (ValueError, TypeError):
+            pass
 
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control-sm'

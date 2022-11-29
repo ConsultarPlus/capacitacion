@@ -52,6 +52,12 @@ def menu_processor(request):
         cheques_terceros_puede_listar = request.user.has_perm('bancos.cheques_terceros_puede_listar')
         cheques_propios_puede_listar = request.user.has_perm('bancos.cheques_propios_puede_listar')
 
+        # CLIENTES
+        cliente_puede_listar = request.user.has_perm('clientes.cliente_puede_listar')
+
+        # ARTICULOS
+        articulo_puede_listar = request.user.has_perm('articulos.articulo_puede_listar')
+
         if viajante_puede_listar:
             grupo_administracion_mostrar = True
 
@@ -61,14 +67,16 @@ def menu_processor(request):
         grupos = [
                   {'id': 'ADM', 'descripcion': 'Administración',
                    'mostrar': get_preferencia(usuario, 'menu', 'ADM', 'L', False), 'visible': grupo_administracion_mostrar},
-                  {'id': 'LOC', 'descripcion': 'Localidades',
-                   'mostrar': get_preferencia(usuario, 'menu', 'LOC', 'L', False), 'visible': grupo_administracion_mostrar},
+                  {'id': 'BNC', 'descripcion': 'Bancos',
+                   'mostrar': get_preferencia(usuario, 'menu', 'BNC', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'CBL', 'descripcion': 'Contabilidad',
                    'mostrar': get_preferencia(usuario, 'menu', 'CBL', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'FNZ', 'descripcion': 'Finanzas',
                    'mostrar': get_preferencia(usuario, 'menu', 'FNZ', 'L', False), 'visible': grupo_administracion_mostrar},
-                  {'id': 'BNC', 'descripcion': 'Bancos',
-                   'mostrar': get_preferencia(usuario, 'menu', 'BNC', 'L', False), 'visible': grupo_administracion_mostrar},
+                  {'id': 'LOC', 'descripcion': 'Localidades',
+                   'mostrar': get_preferencia(usuario, 'menu', 'LOC', 'L', False), 'visible': grupo_administracion_mostrar},
+                  {'id': 'STC', 'descripcion': 'Stock',
+                   'mostrar': get_preferencia(usuario, 'menu', 'STC', 'L', False), 'visible': grupo_administracion_mostrar},
                   {'id': 'CFN', 'descripcion': 'Configuración',
                    'mostrar': get_preferencia(usuario, 'menu', 'CFN', 'L', False), 'visible': grupo_config_mostrar},
                   ]
@@ -80,8 +88,6 @@ def menu_processor(request):
                    'modelo': 'TRANSPORTE', 'visible': transporte_puede_listar},
                   {'id_grupo': 'ADM', 'url': reverse('condiciondepago_listar'), 'titulo': 'Condiciónes De Pagos',
                    'modelo': 'CONDICIONDEPAGO', 'visible': condiciondepago_puede_listar},
-                  {'id_grupo': 'ADM', 'url': reverse('deposito_listar'), 'titulo': 'Depósitos',
-                   'modelo': 'DEPOSITO', 'visible': deposito_puede_listar},
                   {'id_grupo': 'ADM', 'url': reverse('mediodepago_listar'), 'titulo': 'Medios De Pago',
                    'modelo': 'MEDIODEPAGO', 'visible': mediodepago_puede_listar},
                   {'id_grupo': 'ADM', 'url': reverse('moneda_listar'), 'titulo': 'Monedas',
@@ -90,6 +96,8 @@ def menu_processor(request):
                    'modelo': 'GRUPOCONTACTOS', 'visible': grupocontactos_puede_listar},
                   {'id_grupo': 'ADM', 'url': reverse('grupoeconomico_listar'), 'titulo': 'Grupo Economico',
                    'modelo': 'GRUPOECONOMICO', 'visible': grupoeconomico_puede_listar},
+                  {'id_grupo': 'ADM', 'url': reverse('clientes_listar'), 'titulo': 'Clientes',
+                   'modelo': 'CLIENTES', 'visible': cliente_puede_listar},
                   {'id_grupo': 'CFN', 'url': '/admin/', 'titulo': 'Admin', 'modelo': 'GENERAL',
                    'visible': mostrar_admin},
                   {'id_grupo': 'CFN', 'url': reverse('documentos_listar'), 'titulo': 'Documentos',
@@ -103,10 +111,6 @@ def menu_processor(request):
                    'visible': tabla_puede_listar},
                   {'id_grupo': 'CFN', 'url': reverse('variables_listar'), 'titulo': 'Variables', 'modelo': 'VARIABLE',
                    'visible': variable_puede_listar},
-                  {'id_grupo': 'ADM', 'url': reverse('departamento_listar'), 'titulo': 'Departamentos',
-                   'modelo': 'DEPARTAMENTO', 'visible': departamento_puede_listar},
-                  {'id_grupo': 'ADM', 'url': reverse('deposito_listar'), 'titulo': 'Depósitos',
-                   'modelo': 'DEPOSITO', 'visible': deposito_puede_listar},
                   {'id_grupo': 'LOC', 'url': reverse('pais_listar'), 'titulo': 'Países',
                    'modelo': 'PAIS', 'visible': pais_puede_listar},
                   {'id_grupo': 'LOC', 'url': reverse('provincia_listar'), 'titulo': 'Provincias',
@@ -127,6 +131,12 @@ def menu_processor(request):
                    'modelo': 'CHEQUES_TERCEROS', 'visible': cheques_terceros_puede_listar},
                   {'id_grupo': 'BNC', 'url': reverse('cheques_propios_listar'), 'titulo': 'Cheques propios',
                    'modelo': 'CHEQUES_PROPIOS', 'visible': cheques_propios_puede_listar},
+                  {'id_grupo': 'STC', 'url': reverse('articulos_listar'), 'titulo': 'Articulos',
+                   'modelo': 'ARTICULOS', 'visible': articulo_puede_listar},
+                  {'id_grupo': 'STC', 'url': reverse('departamento_listar'), 'titulo': 'Departamentos',
+                   'modelo': 'DEPARTAMENTO', 'visible': departamento_puede_listar},
+                  {'id_grupo': 'STC', 'url': reverse('deposito_listar'), 'titulo': 'Depósitos',
+                   'modelo': 'DEPOSITO', 'visible': deposito_puede_listar},
                   ]
 
         for menu in menues:

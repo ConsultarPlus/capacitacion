@@ -1,9 +1,12 @@
 from django.db import models
 from django.utils.translation import ugettext as _
-from articulos.models import Articulo
 
-# Create your models here.
-# from tabla.listas import IVAS
+
+class Tipos_Iva(models.Model):
+    tipo = models.CharField(max_length=1, null=True, blank=True)
+    descripcion = models.CharField(max_length=60, null=True, blank=True)
+    codigo_afip = models.CharField(max_length=2, null=True, blank=True)
+    columna_libroiva = models.CharField(max_length=1, null=True, blank=True)
 
 
 class Cliente(models.Model):
@@ -14,7 +17,7 @@ class Cliente(models.Model):
     telefono = models.CharField(verbose_name='Teléfono', max_length=60, null=True, blank=True)
     email = models.EmailField(verbose_name='E-mail', max_length=60, null=True, blank=True)
     encriptado = models.CharField(max_length=10, null=True, blank=True)
-    # tipoiva = models.CharField(max_length=60, default='I', choices=IVAS)
+    tipoiva = models.ForeignKey(Tipos_Iva, on_delete=models.DO_NOTHING, null=False, blank=False)
     saldo_inicial = models.FloatField(max_length=12, null=True, blank=True)
     fecha_saldo = models.DateField(null=True, blank=True)
 

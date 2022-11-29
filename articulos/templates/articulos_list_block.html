@@ -139,14 +139,14 @@
                     <td></td>
                 {% endif %}
                 <td>{{ item.artcod }}</td>
-                <td>{{ item.descripcion }}</td>
+                <td>{{ item.descripcion | limpiar_none }}</td>
                 <td>{{ item.marca|limpiar_none }}</td>
-                <td>{{ item.precio }}</td>
-                <td>{{ item.iva }}</td>
-                <td>{{ item.moneda|moneda_descripcion }}</td>
+                <td>{{ item.precio | limpiar_none }}</td>
+                <td>{{ item.iva | limpiar_none }}</td>
+                <td>{{ item.moneda | limpiar_none }}</td>
                 <td>{{ item.departamento }}</td>
-                <td>{{ item.ubicación }}</td>
-                <td>{{ item.artuniven|unidad_descripcion }}</td>
+                <td>{{ item.ubicacion | limpiar_none }}</td>
+                <td>{{ item.artuniven | limpiar_none }}</td>
                 <td class="img_col">
                 {% if item.artimg.name|tiene_vista_previa %}
                     <a target="_blank"

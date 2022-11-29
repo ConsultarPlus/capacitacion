@@ -3,23 +3,16 @@ from django.contrib import messages
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
-from django.http import JsonResponse, HttpResponse
-from django.core.mail import send_mail, EmailMultiAlternatives
-from django.template import Context, Template
 from urllib.parse import urlencode
-from reportlab.pdfgen import canvas
-from clientes.models import Cliente, CliEma
+from clientes.models import Cliente
 from clientes.forms import ClienteForm
 from clientes.filters import clientes_filtrar
 from tabla.forms import ImportarCSVForm
 from tabla.funcs import es_valido, email_valido
 from perfiles.admin import agregar_a_errores
 from perfiles.models import Perfil
-from capacitacion.settings import DEBUG, BASE_DIR, EMAIL_HOST_USER
-import datetime
 import random
 import string
-import csv
 
 
 # Create your views here.
@@ -74,7 +67,7 @@ def cliente_editar(request, encriptado=None):
         post["encriptado"] = encriptado
         if form.is_valid():
             form.save()
-            return redirect('menu')
+            return redirect('clientes_listar')
         else:
             messages.add_message(request, messages.ERROR, form.errors)
             return redirect('menu')

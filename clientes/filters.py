@@ -2,9 +2,7 @@ from clientes.models import Cliente
 from django.db.models import Q
 from tabla.filters import paginador
 from tabla.forms import FiltroSimple
-from tabla.funcs import normaliza_fechas
 from perfiles.funcs import get_opcion_paginado
-from clientes.forms import FiltroCuentas
 
 
 def clientes_filtrar(query_dict, encriptado=None):

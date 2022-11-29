@@ -1,13 +1,7 @@
 from django import forms
 from .models import Cliente
-from django.urls import reverse
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column, Button, ButtonHolder, HTML
-from crispy_forms.bootstrap import FieldWithButtons
-from tabla.widgets import SelectLiveSearchInput, DatePickerInput
-from tabla.listas import ITEMS_X_PAG, SINO
-from tabla.funcs import boton_buscar
-from datetime import datetime
+from crispy_forms.layout import Layout, Submit, Row, Column, Button, ButtonHolder
 
 
 class ClienteForm(forms.ModelForm):

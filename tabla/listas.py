@@ -77,6 +77,12 @@ ITEMS_X_PAG = (
     ('30', 'ver 30 ítems'),
     )
 
+_PORCENTAJEIVA = (
+    (21, '21%'),
+    (10, '10%'),
+    (4, '4%'),
+)
+
 etiquetas_otros = (('{{ salto_de_pagina }}', 'Salto de página'),
                    ('{{ip <ID de plantilla>|incluir_plantilla ip}}', 'Incluir plantilla'))
 

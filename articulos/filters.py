@@ -18,10 +18,10 @@ def articulos_filtrar(query_dict):
                                    Q(descripcion__icontains=buscar)
                                    )
     if departamento != ''and departamento is not None:
-        filtrado=filtrado.filter(departamento_id=departamento)
+        filtrado = filtrado.filter(departamento_id=departamento)
 
     if marca != '' and marca is not None:
-       filtrado=filtrado.filter(marca_id=marca)
+        filtrado = filtrado.filter(marca_id=marca)
 
     registros = filtrado.count()
     paginado = paginador(query_dict, filtrado)
@@ -29,8 +29,8 @@ def articulos_filtrar(query_dict):
     form = FiltroArticulo(initial={'buscar': buscar,
                                    'items': items,
                                    'modo': modo,
-                                   'marca' : marca,
-                                   'departamento' : departamento})
+                                   'marca': marca,
+                                   'departamento': departamento})
     return {'filter': filtrado,
             'paginado': paginado,
             'registros': registros,
