@@ -1,10 +1,13 @@
 from django.contrib import messages
 from django.db.models import Q
 from tabla.filters import paginador
-from contabilidad.forms import FiltroPlanDeCuentas
-from contabilidad.models import PlanDeCuentas
+from tabla.forms import FiltroSimple
+from contabilidad.forms import FiltroPlanDeCuentas, EjercicioForm, AsientosForm, AsientosDetalleForm
+from contabilidad.models import PlanDeCuentas, Ejercicio, Asientos, AsientosDetalle
 from tabla.gets import get_variable
 from tabla.models import Variable
+from perfiles.funcs import get_opcion_paginado
+
 
 
 def plan_de_cuentas_filtrar(query_dict):
@@ -60,3 +63,84 @@ def cuenta_contable_valida2(request, form):  # esta funcion es un quilombo, segu
         i += 1  # actualizar el contador
     return True
 
+
+def ejercicio_filtrar(query_dict):
+    ejercicio = query_dict.GET.get('ejercicio')
+    descripcion = query_dict.GET.get('descripcion')
+    items = get_opcion_paginado(query_dict)
+    modo = query_dict.GET.get('modo')
+
+    filtrado = Ejercicio.objects.all()
+
+    if ejercicio != '' and ejercicio is not None:
+        filtrado = filtrado.filter(ejercicio=ejercicio)
+
+    if descripcion != '' and descripcion is not None:
+        filtrado = filtrado.filter(descripcion=descripcion)
+
+    registros = filtrado.count()
+    paginado = paginador(query_dict, filtrado)
+
+    form = FiltroSimple(initial={'items': items,
+                                 'modo': modo})
+
+    return {'filter': filtrado,
+            'ejercicio': paginado,
+            'registros': registros,
+            'filtros_form': form}
+
+
+def asientos_filtrar(query_dict):
+    buscar = query_dict.GET.get('buscar')
+    items = get_opcion_paginado(query_dict)
+    modo = query_dict.GET.get('modo')
+    asociado_id = query_dict.GET.get('asociado_id')
+    orden = query_dict.GET.get('orden')
+    numero = query_dict.GET.get('numero')
+
+    filtrado = Asientos.objects.all().order_by('asociado_id', 'numero', 'orden')
+
+    if buscar != '' and buscar is not None:
+        filtrado = filtrado.filter(Q(asociado_id=asociado_id) |
+                                  (Q(numero=numero) |
+                                   Q(orden=orden)
+                                   ))
+
+    registros = filtrado.count()
+    paginado = paginador(query_dict, filtrado)
+
+    form = FiltroSimple(initial={'items': items,
+                                 'asociado_id': asociado_id,
+                                 'numero': numero,
+                                 'orden': orden,
+                                 'modo': modo})
+
+    return {'filter': filtrado,
+            'paginado': paginado,
+            'registros': registros,
+            'asociado_id': asociado_id,
+            'numero': numero,
+            'orden': orden,
+            'filtros_form': form}
+
+
+def asientos_detalle_filtrar(query_dict):
+    buscar = query_dict.GET.get('buscar')
+    items = get_opcion_paginado(query_dict)
+    modo = query_dict.GET.get('modo')
+
+    filtrado = AsientosDetalle.objects.all().order_by('asientos_detalle')
+
+    if buscar != '' and buscar is not None:
+        filtrado = filtrado.filter(buscar=buscar)
+
+    registros = filtrado.count()
+    paginado = paginador(query_dict, filtrado)
+
+    form = FiltroSimple(initial={'items': items,
+                                 'modo': modo})
+
+    return {'filter': filtrado,
+            'asientosdetalle': paginado,
+            'registros': registros,
+            'filtros_form': form}

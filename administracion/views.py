@@ -104,7 +104,6 @@ def viajante_editar(request, id):
     return render(request, template_name, contexto)
 
 
-
 @permission_required("administracion.viajante_agregar", None, raise_exception=True)
 def viajante_agregar(request):
     url = reverse('viajante_agregar')
