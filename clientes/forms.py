@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cliente
+from .models import Cliente, Tipos_Iva
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Button, ButtonHolder
 
@@ -36,6 +36,38 @@ class ClienteForm(forms.ModelForm):
             ),
             Row(
                 Column('email', css_class='form-group col-md-5 mb-0'),
+                css_class='form-row'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Grabar'),
+                Button('cancel', 'Volver', css_class='btn-default', onclick="window.history.back()")
+            )
+        )
+
+
+########################################################################################################################
+
+
+class Tipos_IvaForm(forms.ModelForm):
+
+    class Meta:
+        model = Tipos_Iva
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_id = 'id_form'
+        self.helper.layout = Layout(
+            Row(
+                Column('tipo', css_class='form-group col-md-3 mb-0'),
+                Column('descripcion', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Row(
+                Column('codigo_afip', css_class='form-group col-md-3 mb-0'),
+                Column('columna_libroiva', css_class='form-group col-md-3 mb-0'),
                 css_class='form-row'
             ),
             ButtonHolder(

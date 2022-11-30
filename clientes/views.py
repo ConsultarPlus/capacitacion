@@ -4,9 +4,9 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
 from urllib.parse import urlencode
-from clientes.models import Cliente
-from clientes.forms import ClienteForm
-from clientes.filters import clientes_filtrar
+from clientes.models import Cliente, Tipos_Iva
+from clientes.forms import ClienteForm, Tipos_IvaForm
+from clientes.filters import clientes_filtrar, tipos_iva_filtrar
 from tabla.forms import ImportarCSVForm
 from tabla.funcs import es_valido, email_valido
 from perfiles.admin import agregar_a_errores
@@ -270,3 +270,66 @@ def clientes_cargar_csv(request):
     titulo = 'Importar CSV'
     contexto = {'form': form, 'formato': formato, 'errores': errores_lista, 'titulo': titulo}
     return render(request, template_name, contexto)
+
+
+########################################################################################################################
+
+
+@login_required(login_url='ingresar')
+def tipos_iva_listar(request):
+    contexto = tipos_iva_filtrar(request)
+    template_name = 'tipos_iva_listar.html'
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("clientes.tipos_iva_agregar", None, raise_exception=True)
+def tipos_iva_agregar(request):
+    if request.POST:
+        form = Tipos_IvaForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('tipos_iva_listar')
+    else:
+        form = Tipos_IvaForm()
+
+    template_name = 'Tipos_IvaForm.html'
+    contexto = {'form': form}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("clientes.tipos_iva_editar", None, raise_exception=True)
+def tipos_iva_editar(request, id):
+    try:
+        tipos_iva = Tipos_Iva.objects.get(id=id)
+    except Exception as mensaje:
+        messages.add_message(request, messages.ERROR, mensaje)
+        return redirect('tipos_iva_listar')
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = Tipos_IvaForm(post, request.FILES, instance=tipos_iva)
+        if form.is_valid():
+            form.save()
+            return redirect('tipos_iva_listar')
+    else:
+        form = Tipos_IvaForm(instance=tipos_iva)
+
+    template_name = 'Tipos_IvaForm.html'
+    contexto = {'form': form, 'Tipos_Iva': Tipos_Iva}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("clientes.tipos_iva_eliminar", None, raise_exception=True)
+def tipos_iva_eliminar(request, id):
+    url = 'tipos_iva_listar'
+    try:
+        tipos_iva = Tipos_Iva.objects.get(id=id)
+        tipos_iva.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo.'
+        messages.add_message(request, messages.ERROR, mensaje)
+    return redirect(url)
