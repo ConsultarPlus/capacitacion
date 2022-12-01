@@ -4,9 +4,9 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
 from urllib.parse import urlencode
-from clientes.models import Cliente, Tipos_Iva
-from clientes.forms import ClienteForm, Tipos_IvaForm
-from clientes.filters import clientes_filtrar, tipos_iva_filtrar
+from clientes.models import Cliente, Tipos_Iva, CliEma
+from clientes.forms import ClienteForm, Tipos_IvaForm, CliEmaForm
+from clientes.filters import clientes_filtrar, tipos_iva_filtrar, cliema_filtrar
 from tabla.forms import ImportarCSVForm
 from tabla.funcs import es_valido, email_valido
 from perfiles.admin import agregar_a_errores
@@ -39,11 +39,11 @@ def cliente_agregar(request):
         form = ClienteForm(request.POST)
         if form.is_valid():
             encriptado = ''.join(random.choice(string.ascii_lowercase.join(string.digits)) for i in range(10))
-            form.save()
+            nuevo_cliente = form.save()
             cliente = Cliente.objects.get(clicod=form.cleaned_data['clicod'])
             cliente.encriptado = encriptado
             cliente.save()
-            return redirect('clientes_listar')
+            return redirect('cliente_editar', id=nuevo_cliente.pk)
     else:
         form = ClienteForm()
 
@@ -54,16 +54,16 @@ def cliente_agregar(request):
 
 @login_required(login_url='ingresar')
 # @permission_required("clientes.cliente_editar", None, raise_exception=True)
-def cliente_editar(request, encriptado=None):
+def cliente_editar(request, id, encriptado=None):
     try:
-        cliente = Cliente.objects.get(encriptado=encriptado)
+        cliente = Cliente.objects.get(pk=id)
     except Exception as mensaje:
         messages.add_message(request, messages.ERROR, mensaje)
         return redirect('menu')
 
     if request.method == 'POST':
         post = request.POST.copy()
-        form = ClienteForm(post, instance=cliente)
+        form = ClienteForm(post, instance=cliente, id=id)
         post["encriptado"] = encriptado
         if form.is_valid():
             form.save()
@@ -72,7 +72,7 @@ def cliente_editar(request, encriptado=None):
             messages.add_message(request, messages.ERROR, form.errors)
             return redirect('menu')
     else:
-        form = ClienteForm(instance=cliente)
+        form = ClienteForm(instance=cliente, id=id)
 
     template_name = 'cliente_form.html'
     contexto = {'form': form, 'cliente': cliente}
@@ -333,3 +333,66 @@ def tipos_iva_eliminar(request, id):
                   'otros registros. Otra opción es desactivarlo.'
         messages.add_message(request, messages.ERROR, mensaje)
     return redirect(url)
+
+
+########################################################################################################################
+
+
+@login_required(login_url='ingresar')
+def cliema_listar(request, id):
+    contexto = cliema_filtrar(request, id)
+    template_name = 'cliema_listar.html'
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("clientes.cliema_agregar", None, raise_exception=True)
+def cliema_agregar(request, id):
+    if request.POST:
+        form = CliEmaForm(request.POST, request.FILES, initial={'cliente': Cliente.objects.get(pk=id)})
+        if form.is_valid():
+            form.save()
+            return redirect('cliema_listar', id=id)
+    else:
+        form = CliEmaForm(initial={'cliente': Cliente.objects.get(pk=id)})
+
+    template_name = 'CliEmaForm.html'
+    contexto = {'form': form}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("clientes.cliema_editar", None, raise_exception=True)
+def cliema_editar(request, cliente_id, id):
+    try:
+        cliema = CliEma.objects.get(id=id)
+    except Exception as mensaje:
+        messages.add_message(request, messages.ERROR, mensaje)
+        return redirect('cliema_listar', id=cliente_id)
+
+    if request.method == 'POST':
+        post = request.POST.copy()
+        form = CliEmaForm(post, request.FILES, instance=cliema)
+        if form.is_valid():
+            form.save()
+            return redirect('cliema_listar', id=cliente_id)
+    else:
+        form = CliEmaForm(instance=cliema)
+
+    template_name = 'CliEmaForm.html'
+    contexto = {'form': form, 'CliEma': CliEma}
+    return render(request, template_name, contexto)
+
+
+@login_required(login_url='ingresar')
+@permission_required("clientes.cliema_eliminar", None, raise_exception=True)
+def cliema_eliminar(request, cliente_id, id):
+    url = 'cliema_listar'
+    try:
+        cliema = CliEma.objects.get(id=id)
+        cliema.delete()
+    except Exception as e:
+        mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
+                  'otros registros. Otra opción es desactivarlo.'
+        messages.add_message(request, messages.ERROR, mensaje)
+    return redirect(url, id=cliente_id)

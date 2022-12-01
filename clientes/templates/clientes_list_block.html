@@ -69,7 +69,7 @@
                 <td> {{ item.domicilio|limpiar_none }}</td>
                 <td> {{ item.tipoiva|limpiar_none }}</td>
                 <td>
-                    <a href="{% url 'cliente_editar' item.encriptado %}?modo={{ request.GET.modo }} "
+                    <a href="{% url 'cliente_editar' item.id %}"
                        class="changelink">{% traducir 'Editar' 'CILENTE' %}
                     </a>
                 </td>
