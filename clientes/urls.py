@@ -23,6 +23,7 @@ urlpatterns = [
     path('tipos_iva_editar/<int:id>/', tipos_iva_editar, name='tipos_iva_editar'),
     path('tipos_iva_eliminar/<int:id>/', tipos_iva_eliminar, name='tipos_iva_eliminar'),
 
+    # las urls de cliema tienen la id del cliente para saber a cual pertenecen, asi pueden volver desde todas las views
     path('cliema_agregar/<int:cliente_id>/', cliema_agregar, name='cliema_agregar'),
     path('cliema_listar/<int:cliente_id>/', cliema_listar, name='cliema_listar'),
     path('cliema_editar/<int:cliente_id>/<int:id>/', cliema_editar, name='cliema_editar'),

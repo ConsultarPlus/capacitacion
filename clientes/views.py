@@ -351,8 +351,10 @@ def cliema_agregar(request, cliente_id):
     if request.POST:
         form = CliEmaForm(request.POST, request.FILES, initial={'cliente': Cliente.objects.get(pk=cliente_id)})
         if form.is_valid():
-            form.save()
-            return redirect('cliema_listar', id=cliente_id)
+            nuevo_email = form.save()
+            if nuevo_email.principal is True:
+                CliEma.objects.filter(cliente=cliente_id).exclude(pk=nuevo_email.pk).update(principal=False)
+            return redirect('cliema_listar', cliente_id=cliente_id)
     else:
         form = CliEmaForm(initial={'cliente': Cliente.objects.get(pk=cliente_id)})
 
@@ -362,20 +364,22 @@ def cliema_agregar(request, cliente_id):
 
 
 @login_required(login_url='ingresar')
-@permission_required("clientes.cliema_editar", None, raise_exception=True)
+@permission_required("clientes.cliemsa_editar", None, raise_exception=True)
 def cliema_editar(request, cliente_id, id):
     try:
         cliema = CliEma.objects.get(id=id)
     except Exception as mensaje:
         messages.add_message(request, messages.ERROR, mensaje)
-        return redirect('cliema_listar', id=cliente_id)
+        return redirect('cliema_listar', cliente_id=cliente_id)
 
     if request.method == 'POST':
         post = request.POST.copy()
         form = CliEmaForm(post, request.FILES, instance=cliema)
         if form.is_valid():
-            form.save()
-            return redirect('cliema_listar', id=cliente_id)
+            nuevo_email = form.save()
+            if nuevo_email.principal is True:
+                CliEma.objects.filter(cliente=cliente_id).exclude(pk=nuevo_email.pk).update(principal=False)
+            return redirect('cliema_listar', cliente_id=cliente_id)
     else:
         form = CliEmaForm(instance=cliema)
 
@@ -387,7 +391,6 @@ def cliema_editar(request, cliente_id, id):
 @login_required(login_url='ingresar')
 @permission_required("clientes.cliema_eliminar", None, raise_exception=True)
 def cliema_eliminar(request, cliente_id, id):
-    url = 'cliema_listar'
     try:
         cliema = CliEma.objects.get(id=id)
         cliema.delete()
@@ -395,4 +398,4 @@ def cliema_eliminar(request, cliente_id, id):
         mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
                   'otros registros. Otra opción es desactivarlo.'
         messages.add_message(request, messages.ERROR, mensaje)
-    return redirect(url, id=cliente_id)
+    return redirect('cliema_listar', cliente_id=cliente_id)
