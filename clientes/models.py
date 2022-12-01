@@ -13,7 +13,7 @@ class Tipos_Iva(models.Model):
 
 
 class Cliente(models.Model):
-    clicod = models.CharField(max_length=5, verbose_name='Código', null=False, blank=False)
+    clicod = models.CharField(max_length=5, verbose_name='Código', null=False, blank=False, unique=True )
     nombre = models.CharField(max_length=100, null=True, blank=True)
     cuit = models.CharField(max_length=13, null=True, blank=True)
     domicilio = models.CharField(max_length=60, null=True, blank=True)

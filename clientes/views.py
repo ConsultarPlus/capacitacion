@@ -34,16 +34,16 @@ def clientes_listar(request):
 @login_required(login_url='ingresar')
 @permission_required("clientes.cliente_agregar", None, raise_exception=True)
 def cliente_agregar(request):
-    url = reverse('cliente_agregar')
     if request.POST:
-        form = ClienteForm(request.POST)
-        if form.is_valid():
-            encriptado = ''.join(random.choice(string.ascii_lowercase.join(string.digits)) for i in range(10))
-            nuevo_cliente = form.save()
-            cliente = Cliente.objects.get(clicod=form.cleaned_data['clicod'])
-            cliente.encriptado = encriptado
-            cliente.save()
-            return redirect('cliente_editar', id=nuevo_cliente.pk)
+        post = request.POST.copy()
+        print(post)
+        nuevo_cliente = Cliente(clicod=post['clicod'], nombre=post['nombre'], cuit=post['cuit'], tipoiva=Tipos_Iva.objects.get(pk=post['tipoiva']), telefono=post['telefono'], domicilio=post['domicilio'])
+        if post['email_principal'].strip is not '':
+            nuevo_email = CliEma(cliente=Cliente.objects.get(pk=nuevo_cliente.id), email=post['email_principal'],
+                                 principal=True, descripcion=f'Email principal del cliente {nuevo_cliente.pk}')
+            email_creado = nuevo_email.save()
+            CliEma.objects.filter(cliente=nuevo_cliente.id).exclude(pk=email_creado.id).update(principal=False)
+        return redirect('cliente_editar', id=nuevo_cliente.pk)
     else:
         form = ClienteForm()
 
@@ -63,10 +63,15 @@ def cliente_editar(request, id, encriptado=None):
 
     if request.method == 'POST':
         post = request.POST.copy()
-        form = ClienteForm(post, instance=cliente, id=id)
+        form = ClienteForm(clicod=post['clicod'], nombre=post['nombre'], cuit=post['cuit'], tipoiva=Tipos_Iva.objects.get(pk=post['tipoiva']), telefono=post['telefono'], domicilio=post['domicilio'])
         post["encriptado"] = encriptado
         if form.is_valid():
-            form.save()
+            nuevo_cliente = form.save()
+            if post['email_principal'].strip is not '':
+                nuevo_email = CliEma(cliente=Cliente.objects.get(pk=nuevo_cliente.id), email=post['email_principal'],
+                                 principal=True, descripcion=f'Email principal del cliente {nuevo_cliente.pk}')
+                email_creado = nuevo_email.save()
+                CliEma.objects.filter(cliente=nuevo_cliente.id).exclude(pk=email_creado.id).update(principal=False)
             return redirect('clientes_listar')
         else:
             messages.add_message(request, messages.ERROR, form.errors)
@@ -351,6 +356,8 @@ def cliema_agregar(request, cliente_id):
     if request.POST:
         form = CliEmaForm(request.POST, request.FILES, initial={'cliente': Cliente.objects.get(pk=cliente_id)})
         if form.is_valid():
+            email_principal=request.POST.get('email_principal')
+            print(email_principal)
             nuevo_email = form.save()
             if nuevo_email.principal is True:
                 CliEma.objects.filter(cliente=cliente_id).exclude(pk=nuevo_email.pk).update(principal=False)

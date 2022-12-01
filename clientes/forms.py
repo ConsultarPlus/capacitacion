@@ -13,10 +13,11 @@ def maybe_email_button(id):
 
 
 class ClienteForm(forms.ModelForm):
+    email_principal = forms.EmailField(required=False)
 
     class Meta:
         model = Cliente
-        fields = '__all__'
+        fields = ('clicod', 'nombre', 'cuit', 'tipoiva', 'telefono', 'domicilio', 'email_principal')
 
     def __init__(self, *args, **kwargs):
         try:
@@ -44,7 +45,7 @@ class ClienteForm(forms.ModelForm):
                 css_class='form-row'
             ),
             Row(
-                Column('email', css_class='form-group col-md-4 mb-0'),
+                Column('email_principal', css_class='form-group col-md-4 mb-0'),
                 maybe_email_button(id),
                 css_class='form-row'
             ),
