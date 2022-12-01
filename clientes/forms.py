@@ -6,10 +6,10 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Row, Column, Button, ButtonHolder
 
 
-def maybe_button(id):
+def maybe_email_button(id):
     if id is -1:
         return 0
-    return Button('emails', 'Emails', css_class='btn-default', onclick="window.location.href = '{}';".format(reverse('cliema_listar', kwargs={'id': id})))
+    return Button('emails', 'Emails', css_class='btn-default', onclick="window.location.href = '{}';".format(reverse('cliema_listar', kwargs={'cliente_id': id})))
 
 
 class ClienteForm(forms.ModelForm):
@@ -45,7 +45,7 @@ class ClienteForm(forms.ModelForm):
             ),
             Row(
                 Column('email', css_class='form-group col-md-4 mb-0'),
-                maybe_button(id),
+                maybe_email_button(id),
                 css_class='form-row'
             ),
             ButtonHolder(

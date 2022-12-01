@@ -339,22 +339,22 @@ def tipos_iva_eliminar(request, id):
 
 
 @login_required(login_url='ingresar')
-def cliema_listar(request, id):
-    contexto = cliema_filtrar(request, id)
+def cliema_listar(request, cliente_id):
+    contexto = cliema_filtrar(request, cliente_id)
     template_name = 'cliema_listar.html'
     return render(request, template_name, contexto)
 
 
 @login_required(login_url='ingresar')
 @permission_required("clientes.cliema_agregar", None, raise_exception=True)
-def cliema_agregar(request, id):
+def cliema_agregar(request, cliente_id):
     if request.POST:
-        form = CliEmaForm(request.POST, request.FILES, initial={'cliente': Cliente.objects.get(pk=id)})
+        form = CliEmaForm(request.POST, request.FILES, initial={'cliente': Cliente.objects.get(pk=cliente_id)})
         if form.is_valid():
             form.save()
-            return redirect('cliema_listar', id=id)
+            return redirect('cliema_listar', id=cliente_id)
     else:
-        form = CliEmaForm(initial={'cliente': Cliente.objects.get(pk=id)})
+        form = CliEmaForm(initial={'cliente': Cliente.objects.get(pk=cliente_id)})
 
     template_name = 'CliEmaForm.html'
     contexto = {'form': form}

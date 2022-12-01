@@ -22,9 +22,9 @@ urlpatterns = [
     path('tipos_iva_listar/', tipos_iva_listar, name='tipos_iva_listar'),
     path('tipos_iva_editar/<int:id>/', tipos_iva_editar, name='tipos_iva_editar'),
     path('tipos_iva_eliminar/<int:id>/', tipos_iva_eliminar, name='tipos_iva_eliminar'),
-    
-    path('cliema_agregar/<int:id>/', cliema_agregar, name='cliema_agregar'),
-    path('cliema_listar/<int:id>/', cliema_listar, name='cliema_listar'),
+
+    path('cliema_agregar/<int:cliente_id>/', cliema_agregar, name='cliema_agregar'),
+    path('cliema_listar/<int:cliente_id>/', cliema_listar, name='cliema_listar'),
     path('cliema_editar/<int:cliente_id>/<int:id>/', cliema_editar, name='cliema_editar'),
     path('cliema_eliminar/<int:cliente_id>/<int:id>/', cliema_eliminar, name='cliema_eliminar'),
 ]
