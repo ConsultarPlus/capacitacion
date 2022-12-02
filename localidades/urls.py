@@ -1,8 +1,8 @@
 from django.urls import path
 
-from localidades.views import pais_listar, pais_agregar, pais_editar, pais_eliminar, provincia_eliminar, \
-    provincia_editar, provincia_agregar, provincia_listar, localidad_eliminar, localidad_editar, localidad_agregar, \
-    localidad_listar, cargar_provincias, cargar_localidades
+from localidades.views import cargar_provincias, localidad_eliminar, localidad_editar, localidad_agregar, \
+    localidad_listar, provincia_eliminar, provincia_editar, provincia_agregar, provincia_listar, pais_eliminar, \
+    pais_editar, pais_agregar, pais_listar, cargar_localidades
 
 urlpatterns = [
     path('pais_listar/', pais_listar, name='pais_listar'),

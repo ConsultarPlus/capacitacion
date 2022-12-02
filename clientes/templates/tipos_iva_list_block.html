@@ -1,0 +1,63 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+<h1>Tipos Iva</h1>
+{% if filtros_form %}
+    {% crispy filtros_form %}
+{% endif %}
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'tipos_iva_agregar' %}" class="addlink">
+                    {% traducir 'Tipo de Iva' 'TIPOS_IVA' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'tipo' 'TIPOS_IVA' %}</th>
+                    <th>{% traducir 'descripcion' 'TIPOS_IVA' %}</th>
+                    <th>{% traducir 'codigo afip' 'TIPOS_IVA' %}</th>
+                    <th>{% traducir 'libro iva' 'TIPOS_IVA' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tipos_iva in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ tipos_iva.tipo | limpiar_none }}</td>
+                        <td> {{ tipos_iva.descripcion | limpiar_none }}</td>
+                        <td> {{ tipos_iva.codigo_afip | limpiar_none }}</td>
+                        <td> {{ tipos_iva.columna_libroiva | limpiar_none }}</td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'tipos_iva_editar' tipos_iva.id %}"
+                               title="{% traducir 'Editar' 'TIPOS_IVA' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'TIPOS_IVA' %}"
+                               onclick="return confirmarAccion('{% url 'tipos_iva_eliminar' tipos_iva.id %}',
+                               '¿Eliminar tipos_iva?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>

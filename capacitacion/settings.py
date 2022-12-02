@@ -68,8 +68,10 @@ PROJECT_APPS = [
     'administracion',
     'localidades',
     'contabilidad',
+    'articulos',
     'finanzas',
-    'bancos'
+    'bancos',
+    'clientes'
 ]
 
 INSTALLED_APPS = [

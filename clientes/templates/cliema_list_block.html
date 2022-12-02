@@ -1,0 +1,74 @@
+{% load crispy_forms_tags %}
+{% load custom_tags %}
+{% load static %}
+
+<h1>Emails Cliente</h1>
+{% if filtros_form %}
+    {% crispy filtros_form %}
+{% endif %}
+<div class="form-row form-row">
+    <div class="col form-group">
+        <table>
+            <tr class="model-group">
+                <th>
+                    <a href="{% url 'cliente_editar' cliente_id %}" class="reply">
+                    {% traducir 'Volver' 'CLIEMA' %}
+                    </a>
+                </th>
+                <th>
+                    <a href="{% url 'cliema_agregar' cliente_id %}" class="addlink">
+                    {% traducir 'Email' 'CLIEMA' %}
+                    </a>
+                </th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div style="overflow-x:auto;">
+    <br>
+        <table id="tab">
+            <thead>
+                <tr>
+                    <th>{% traducir 'cliente' 'CLIEMA' %}</th>
+                    <th>{% traducir 'email' 'CLIEMA' %}</th>
+                    <th>{% traducir 'principal' 'CLIEMA' %}</th>
+                    <th>{% traducir 'descripcion' 'CLIEMA' %}</th>
+                    <th>{% traducir 'enviar factura' 'CLIEMA' %}</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliema in paginado %}
+                    <tr class="row{% if forloop.counter|divisibleby:2 %}1{% else %}2{% endif %}">
+                        <td> {{ cliema.cliente | limpiar_none }}</td>
+                        <td> {{ cliema.email | limpiar_none }}</td>
+                        {% autoescape off %}
+                            <td> {{ cliema.principal | imagen_si_no }}</td>
+                        {% endautoescape %}
+                        <td> {{ cliema.descripcion | limpiar_none }}</td>
+                        {% autoescape off %}
+                            <td> {{ cliema.enviar_factura | imagen_si_no }}</td>
+                        {% endautoescape %}
+                        <td></td>
+                        <td>
+                            <a href="{% url 'cliema_editar' cliente_id cliema.id %}"
+                               title="{% traducir 'Editar' 'CLIEMA' %}"
+                               class="changelink">
+                            </a>
+                        </td>
+                        <td><a href="#"
+                               class="deletelink"
+                               title="{% traducir 'Eliminar' 'CLIEMA' %}"
+                               onclick="return confirmarAccion('{% url 'cliema_eliminar' cliente_id cliema.id %}',
+                               '¿Eliminar cliema?')"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <br>
+    {% include "paginador.html" %}
+</div>

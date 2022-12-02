@@ -4,9 +4,7 @@ from django.forms import modelform_factory
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from datetime import datetime
-
 from django.views.decorators.csrf import csrf_exempt
-
 from administracion.models import MedioDePago
 from bancos.filters import cuenta_bancaria_filtrar, chequera_filtrar, mov_bancario_filtrar, \
     mov_bancarios_detalle_filtrar, cheques_terceros_filtrar, cheques_propios_filtrar
@@ -48,7 +46,6 @@ def cuenta_bancaria_editar(request, id):
     except Exception as mensaje:
         messages.add_message(request, messages.ERROR, mensaje)
         return redirect('cuenta_bancaria_listar')
-
     if request.method == 'POST':
         post = request.POST.copy()
         form = CuentaBancariaForm(post, request.FILES, instance=cuenta_bancaria, id=id)
@@ -274,7 +271,7 @@ def mov_bancarios_detalle_listar(request):
 
         for objeto in detalles_list: # hay que cambiar la id del medio de pago por el objeto en si y parsear la fecha
             if objeto['medio_pago_id'] is not None:
-                objeto['medio_pago_id'] = MedioDePago.objects.get(pk=objeto['medio_pago_id']).descripcion
+                objeto['medio_pago_id'] = MedioDePago.objects.get(pk=ojeto['medio_pago_id']).descripcion
             if objeto['vencimiento_det'] is not None:
                 objeto['vencimiento_det'] = objeto['vencimiento_det'].strftime('%d/%m/%Y')
 
@@ -316,6 +313,7 @@ def mov_bancarios_detalle_agregar(request):
         cheque_numero = empty2none(request.POST.get('cheque_numero', None))
         estado_anterior = empty2none(request.POST.get('estado_anterior', None))
 
+        # chequea si se esta editando (si hay una id), si es el caso entonces se agrega la id al detalle creado
         det_id = empty2none(request.POST.get('det_id', None))
         if det_id is None:
             nuevo_detalle = MovBancarios_Detalle(mov_bancario=mov_bancario, medio_pago=medio_pago,
@@ -340,7 +338,11 @@ def mov_bancarios_detalle_editar(request):
     if request.method == "POST":
         id = request.POST.get("sid")
         detalle = MovBancarios_Detalle.objects.get(pk=id)
-        detalles_data = {"id": id, "medio_pago_id": detalle.medio_pago, "cheque": detalle.cheque,
+        if detalle.medio_pago is not None:
+            medio_pago = detalle.medio_pago.id
+        else:
+            medio_pago = None
+        detalles_data = {"id": id, "medio_pago_id": medio_pago, "cheque": detalle.cheque,
                          "importe_det": detalle.importe_det, "vencimiento_det": detalle.vencimiento_det,
                          "cheque_numero": detalle.cheque_numero, "estado_anterior": detalle.estado_anterior}
 
