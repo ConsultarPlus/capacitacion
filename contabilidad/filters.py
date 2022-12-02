@@ -9,7 +9,6 @@ from tabla.models import Variable
 from perfiles.funcs import get_opcion_paginado
 
 
-
 def plan_de_cuentas_filtrar(query_dict):
     items = query_dict.GET.get('items')
     buscar = query_dict.GET.get('buscar')
@@ -65,6 +64,7 @@ def cuenta_contable_valida2(request, form):  # esta funcion es un quilombo, segu
 
 
 def ejercicio_filtrar(query_dict):
+    buscar = query_dict.GET.get('buscar')
     ejercicio = query_dict.GET.get('ejercicio')
     descripcion = query_dict.GET.get('descripcion')
     items = get_opcion_paginado(query_dict)
@@ -73,19 +73,23 @@ def ejercicio_filtrar(query_dict):
     filtrado = Ejercicio.objects.all()
 
     if ejercicio != '' and ejercicio is not None:
-        filtrado = filtrado.filter(ejercicio=ejercicio)
+        filtrado = filtrado.filter(ejercicio=buscar)
 
     if descripcion != '' and descripcion is not None:
-        filtrado = filtrado.filter(descripcion=descripcion)
+        filtrado = filtrado.filter(descripcion=buscar)
 
     registros = filtrado.count()
     paginado = paginador(query_dict, filtrado)
 
     form = FiltroSimple(initial={'items': items,
+                                 'ejercicio': ejercicio,
+                                 'descripcion': descripcion,
                                  'modo': modo})
 
     return {'filter': filtrado,
-            'ejercicio': paginado,
+            'paginado': paginado,
+            'ejercicio': ejercicio,
+            'descripcion': descripcion,
             'registros': registros,
             'filtros_form': form}
 
@@ -98,12 +102,11 @@ def asientos_filtrar(query_dict):
     orden = query_dict.GET.get('orden')
     numero = query_dict.GET.get('numero')
 
-    filtrado = Asientos.objects.all().order_by('asociado_id', 'numero', 'orden')
-
+    filtrado = Asientos.objects.all()
     if buscar != '' and buscar is not None:
-        filtrado = filtrado.filter(Q(asociado_id=asociado_id) |
-                                  (Q(numero=numero) |
-                                   Q(orden=orden)
+        filtrado = filtrado.filter(Q(asociado_id=buscar) |
+                                  (Q(numero=buscar) |
+                                   Q(orden=buscar)
                                    ))
 
     registros = filtrado.count()
