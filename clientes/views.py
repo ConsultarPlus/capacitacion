@@ -36,14 +36,18 @@ def clientes_listar(request):
 def cliente_agregar(request):
     if request.POST:
         post = request.POST.copy()
-        print(post)
-        nuevo_cliente = Cliente(clicod=post['clicod'], nombre=post['nombre'], cuit=post['cuit'], tipoiva=Tipos_Iva.objects.get(pk=post['tipoiva']), telefono=post['telefono'], domicilio=post['domicilio'])
-        if post['email_principal'].strip is not '':
-            nuevo_email = CliEma(cliente=Cliente.objects.get(pk=nuevo_cliente.id), email=post['email_principal'],
-                                 principal=True, descripcion=f'Email principal del cliente {nuevo_cliente.pk}')
-            email_creado = nuevo_email.save()
-            CliEma.objects.filter(cliente=nuevo_cliente.id).exclude(pk=email_creado.id).update(principal=False)
-        return redirect('cliente_editar', id=nuevo_cliente.pk)
+        form = ClienteForm(post)
+        if form.is_valid():
+            nuevo_cliente = form.save()
+            if (post['email_principal'])[0].strip is not '':
+                nuevo_email = CliEmaForm({'cliente':    Cliente.objects.get(pk=nuevo_cliente.pk),
+                                          'email': post['email_principal'],
+                                          'principal': True,
+                                          'descripcion': f'Email principal del cliente {nuevo_cliente.pk}'})
+                email_creado = nuevo_email.save()
+                print(f"{nuevo_cliente}\n\n{email_creado}")
+                CliEma.objects.filter(cliente=nuevo_cliente.pk).exclude(pk=email_creado.id).update(principal=False)
+            return redirect('cliente_editar', id=nuevo_cliente.pk)
     else:
         form = ClienteForm()
 
@@ -54,7 +58,7 @@ def cliente_agregar(request):
 
 @login_required(login_url='ingresar')
 # @permission_required("clientes.cliente_editar", None, raise_exception=True)
-def cliente_editar(request, id, encriptado=None):
+def cliente_editar(request, id):
     try:
         cliente = Cliente.objects.get(pk=id)
     except Exception as mensaje:
@@ -63,15 +67,17 @@ def cliente_editar(request, id, encriptado=None):
 
     if request.method == 'POST':
         post = request.POST.copy()
-        form = ClienteForm(clicod=post['clicod'], nombre=post['nombre'], cuit=post['cuit'], tipoiva=Tipos_Iva.objects.get(pk=post['tipoiva']), telefono=post['telefono'], domicilio=post['domicilio'])
-        post["encriptado"] = encriptado
+        form = ClienteForm(post, request.FILES, instance=cliente, id=id)
         if form.is_valid():
             nuevo_cliente = form.save()
-            if post['email_principal'].strip is not '':
-                nuevo_email = CliEma(cliente=Cliente.objects.get(pk=nuevo_cliente.id), email=post['email_principal'],
-                                 principal=True, descripcion=f'Email principal del cliente {nuevo_cliente.pk}')
+            print(post['email_principal'])
+            if post['email_principal'] is not '':
+                nuevo_email = CliEmaForm({'cliente': Cliente.objects.get(pk=nuevo_cliente.pk),
+                                          'email': post['email_principal'],
+                                          'principal': True,
+                                          'descripcion': f'Email principal del cliente {nuevo_cliente.pk}'})
                 email_creado = nuevo_email.save()
-                CliEma.objects.filter(cliente=nuevo_cliente.id).exclude(pk=email_creado.id).update(principal=False)
+                CliEma.objects.filter(cliente=nuevo_cliente.pk).exclude(pk=email_creado.id).update(principal=False)
             return redirect('clientes_listar')
         else:
             messages.add_message(request, messages.ERROR, form.errors)
@@ -83,13 +89,13 @@ def cliente_editar(request, id, encriptado=None):
     contexto = {'form': form, 'cliente': cliente}
     return render(request, template_name, contexto)
 
-
 @login_required(login_url='ingresar')
 @permission_required("clientes.cliente_eliminar", None, raise_exception=True)
 def cliente_eliminar(request, id):
     url = reverse('clientes_listar')
     try:
         cliente = Cliente.objects.get(id=id)
+        CliEma.objects.filter(cliente=id).delete()
         cliente.delete()
     except Exception as e:
         mensaje = 'No se puede eliminar porque el ítem está referenciado en ' \
