@@ -114,7 +114,6 @@ def viajante_agregar(request):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.save()
-            print("HOLAAA")
             return redirect('viajante_listar')
     else:
         form = ViajanteForm(initial={'activos': 'S'})

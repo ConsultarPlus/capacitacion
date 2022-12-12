@@ -41,6 +41,9 @@ def menu_processor(request):
 
         # CONTABILIDAD
         plan_de_cuentas_puede_listar = request.user.has_perm('contabilidad.plan_de_cuentas_puede_listar')
+        ejercicio_puede_listar = request.user.has_perm('contabilidad.ejercicio_puede_listar')
+        asientos_puede_listar = request.user.has_perm('contabilidad.asientos_puede_listar')
+        asientos_detalle_puede_listar = request.user.has_perm('contabilidad.asientos_detalle_puede_listar')
 
         # FINANZAS
         caja_puede_listar = request.user.has_perm('finanzas.caja_puede_listar')
@@ -134,6 +137,12 @@ def menu_processor(request):
                    'modelo': 'CHEQUERA', 'visible': chequera_puede_listar},
                   {'id_grupo': 'BNC', 'url': reverse('mov_bancario_listar'), 'titulo': 'Movimientos bancarios',
                    'modelo': 'MOV_BANCARIO', 'visible': mov_bancario_puede_listar},
+                  {'id_grupo': 'CBL', 'url': reverse('ejercicio_listar'), 'titulo': 'Ejercicio', 'modelo': 'EJERCICIO',
+                   'visible': ejercicio_puede_listar},
+                  {'id_grupo': 'CBL', 'url': reverse('asientos_listar'), 'titulo': 'Asientos', 'modelo': 'ASIENTOS',
+                   'visible': asientos_puede_listar},
+                  {'id_grupo': 'CBL', 'url': reverse('asientos_detalle_listar'), 'titulo': 'Asientos Detalle', 'modelo': 'ASIENTOS DETALLE',
+                   'visible': asientos_detalle_puede_listar},
                   {'id_grupo': 'BNC', 'url': reverse('cheques_terceros_listar'), 'titulo': 'Cheques de terceros',
                    'modelo': 'CHEQUES_TERCEROS', 'visible': cheques_terceros_puede_listar},
                   {'id_grupo': 'BNC', 'url': reverse('cheques_propios_listar'), 'titulo': 'Cheques propios',

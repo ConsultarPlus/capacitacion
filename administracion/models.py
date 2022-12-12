@@ -1,10 +1,10 @@
 from django.db import models
-from tabla.models import Tabla
 from tabla.listas import SINO, CAJA, TIPO
 from localidades.models import Localidad
 from capacitacion.settings import MEDIA_ROOT
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import User
+from tabla.models import Tabla
 
 
 class Departamento(models.Model):
@@ -131,5 +131,3 @@ class MedioDePago(models.Model):
 
     def __str__(self):
         return self.descripcion
-
-
